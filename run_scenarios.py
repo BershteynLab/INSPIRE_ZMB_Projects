@@ -3,11 +3,16 @@ import itertools
 import os
 import numpy as np
 import pandas as pd
+import sys
+import time
 
+from calibtool.CalibManager import CalibManager
 from calibtool.ParameterSet import ParameterSet, NaNDetectedError
 
 from dtk.utils.builders.TemplateHelper import TemplateHelper
 from dtk.utils.core.DTKConfigBuilder import DTKConfigBuilder
+from simtools.Analysis.AnalyzeManager import AnalyzeManager
+from simtools.Analysis.BaseAnalyzers.DownloadAnalyzerTPI import DownloadAnalyzerTPI
 from simtools.ExperimentManager.ExperimentManagerFactory import ExperimentManagerFactory
 from simtools.ModBuilder import ModBuilder
 from simtools.SetupParser import SetupParser
@@ -17,14 +22,25 @@ import hiv.scripts.download as dl
 
 from hiv.utils.utils import add_post_channel_config_as_asset
 
-SetupParser.default_block = 'HPC'
+SetupParser.default_block = 'NYUCLUSTER'
 
-DEFAULT_BLOCK = 'HPC'
+RESAMPLING_METHODS_STR = ', '.join(['roulette', 'provided'])
+DEFAULT_N_SAMPLES = 300
+DEFAULT_BLOCK = 'NYUCLUSTER'
+DEFAULT_OUTPUT_DIR = 'Calibrated_RSA_Scenarios'
+DEFAULT_DOWNLOAD_FILES = os.path.join('output', 'ReportHIVByAgeAndGender.csv')
 
 SCENARIO_TABLE_MODE = 'scenario_table'
 SCENARIO_TEMPLATE_SETS_MODE = 'scenario_template_sets'
 
+TPI_TAG = 'parameterization_id'
+REP_TAG = 'Run_Number'
+
 DEFAULT_CAMPAIGN = 'Default_Campaign'
+
+
+class UnknownResampleMethodException(Exception):
+    pass
 
 
 class MissingCampaignSpecificationException(Exception):
@@ -92,6 +108,9 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
     reference_info = loaded_module.run_calib_args['reference_info']
     add_post_channel_config_as_asset(config_builder, reference_info['channels'],
                                      reference_info['reference'], reference_info['site_info'])
+
+
+    experiment_managers = []  # All the experiment managers for all experiments
 
     # Create a suite to hold all the experiments
     suite_id = None
@@ -167,11 +186,16 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
             suite_id = suite_id or experiment_manager.create_suite(suite_name=suite_name)
             experiment_manager.run_simulations(exp_name=scenario_name, exp_builder=experiment_builder,
                                                suite_id=suite_id)
-    return suite_id
+            
+            experiment_managers.append(experiment_manager)
+
+    # return suite_id
+    return experiment_managers
+    
 
 
-# Remove NaN-valued keys/parameters from all scenarios dicts. These should be properly interpreted as "No override, run with default value"
-# TODO: add support for blank entries for strings?
+# # Remove NaN-valued keys/parameters from all scenarios dicts. These should be properly interpreted as "No override, run with default value"
+# # TODO: add support for blank entries for strings?
 def remove_nans(scenario_param_dicts):
     cleaned_spds = []
     for spd in scenario_param_dicts:
@@ -187,6 +211,29 @@ def remove_nans(scenario_param_dicts):
         cleaned_spds.append(cleaned_spd)
     return cleaned_spds
 
+def analyze_experiments(experiment_managers, output_path, suite_id, download_filenames):
+    # if suite_id was provided AND our block type is CLUSTER, we will not wait but just download.
+
+    # Download (analyze) files for experiments as they finish up.
+    while not all([em.finished() for em in experiment_managers]):
+        print("Waiting 60 seconds for experiments to complete...")
+        sys.stdout.flush()
+        time.sleep(60)
+        [e.refresh_experiment() for e in experiment_managers]
+    
+    print('Experiments complete, downloading...')
+    am = AnalyzeManager(verbose=False)
+    for em in experiment_managers:
+        print(em.experiment.simulations)
+        am.add_experiment(em.experiment)
+    am.add_analyzer(DownloadAnalyzerTPI(filenames=download_filenames,
+                                        output_path=output_path,
+                                        TPI_tag=dl.TPI_TAG,
+                                        REP_tag=dl.REP_TAG))
+    print(am.analyzers)
+    print(am.simulations)
+    am.analyze()
+
 
 def load_scenario_table(filename):
     # returns a list of parameter dicts, one for each scenario (scenario table row)
@@ -195,12 +242,16 @@ def load_scenario_table(filename):
         if 'Campaign' not in scenario_table.columns:
             raise MissingCampaignSpecificationException('Column \'Campaign\' is missing from %s if used' % filename)
         scenario_param_dicts = scenario_table.to_dict(orient='records')
-        scenario_param_dicts = remove_nans(scenario_param_dicts=scenario_param_dicts)  # nan values should be mapped to the default value in the config files; don't pass along
+        # scenario_param_dicts = remove_nans(scenario_param_dicts=scenario_param_dicts)  # nan values should be mapped to the default value in the config files; don't pass along
         find_and_eval(scenario_param_dicts)  # convert any strings representing lists to actual python lists
     else:
         scenario_param_dicts = [{'Scenario': None, 'Campaign': None}]
     return scenario_param_dicts
 
+def set_parameterization_ids(samples):
+    for index in range(len(samples)):
+        samples[index].parameterization_id = index
+    return samples
 
 def get_samples(args):
     # the provided csv files needs to be in the exact same format as written by resample.py
@@ -216,60 +267,75 @@ def get_samples(args):
 
 
 def main(args):
-    # load scenario information
-    load_templates(args.loaded_module)
+    if args.suite_id:
+        if SetupParser.get('type') == 'CLUSTER':
+            from simtools.Utilities.ClusterUtilities import exps_for_suite_id
+        else:
+            from simtools.Utilities.COMPSUtilities import exps_for_suite_id
+        from simtools.Utilities.Experiments import retrieve_experiment
 
-    # load scenario table if needed - returns a virtually blank dataframe if no load was necessary
-    scenario_param_dicts = load_scenario_table(filename=args.scenario_table)
-
-    # now determine the samples to use as the basis for each scenario
-    samples = get_samples(args)
-
-    # now run the samples X scenarios simulations
-    suite_id = build_and_run_simulations(samples,
-                                         scenario_template_sets=args.loaded_module.run_calib_args['scenario_template_sets'],
-                                         scenario_param_dicts=scenario_param_dicts,
-                                         suite_name=args.suite_name,
-                                         loaded_module=args.loaded_module)
-
-    # call the download script if requested
-    if not args.no_download:
-        print(f'Calling download.py to download suite id: {suite_id} ...')
-        dl_args = argparse.Namespace()
-        dl_args.suite_id = suite_id
-        dl_args.output_path = str(args.output_path)
-        dl_args.download_filenames = args.download_filenames
-        dl_args.selected_block = args.selected_block
-        dl.main(args=dl_args)
+        # do not run new scenarios. Get experiment managers to facilitate download only, instead.
+        experiments = exps_for_suite_id(args.suite_id)
+        experiments = [retrieve_experiment(e.id) for e in experiments]
+        experiment_managers = [ExperimentManagerFactory.from_experiment(experiment=exp) for exp in experiments]
+        if SetupParser.get('type') == 'CLUSTER':
+            for em in experiment_managers:
+                em.wait_for_finished()
     else:
-        print(f'No download requested for suite id: {suite_id} , exiting ...')
+        # load scenario information
+        load_templates(args.loaded_module)
+
+        # load scenario table if needed - returns a virtually blank dataframe if no load was necessary
+        scenario_param_dicts = load_scenario_table(filename=args.scenario_table)
+
+        # now determine the samples to use as the basis for each scenario
+        samples = get_samples(args)
+
+        # now run the samples X scenarios simulations
+        experiment_managers = build_and_run_simulations(samples,
+                                                        scenario_template_sets=args.loaded_module.run_calib_args['scenario_template_sets'],
+                                                        scenario_param_dicts=scenario_param_dicts,
+                                                        suite_name=args.suite_name,
+                                                        loaded_module=args.loaded_module)
+    if not args.no_download:
+        analyze_experiments(experiment_managers, output_path=args.output_path, suite_id=args.suite_id, download_filenames=args.download_filenames)
     print('Done!')
 
 
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--calib-dir', dest='calibration_dir', type=str, default=None,
+                        help='Directory of calibration to resample (Required for resampling method \'roulette\')).', required = False)
+
     parser.add_argument('-c', '--calib-script', dest='calibration_script', type=str, required=True,
                         help='Script used to run the calibration (Required).')
-    parser.add_argument('--samples', dest='samples_file', type=str, required=True,
-                        help='csv file with user-defined samples to use (Required).')
+    parser.add_argument('-m', '--resample-method', dest='resample_method', type=str, required=True,
+                        help='Resampling methodology to use (Required) (Valid: %s)' % RESAMPLING_METHODS_STR)
+
+    parser.add_argument('--samples', dest='samples_file', type=str, default=None,
+                        help='csv file with user-defined samples to use (Required for resampling method \'provided\')')
+
+    parser.add_argument('-n', '--nsamples', dest='n_samples', type=int, default=DEFAULT_N_SAMPLES,
+                        help='Number of resampled parameter sets to generate and use (Default: %d) '
+                             '(Not valid with resampling method \'provided\'.' % DEFAULT_N_SAMPLES)
+    parser.add_argument('-o', '--output-dir', dest='output_path', type=str, default=DEFAULT_OUTPUT_DIR,
+                        help='Directory to hold scenario output files (Default: %s).'
+                             % DEFAULT_OUTPUT_DIR)
+    parser.add_argument('-f', '--files', dest='download_filenames', type=str, default=DEFAULT_DOWNLOAD_FILES,
+                        help='Filenames to retrieve from scenario simulations (if downloading). Paths relative to simulation directories. Comma-separated list if more than one (Default: %s)' % DEFAULT_DOWNLOAD_FILES)
     parser.add_argument('--no-download', dest='no_download', action='store_true',
                         help='Do not download files after running scenarios (Default: download files).')
     parser.add_argument('-s', '--suite-name', dest='suite_name', type=str, required=True,
                         help='Name of suite for scenario experiment to be run (Required).')
     parser.add_argument('--table', dest='scenario_table', type=str, default=None,
-                        help='Scenarios will be generated using a csv table file '
-                             '(mutually exclusive with --template-sets).')
+                        help='Scenarios will be generated using a csv table file (mutually exclusive with --template-sets).')
     parser.add_argument('--template-sets', dest='template_sets', action='store_true',
                         help='Scenarios will be generated using template sets (mutually exclusive with --table).')
-    parser.add_argument('-o', '--output-dir', dest='output_path', type=str, default=dl.DEFAULT_OUTPUT_DIR,
-                        help=f'Directory to hold scenario output files (Default: {dl.DEFAULT_OUTPUT_DIR}).')
-    parser.add_argument('-f', '--files', dest='download_filenames', type=str, default=dl.DEFAULT_DOWNLOAD_FILES,
-                        help=f'Filenames to retrieve from scenario simulations (if downloading). Paths relative to '
-                             f'simulation directories. Comma-separated list if more than one '
-                             f'(Default: {dl.DEFAULT_DOWNLOAD_FILES}).')
+    parser.add_argument('-id', dest='suite_id', type=str, default=None,
+                        help='ID of existing scenarios suite to download. Will not run scenarios (Default: run scenarios.)')
     parser.add_argument('-b', '--block', dest='selected_block', type=str, default=DEFAULT_BLOCK,
-                        help=f'simtools.ini block to use (Default: {DEFAULT_BLOCK}).')
+                        help='simtools.ini block to use (Default: %s)' % DEFAULT_BLOCK)
 
     args = parser.parse_args()
     return args
@@ -297,6 +363,18 @@ if __name__ == '__main__':
     if script_args.scenario_mode == SCENARIO_TABLE_MODE:
         if n_template_sets > 1:
             raise Exception('Exactly one template set (Baseline) must be specified in provided calibration script. There are %d.' % n_template_sets)
+
+    if script_args.resample_method == 'provided':
+        if script_args.samples_file is None:
+            raise Exception('A csv file of samples must be provided via --samples when using resampling method \'provided\'.')
+        if script_args.calibration_dir is not None:
+            raise Exception('-d CALIB_DIR is not compatible with for resampling method \'provided\'')
+    else:
+        if script_args.samples_file is not None:
+            raise Exception('--samples is only compatible with resampling method \'provided\'.')
+        if script_args.calibration_dir is None:
+            raise Exception('-d CALIB_DIR is required for resampling method \'roulette\'')
+
 
     script_args.download_filenames = script_args.download_filenames.strip().split(',')
 
