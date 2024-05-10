@@ -506,7 +506,7 @@
         "Sexual_Debut_Age_Male_Weibull_Heterogeneity": 0.1268087803455056,
         "Sexual_Debut_Age_Male_Weibull_Scale": 15.582384534190258,
         "Sexual_Debut_Age_Min": 13,
-        "Simulation_Duration": 22477,
+        "Simulation_Duration": 25367.5,
         "Simulation_Timestep": 30.4166666666667,
         "Simulation_Type": "HIV_SIM",
         "Start_Time": 0,

@@ -411,8 +411,8 @@
                1,
                2,
                3,
-               7,
-               9
+               6,
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -452,9 +452,7 @@
             "Node_List": [
                4,
                5,
-               6,
-               8,
-               10
+               7
             ],
             "class": "NodeSetNodeList"
          },
@@ -605,8 +603,8 @@
                1,
                2,
                3,
-               7,
-               9
+               6,
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -646,9 +644,7 @@
             "Node_List": [
                4,
                5,
-               6,
-               8,
-               10
+               7
             ],
             "class": "NodeSetNodeList"
          },
@@ -883,7 +879,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Muchinga",
+         "Event_Name": "Epidemic seeding Muchinga and Northern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -912,7 +908,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Northwestern",
+         "Event_Name": "Epidemic seeding Northwestern and Western",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -921,35 +917,6 @@
          },
          "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Northwestern": "<-- MARKER",
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.1,
-            "Demographic_Coverage__KP_Seeding_Northern": "<-- MARKER",
-            "Intervention_Config": {
-               "Antigen": 0,
-               "Event_Name": "Outbreak (not used)",
-               "Genome": 0,
-               "Incubation_Period_Override": 0,
-               "Outbreak_Source": "PrevalenceIncrease",
-               "class": "OutbreakIndividual"
-            },
-            "Property_Restrictions": [
-               "Risk:HIGH"
-            ],
-            "Travel_Linked": 0,
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Epidemic seeding Northern",
-         "Nodeset_Config": {
-            "class": "NodeSetNodeList",
-            "Node_List": [
-                  8
-            ]
-         },
-         "Start_Year": 1982,
-         "Start_Year__KP_Seeding_Year_Northern": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
@@ -974,42 +941,13 @@
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
-                  9
+                  8
             ]
          },
          "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Southern": "<-- MARKER",
          "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.1,
-            "Demographic_Coverage__KP_Seeding_Western": "<-- MARKER",
-            "Intervention_Config": {
-               "Antigen": 0,
-               "Event_Name": "Outbreak (not used)",
-               "Genome": 0,
-               "Incubation_Period_Override": 0,
-               "Outbreak_Source": "PrevalenceIncrease",
-               "class": "OutbreakIndividual"
-            },
-            "Property_Restrictions": [
-               "Risk:HIGH"
-            ],
-            "Travel_Linked": 0,
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Epidemic seeding Western",
-         "Nodeset_Config": {
-            "class": "NodeSetNodeList",
-            "Node_List": [
-                  10
-            ]
-         },
-         "Start_Year": 1982,
-         "Start_Year__KP_Seeding_Year_Western": "<-- MARKER",
-         "class": "CampaignEventByYear"
-      },                        
+      },   
       {
          "Event_Coordinator_Config": {
             "Demographic_Coverage": 0,
@@ -1569,7 +1507,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Muchinga Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Muchinga-Northern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                6
@@ -1601,7 +1539,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Muchinga Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Muchinga-Northern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                6
@@ -1628,7 +1566,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Northwestern Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Northwestern-Western Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                7
@@ -1660,69 +1598,10 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Northwestern Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Northwestern-Western Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                7
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 1975,
-         "class": "CampaignEventByYear"
-      },
-
-      {
-         "Event_Coordinator_Config": {
-            "Demographic_Coverage": 1,
-            "Intervention_Config": {
-               "Choice_Names": [
-                  "WillNotReceiveTraditionalMaleCircumcision",
-                  "WillReceiveTraditionalMaleCircumcision"
-               ],
-               "Choice_Probabilities": [
-                  0.958894737,
-                  0.041105263
-               ],
-               "class": "HIVRandomChoice"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Traditional male circumcision for initial population in Northern Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               8
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 1975,
-         "class": "CampaignEventByYear"
-      },
-
-      {
-         "Event_Coordinator_Config": {
-            "Intervention_Config": {
-               "Actual_IndividualIntervention_Config": {
-                  "Choice_Names": [
-                     "WillNotReceiveTraditionalMaleCircumcision",
-                     "WillReceiveTraditionalMaleCircumcision"
-                  ],
-                  "Choice_Probabilities": [
-                     0.958894737,
-                     0.041105263
-                  ],
-                  "class": "HIVRandomChoice"
-               },
-               "Trigger_Condition_List": [
-                  "Births"
-               ],
-               "class": "NodeLevelHealthTriggeredIV"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Ongoing traditional male circumcision in Northern Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -1749,7 +1628,7 @@
          "Event_Name": "Traditional male circumcision for initial population in Southern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
-               9
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -1781,66 +1660,7 @@
          "Event_Name": "Ongoing traditional male circumcision in Southern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
-               9
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 1975,
-         "class": "CampaignEventByYear"
-      },
-
-      {
-         "Event_Coordinator_Config": {
-            "Demographic_Coverage": 1,
-            "Intervention_Config": {
-               "Choice_Names": [
-                  "WillNotReceiveTraditionalMaleCircumcision",
-                  "WillReceiveTraditionalMaleCircumcision"
-               ],
-               "Choice_Probabilities": [
-                  0.601760206,
-                  0.398239794
-               ],
-               "class": "HIVRandomChoice"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Traditional male circumcision for initial population in Western Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               10
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 1975,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "END": "MALE CIRCUMCISION PRE-DATING VMMC PROGRAM",
-         "Event_Coordinator_Config": {
-            "Intervention_Config": {
-               "Actual_IndividualIntervention_Config": {
-                  "Choice_Names": [
-                     "WillNotReceiveTraditionalMaleCircumcision",
-                     "WillReceiveTraditionalMaleCircumcision"
-                  ],
-                  "Choice_Probabilities": [
-                     0.601760206,
-                     0.398239794
-                  ],
-                  "class": "HIVRandomChoice"
-               },
-               "Trigger_Condition_List": [
-                  "Births"
-               ],
-               "class": "NodeLevelHealthTriggeredIV"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "Ongoing traditional male circumcision in Western Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               10
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -3410,7 +3230,7 @@
             },
             "class": "NChooserEventCoordinatorHIV"
          },
-         "Event_Name": "NChooser to produce specified number of program VMMCs in Muchinga Province, Zambia",
+         "Event_Name": "NChooser to produce specified number of program VMMCs in Muchinga-Northern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                6

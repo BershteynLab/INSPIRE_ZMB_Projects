@@ -2,12 +2,12 @@
 { 
     "Metadata": 
     { 
-        "DateCreated": "13-Jul-2016",
+        "DateCreated": "13-Jul-2016,rev 7-May-2024",
         "Tool": "Notepad++, Matlab R2016a, Excel for MS Office 2013",
         "Author": "abershteyn",
         "RegionName": "Zambia_Provincial",
         "IdReference": "0",
-        "NodeCount": 10
+        "NodeCount": 8
     },
     "Nodes": [ 
         { 
@@ -97,7 +97,7 @@
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
                     "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],  
                     "Transitions": []
                 }, 
                 { 
@@ -248,7 +248,7 @@
                     ],
                      "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     }                ],
-            "NodeName": "Muchinga"
+            "NodeName": "Muchinga-Northern"
         }, 
         { 
             "NodeID": 7,
@@ -288,50 +288,10 @@
                     ],
                      "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     }                ],
-            "NodeName": "Northwestern"
+            "NodeName": "Northwestern-Western"
         }, 
         { 
             "NodeID": 8,
-            "IndividualProperties": [ 
-                { 
-                    "Comment": "80% Healthcare Accessible",
-                    "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
-                    "Transitions": []
-                }, 
-                { 
-                    "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
-                    "Transitions": [],
-                    "Initial_Distribution__KP_Risk_Northern": "<-- MARKER"
-                },
-                {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
-                    "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
-                        "LostForever"
-                    ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
-            "NodeName": "Northern"
-        }, 
-        { 
-            "NodeID": 9,
             "IndividualProperties": [ 
                 { 
                     "Comment": "80% Healthcare Accessible",
@@ -369,45 +329,5 @@
                      "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                     }                ],
             "NodeName": "Southern"
-        }, 
-        { 
-            "NodeID": 10,
-            "IndividualProperties": [ 
-                { 
-                    "Comment": "80% Healthcare Accessible",
-                    "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
-                    "Transitions": []
-                }, 
-                { 
-                    "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
-                    "Transitions": [],
-                    "Initial_Distribution__KP_Risk_Western": "<-- MARKER"
-                },
-                {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
-                    "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
-                        "LostForever"
-                    ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
-            "NodeName": "Western"
         } ]
 }

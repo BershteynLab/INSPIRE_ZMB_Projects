@@ -1,6 +1,6 @@
 {
     "Metadata": {
-        "DateCreated": "13-Jul-2016, rev 30-Nov-2018",
+        "DateCreated": "13-Jul-2016, rev 7-May-2024",
         "Tool": "Notepad++, Matlab R2016a, Excel for MS Office 2013", 
         "Author": "abershteyn, rev ssarkar",
         "RegionName": "Zambia_Provincial", 
@@ -2726,19 +2726,9 @@
         }, 
         {
             "NodeID": 6, 
-            "NodeName": "Muchinga", 
+            "NodeName": "Muchinga-Northern", 
             "NodeAttributes": {
-                "InitialPopulation": 165784, 
-                "Latitude": 0, 
-                "Longitude": 0, 
-                "Altitude": 0
-            }
-        }, 
-        {
-            "NodeID": 8, 
-            "NodeName": "Northern", 
-            "NodeAttributes": {
-                "InitialPopulation": 257607, 
+                "InitialPopulation": 423391, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
@@ -2746,29 +2736,19 @@
         }, 
         {
             "NodeID": 7, 
-            "NodeName": "Northwestern", 
+            "NodeName": "Northwestern-Western", 
             "NodeAttributes": {
-                "InitialPopulation": 169368, 
+                "InitialPopulation": 379720, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
             }
         }, 
         {
-            "NodeID": 9, 
+            "NodeID": 8, 
             "NodeName": "Southern", 
             "NodeAttributes": {
                 "InitialPopulation": 370381, 
-                "Latitude": 0, 
-                "Longitude": 0, 
-                "Altitude": 0
-            }
-        }, 
-        {
-            "NodeID": 10, 
-            "NodeName": "Western", 
-            "NodeAttributes": {
-                "InitialPopulation": 210352, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
