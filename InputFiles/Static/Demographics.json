@@ -1,12 +1,12 @@
 {
     "Metadata": {
-        "DateCreated": "13-Jul-2016, rev 7-May-2024",
+        "DateCreated": "13-Jul-2016, rev 14-May-2024",
         "Tool": "Notepad++, Matlab R2016a, Excel for MS Office 2013", 
         "Author": "abershteyn, rev ssarkar",
         "RegionName": "Zambia_Provincial", 
         "DataSource": "UN World Population Prospectus 2015, Zambia 2010 Census of Population and Housing, rev Central Statistics Office 2015 Census Data",
         "IdReference": "0", 
-        "NodeCount": 10, 
+        "NodeCount": 8, 
         "NOTE": "Extrapolated HIV cause-deleted mortality rates with exponential decay-to-asymptote function fit to pre-HIV epidemic mortality rates from UNPop"
     }, 
     "Defaults": {

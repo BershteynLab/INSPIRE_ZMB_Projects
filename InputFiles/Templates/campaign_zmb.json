@@ -405,14 +405,14 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Will ever become female sex worker (FSW) in central,  copperbelt,  eastern, northwestern, and southern",
+         "Event_Name": "Will ever become female sex worker (FSW) in central,  copperbelt,  eastern, northern, and southern",
          "Nodeset_Config": {
             "Node_List": [
                1,
                2,
                3,
                6,
-               8
+               7
             ],
             "class": "NodeSetNodeList"
          },
@@ -447,12 +447,12 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Will ever become female sex worker (FSW) in Luapula, Lusaka, Muchinga, Northern, and Western",
+         "Event_Name": "Will ever become female sex worker (FSW) in Luapula-Muchinga-Northern, Lusaka, and Western",
          "Nodeset_Config": {
             "Node_List": [
                4,
                5,
-               7
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -604,7 +604,7 @@
                2,
                3,
                6,
-               8
+               7
             ],
             "class": "NodeSetNodeList"
          },
@@ -639,12 +639,12 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Commercial Sex (Male): FSW client in Luapula, Muchinga, Northwestern, Northern, and Western: at sexual debut, decide if will ever become an FSW client in his lifetime",
+         "Event_Name": "Commercial Sex (Male): FSW client in Luapula-Muchinga-Northern, Lusaka, and Western: at sexual debut, decide if will ever become an FSW client in his lifetime",
          "Nodeset_Config": {
             "Node_List": [
                4,
                5,
-               7
+               8
             ],
             "class": "NodeSetNodeList"
          },
@@ -821,7 +821,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Luapula",
+         "Event_Name": "Epidemic seeding Luapula-Muchinga-Northern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -879,7 +879,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Muchinga and Northern",
+         "Event_Name": "Epidemic seeding Northwestern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -908,7 +908,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Northwestern and Western",
+         "Event_Name": "Epidemic seeding Southern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -937,7 +937,7 @@
             "Travel_Linked": 0,
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Epidemic seeding Southern",
+         "Event_Name": "Epidemic seeding Western",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
@@ -1389,7 +1389,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Luapula Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Luapula-Muchinga-Northern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                4
@@ -1421,7 +1421,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Luapula Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Luapula-Muchinga-Northern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                4
@@ -1507,7 +1507,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Muchinga-Northern Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Northwestern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                6
@@ -1539,7 +1539,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Muchinga-Northern Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Northwestern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                6
@@ -1566,7 +1566,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Northwestern-Western Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Southern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                7
@@ -1598,7 +1598,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Northwestern-Western Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Southern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                7
@@ -1625,7 +1625,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Traditional male circumcision for initial population in Southern Province, Zambia",
+         "Event_Name": "Traditional male circumcision for initial population in Western Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                8
@@ -1657,7 +1657,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Ongoing traditional male circumcision in Southern Province, Zambia",
+         "Event_Name": "Ongoing traditional male circumcision in Western Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                8
@@ -2505,8 +2505,8 @@
                      0
                   ],
                   "Num_Targeted_Males": [
-                     550,
-                     1448
+                     822,
+                     2803
                   ],
                   "Property_Restrictions_Within_Node": [],
                   "Start_Year": 2010.0,
@@ -2536,7 +2536,7 @@
                   ],
                   "Num_Targeted_Males": [
                      367,
-                     543
+                     1188
                   ],
                   "Property_Restrictions_Within_Node": [],
                   "Start_Year": 2011.0,
@@ -2575,9 +2575,9 @@
                      0
                   ],
                   "Num_Targeted_Males": [
-                     556,
-                     3767,
-                     5021,
+                     1135,
+                     6715,
+                     15242,
                      0
                   ],
                   "Property_Restrictions_Within_Node": [],
@@ -2617,10 +2617,10 @@
                      0
                   ],
                   "Num_Targeted_Males": [
-                     0,
-                     6894,
-                     10134,
-                     0
+                     663,
+                     11795,
+                     18771,	
+                     316
                   ],
                   "Property_Restrictions_Within_Node": [],
                   "Start_Year": 2013.0,
@@ -2659,10 +2659,10 @@
                      0
                   ],
                   "Num_Targeted_Males": [
-                     953,
-                     12268,
-                     16569,
-                     242
+                     1184,
+                     18167,
+                     26999,
+                     515
                   ],
                   "Property_Restrictions_Within_Node": [],
                   "Start_Year": 2014.0,
@@ -2702,8 +2702,8 @@
                   ],
                   "Num_Targeted_Males": [
                      0,
-                     11633,
-                     14928,
+                     16954,
+                     23484,
                      178
                   ],
                   "Property_Restrictions_Within_Node": [],
@@ -2726,7 +2726,7 @@
             },
             "class": "NChooserEventCoordinatorHIV"
          },
-         "Event_Name": "NChooser to produce specified number of program VMMCs in Luapula Province, Zambia",
+         "Event_Name": "NChooser to produce specified number of program VMMCs in Luapula-Muchinga-Northern, Zambia",
          "Nodeset_Config": {
             "Node_List": [
                4
@@ -2982,258 +2982,6 @@
          "Nodeset_Config": {
             "Node_List": [
                5
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 2008,
-         "class": "CampaignEvent"
-      },
-
-      {
-         "Event_Coordinator_Config": {
-            "Distributions": [
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 14.99999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.99999,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2010.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     258
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2010.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 14.99999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.99999,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2011.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     158
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2011.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2012.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     131,
-                     417,
-                     2524,
-                     0
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2012.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2013.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     368,
-                     210,
-                     1327,
-                     150
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2013.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2014.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     1932,
-                     4543,
-                     126
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2014.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2015.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     2456,
-                     3661,
-                     0
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2015.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               }
-            ],
-            "Intervention_Config": {
-               "Circumcision_Reduced_Acquire": 0.6,
-               "Cost_To_Consumer": 0,
-               "Distributed_Event_Trigger": "Program_VMMC",
-               "Intervention_Name": "Any_MC",
-               "class": "MaleCircumcision"
-            },
-            "class": "NChooserEventCoordinatorHIV"
-         },
-         "Event_Name": "NChooser to produce specified number of program VMMCs in Muchinga-Northern Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               6
             ],
             "class": "NodeSetNodeList"
          },
@@ -3523,258 +3271,7 @@
          "class": "CampaignEvent"
       },
 
-      {
-         "Event_Coordinator_Config": {
-            "Distributions": [
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 14.99999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.99999,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2010.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     272,
-                     1097
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2010.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 14.99999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.99999,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2011.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     487
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2011.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2012.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     448,
-                     2531,
-                     7697,
-                     0
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2012.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2013.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     295,
-                     4691,
-                     7310,
-                     166
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2013.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2014.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     231,
-                     3967,
-                     5887,
-                     147
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2014.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 0.99999,
-                        "Min": 0
-                     },
-                     {
-                        "Max": 14.9999999,
-                        "Min": 1
-                     },
-                     {
-                        "Max": 49.9999,
-                        "Min": 15
-                     },
-                     {
-                        "Max": 64.9999,
-                        "Min": 50
-                     }
-                  ],
-                  "End_Year": 2015.999,
-                  "Num_Targeted_Females": [
-                     0,
-                     0,
-                     0,
-                     0
-                  ],
-                  "Num_Targeted_Males": [
-                     0,
-                     2865,
-                     4895,
-                     0
-                  ],
-                  "Property_Restrictions_Within_Node": [],
-                  "Start_Year": 2015.0,
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "Any_MC"
-               }
-            ],
-            "Intervention_Config": {
-               "Circumcision_Reduced_Acquire": 0.6,
-               "Cost_To_Consumer": 0,
-               "Distributed_Event_Trigger": "Program_VMMC",
-               "Intervention_Name": "Any_MC",
-               "class": "MaleCircumcision"
-            },
-            "class": "NChooserEventCoordinatorHIV"
-         },
-         "Event_Name": "NChooser to produce specified number of program VMMCs in Northern Province, Zambia",
-         "Nodeset_Config": {
-            "Node_List": [
-               8
-            ],
-            "class": "NodeSetNodeList"
-         },
-         "Start_Year": 2008,
-         "class": "CampaignEvent"
-      },
-
+      
       {
          "Event_Coordinator_Config": {
             "Distributions": [
@@ -4079,7 +3576,7 @@
          "Event_Name": "NChooser to produce specified number of program VMMCs in Southern Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
-               9
+               7
             ],
             "class": "NodeSetNodeList"
          },
@@ -4332,13 +3829,14 @@
          "Event_Name": "NChooser to produce specified number of program VMMCs in Western Province, Zambia",
          "Nodeset_Config": {
             "Node_List": [
-               10
+               8
             ],
             "class": "NodeSetNodeList"
          },
          "Start_Year": 2008,
          "class": "CampaignEvent"
       },
+
 
       {
          "END": "ALL MALE CIRCUMCISION",
@@ -4629,11 +4127,11 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Default",
+         "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Central, Copperbelt, Eastern, Northwestern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
-                  1,2,3,4,6,7
+                  1,2,3,6
             ]
          },
          "Start_Year": 1990,
@@ -4671,7 +4169,7 @@
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
-                  5,9,10
+                  5,7,8
             ]
          },
          "Start_Year": 1990,
@@ -4684,7 +4182,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
                   "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
-                  "Delay_Period_Exponential": 1100,
+                  "Delay_Period_Exponential": 800,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:OnART",
@@ -4705,11 +4203,11 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Northern",
+         "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Luapula-Muchinga-Northern",
          "Nodeset_Config": {
             "class": "NodeSetNodeList",
             "Node_List": [
-                  8
+                  4
             ]
          },
          "Start_Year": 1990,
