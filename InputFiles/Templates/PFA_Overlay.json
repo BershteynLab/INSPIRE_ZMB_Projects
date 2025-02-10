@@ -1,10 +1,10 @@
 {
     "Metadata": {
         "Author": "abershteyn based on aakullian Nyanza + dklein Zimbabwe + dbridenbecker dev",
-        "NodeCount": 8,
+        "NodeCount": 6,
         "Tool": "Notepad++",
         "IdReference": "0",
-        "DateCreated": "28 June 2016,rev 7-May-2024",
+        "DateCreated": "28 June 2016",
         "RegionName": "Zambia_Provincial"
     },
     "Defaults": {
@@ -2021,107 +2021,7 @@
         },
         {
             "NodeID": 6,
-            "NodeName": "Muchinga-Northern",
-            "Society": {
-                "TRANSITORY": {
-                    "Relationship_Parameters": {
-                        "Coital_Act_Rate": 0.33,
-                        "Condom_Usage_Probability": {
-                            "Min": 0,
-                            "Max": 0.4992941638997009,
-                            "Mid": 2003.4846871749717,
-                            "Rate": 2.6862110225260216
-                        },
-                        "Duration_Weibull_Heterogeneity": 0.833333333,
-                        "Duration_Weibull_Scale": 0.956774771214,
-                        "Migration_Actions": [
-                            "TERMINATE"
-                        ],
-                        "Migration_Actions_Distribution": [
-                            1.0
-                        ]
-                    },
-                    "Pair_Formation_Parameters": {
-                        "Formation_Rate_Type": "CONSTANT",
-                        "Formation_Rate_Constant": 0.0011197414231317777
-                    }
-                },
-                "INFORMAL": {
-                    "Relationship_Parameters": {
-                        "Coital_Act_Rate": 0.33,
-                        "Condom_Usage_Probability": {
-                            "Min": 0,
-                            "Max": 0.2448900326712238,
-                            "Mid": 1992.052744500361,
-                            "Rate": 0.2952473824125923
-                        },
-                        "Duration_Weibull_Heterogeneity": 0.75,
-                        "Duration_Weibull_Scale": 2.03104913138,
-                        "Migration_Actions": [
-                            "TERMINATE"
-                        ],
-                        "Migration_Actions_Distribution": [
-                            1.0
-                        ]
-                    },
-                    "Pair_Formation_Parameters": {
-                        "Formation_Rate_Type": "CONSTANT",
-                        "Formation_Rate_Constant": 0.0001561736059703799
-                    }
-                },
-                "MARITAL": {
-                    "Relationship_Parameters": {
-                        "Coital_Act_Rate": 0.33,
-                        "Condom_Usage_Probability": {
-                            "Min": 0,
-                            "Max": 0.3,
-                            "Mid": 1995.8605054635884,
-                            "Rate": 1.6202355778150024
-                        },
-                        "Duration_Weibull_Heterogeneity": 0.666666667,
-                        "Duration_Weibull_Scale": 22.154455184937,
-                        "Migration_Actions": [
-                            "TERMINATE"
-                        ],
-                        "Migration_Actions_Distribution": [
-                            1.0
-                        ]
-                    },
-                    "Pair_Formation_Parameters": {
-                        "Formation_Rate_Type": "CONSTANT",
-                        "Formation_Rate_Constant": 0.00018145743996196627
-                    }
-                },
-                "COMMERCIAL": {
-                    "Relationship_Parameters": {
-                        "Coital_Act_Rate": 0.0027397260273972603,
-                        "Condom_Usage_Probability": {
-                            "Min": 0.5,
-                            "Max": 0.85,
-                            "Mid": 1999.5,
-                            "Rate": 1
-                        },
-                        "Duration_Weibull_Heterogeneity": 1,
-                        "Duration_Weibull_Scale": 0.01917808219,
-                        "Migration_Actions": [
-                            "TERMINATE"
-                        ],
-                        "Migration_Actions_Distribution": [
-                            1.0
-                        ]
-                    },
-                    "Pair_Formation_Parameters": {
-                        "Formation_Rate_Type": "CONSTANT",
-                        "Formation_Rate_Constant": 0.15
-                    }
-                }
-            },
-            "Society__KP_Defaults": "<-- MARKER",
-            "Society__KP_Muchinga": "<-- MARKER"
-        },
-        {
-            "NodeID": 7,
-            "NodeName": "Northwestern-Western",
+            "NodeName": "Northwestern",
             "Society": {
                 "TRANSITORY": {
                     "Relationship_Parameters": {
@@ -2220,7 +2120,7 @@
             "Society__KP_Northwestern": "<-- MARKER"
         },
         {
-            "NodeID": 8,
+            "NodeID": 7,
             "NodeName": "Southern",
             "Society": {
                 "TRANSITORY": {
@@ -2318,6 +2218,106 @@
             },
             "Society__KP_Defaults": "<-- MARKER",
             "Society__KP_Southern": "<-- MARKER"
+        },
+        {
+            "NodeID": 8,
+            "NodeName": "Western",
+            "Society": {
+                "TRANSITORY": {
+                    "Relationship_Parameters": {
+                        "Coital_Act_Rate": 0.33,
+                        "Condom_Usage_Probability": {
+                            "Min": 0,
+                            "Max": 0.4713025697735299,
+                            "Mid": 2003.4846871749717,
+                            "Rate": 2.6862110225260216
+                        },
+                        "Duration_Weibull_Heterogeneity": 0.833333333,
+                        "Duration_Weibull_Scale": 0.956774771214,
+                        "Migration_Actions": [
+                            "TERMINATE"
+                        ],
+                        "Migration_Actions_Distribution": [
+                            1.0
+                        ]
+                    },
+                    "Pair_Formation_Parameters": {
+                        "Formation_Rate_Type": "CONSTANT",
+                        "Formation_Rate_Constant": 0.0011197414231317777
+                    }
+                },
+                "INFORMAL": {
+                    "Relationship_Parameters": {
+                        "Coital_Act_Rate": 0.33,
+                        "Condom_Usage_Probability": {
+                            "Min": 0,
+                            "Max": 0.10411030389531929,
+                            "Mid": 1992.052744500361,
+                            "Rate": 0.2952473824125923
+                        },
+                        "Duration_Weibull_Heterogeneity": 0.75,
+                        "Duration_Weibull_Scale": 2.03104913138,
+                        "Migration_Actions": [
+                            "TERMINATE"
+                        ],
+                        "Migration_Actions_Distribution": [
+                            1.0
+                        ]
+                    },
+                    "Pair_Formation_Parameters": {
+                        "Formation_Rate_Type": "CONSTANT",
+                        "Formation_Rate_Constant": 0.0001561736059703799
+                    }
+                },
+                "MARITAL": {
+                    "Relationship_Parameters": {
+                        "Coital_Act_Rate": 0.33,
+                        "Condom_Usage_Probability": {
+                            "Min": 0,
+                            "Max": 0.3,
+                            "Mid": 1995.8605054635884,
+                            "Rate": 1.6202355778150024
+                        },
+                        "Duration_Weibull_Heterogeneity": 0.666666667,
+                        "Duration_Weibull_Scale": 22.154455184937,
+                        "Migration_Actions": [
+                            "TERMINATE"
+                        ],
+                        "Migration_Actions_Distribution": [
+                            1.0
+                        ]
+                    },
+                    "Pair_Formation_Parameters": {
+                        "Formation_Rate_Type": "CONSTANT",
+                        "Formation_Rate_Constant": 0.00018145743996196627
+                    }
+                },
+                "COMMERCIAL": {
+                    "Relationship_Parameters": {
+                        "Coital_Act_Rate": 0.0027397260273972603,
+                        "Condom_Usage_Probability": {
+                            "Min": 0.5,
+                            "Max": 0.85,
+                            "Mid": 1999.5,
+                            "Rate": 1
+                        },
+                        "Duration_Weibull_Heterogeneity": 1,
+                        "Duration_Weibull_Scale": 0.01917808219,
+                        "Migration_Actions": [
+                            "TERMINATE"
+                        ],
+                        "Migration_Actions_Distribution": [
+                            1.0
+                        ]
+                    },
+                    "Pair_Formation_Parameters": {
+                        "Formation_Rate_Type": "CONSTANT",
+                        "Formation_Rate_Constant": 0.15
+                    }
+                }
+            },
+            "Society__KP_Defaults": "<-- MARKER",
+            "Society__KP_Western": "<-- MARKER"
         }
     ]
 }

@@ -1,333 +1,716 @@
-
-{ 
-    "Metadata": 
-    { 
-        "DateCreated": "13-Jul-2016,rev 7-May-2024",
+{
+    "Metadata": {
+        "DateCreated": "13-Jul-2016",
         "Tool": "Notepad++, Matlab R2016a, Excel for MS Office 2013",
         "Author": "abershteyn",
         "RegionName": "Zambia_Provincial",
         "IdReference": "0",
         "NodeCount": 8
     },
-    "Nodes": [ 
-        { 
+    "Nodes": [
+        {
             "NodeID": 1,
-            "IndividualProperties": [ 
-                { 
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Central": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
             "NodeName": "Central"
-        }, 
-        { 
+        },
+        {
             "NodeID": 2,
-            "IndividualProperties": [ 
-                { 
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Copperbelt": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    } ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
             "NodeName": "Copperbelt"
-        }, 
-        { 
+        },
+        {
             "NodeID": 3,
-            "IndividualProperties": [ 
-                { 
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],  
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Eastern": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
             "NodeName": "Eastern"
-        }, 
-        { 
+        },
+        {
             "NodeID": 4,
-            "IndividualProperties": [ 
-                { 
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Luapula": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
             "NodeName": "Luapula"
-        }, 
-        { 
+        },
+        {
             "NodeID": 5,
-            "IndividualProperties": [ 
-                { 
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Lusaka": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
-            "NodeName": "Lusaka"
-        }, 
-        { 
-            "NodeID": 6,
-            "IndividualProperties": [ 
-                { 
-                    "Comment": "80% Healthcare Accessible",
-                    "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
-                    "Transitions": []
-                }, 
-                { 
-                    "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
-                    "Transitions": [],
-                    "Initial_Distribution__KP_Risk_Muchinga": "<-- MARKER"
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
-                    "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
-                        "LostForever"
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
-            "NodeName": "Muchinga-Northern"
-        }, 
-        { 
-            "NodeID": 7,
-            "IndividualProperties": [ 
-                { 
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
+            "NodeName": "Lusaka"
+        },
+        {
+            "NodeID": 6,
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Northwestern": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
-            "NodeName": "Northwestern-Western"
-        }, 
-        { 
-            "NodeID": 8,
-            "IndividualProperties": [ 
-                { 
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
+            "NodeName": "Northwestern"
+        },
+        {
+            "NodeID": 7,
+            "IndividualProperties": [
+                {
                     "Comment": "80% Healthcare Accessible",
                     "Property": "Accessibility",
-                    "Values": [ "Yes", "No" ],
-                    "Initial_Distribution": [ 0.80000000000000004441, 0.2000000000000000111 ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
                     "Transitions": []
-                }, 
-                { 
+                },
+                {
                     "Property": "Risk",
-                    "Values": [ "LOW","MEDIUM", "HIGH" ],
-                    "Initial_Distribution": [ 0.8499999999999999778, 0.14999999999999999445 , 0],
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
                     "Transitions": [],
                     "Initial_Distribution__KP_Risk_Southern": "<-- MARKER"
                 },
                 {
-                    "Property": "CascadeState", 
-                    "Transitions": [], 
+                    "Property": "CascadeState",
+                    "Transitions": [],
                     "Values": [
-                        "", 
-                        "ARTStaging", 
-                        "ARTStagingDiagnosticTest", 
-                        "LinkingToART", 
-                        "LinkingToPreART", 
-                        "OnART", 
-                        "OnPreART", 
-                        "HCTTestingLoop", 
-                        "HCTUptakeAtDebut", 
-                        "HCTUptakePostDebut", 
-                        "TestingOnANC", 
-                        "TestingOnChild6w", 
-                        "TestingOnSymptomatic", 
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
                         "LostForever"
                     ],
-                     "Initial_Distribution": [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-                    }                ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
             "NodeName": "Southern"
-        } ]
+        },
+        {
+            "NodeID": 8,
+            "IndividualProperties": [
+                {
+                    "Comment": "80% Healthcare Accessible",
+                    "Property": "Accessibility",
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0
+                    ],
+                    "Transitions": []
+                },
+                {
+                    "Property": "Risk",
+                    "Values": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ],
+                    "Initial_Distribution": [
+                        0.8499999999999999778,
+                        0.14999999999999999445,
+                        0
+                    ],
+                    "Transitions": [],
+                    "Initial_Distribution__KP_Risk_Western": "<-- MARKER"
+                },
+                {
+                    "Property": "CascadeState",
+                    "Transitions": [],
+                    "Values": [
+                        "",
+                        "OnNonSuppressiveART",
+                        "ARTStaging",
+                        "ARTStagingDiagnosticTest",
+                        "LinkingToART",
+                        "LinkingToPreART",
+                        "OnEffectiveART",
+                        "OnART",
+                        "StoppedART",
+                        "OnPreART",
+                        "HCTTestingLoop",
+                        "HCTUptakeAtDebut",
+                        "HCTUptakePostDebut",
+                        "TestingOnANC",
+                        "TestingOnChild6w",
+                        "TestingOnSymptomatic",
+                        "LostForever"
+                    ],
+                    "Initial_Distribution": [
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "Property": "ARTIneligible",
+                    "Initial_Distribution": [
+                        0,
+                        1
+                    ],
+                    "Values": [
+                        "Yes",
+                        "No"
+                    ],
+                    "Transitions": []
+                }
+            ],
+            "NodeName": "Western"
+        }
+    ]
 }

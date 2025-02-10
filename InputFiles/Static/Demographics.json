@@ -1,12 +1,12 @@
 {
     "Metadata": {
-        "DateCreated": "13-Jul-2016, rev 14-May-2024",
+        "DateCreated": "13-Jul-2016, rev 30-Nov-2018",
         "Tool": "Notepad++, Matlab R2016a, Excel for MS Office 2013", 
         "Author": "abershteyn, rev ssarkar",
         "RegionName": "Zambia_Provincial", 
         "DataSource": "UN World Population Prospectus 2015, Zambia 2010 Census of Population and Housing, rev Central Statistics Office 2015 Census Data",
         "IdReference": "0", 
-        "NodeCount": 8, 
+        "NodeCount": 10, 
         "NOTE": "Extrapolated HIV cause-deleted mortality rates with exponential decay-to-asymptote function fit to pre-HIV epidemic mortality rates from UNPop"
     }, 
     "Defaults": {
@@ -16,15 +16,15 @@
         }, 
         "IndividualProperties": [
             {
-                "alpha__Comment": "80% Healthcare Accessible", 
+                "alpha__Comment": "100% Healthcare Accessible", 
                 "Property": "Accessibility", 
                 "Values": [
                     "Yes", 
                     "No"
                 ], 
                 "Initial_Distribution": [
-                    0.8, 
-                    0.2
+                    1, 
+                    0
                 ], 
                 "Transitions": []
             }
@@ -2708,7 +2708,7 @@
             "NodeID": 4, 
             "NodeName": "Luapula", 
             "NodeAttributes": {
-                "InitialPopulation": 231074, 
+                "InitialPopulation": 654465, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
@@ -2726,9 +2726,9 @@
         }, 
         {
             "NodeID": 6, 
-            "NodeName": "Muchinga-Northern", 
+            "NodeName": "Northwestern", 
             "NodeAttributes": {
-                "InitialPopulation": 423391, 
+                "InitialPopulation": 169368, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
@@ -2736,9 +2736,9 @@
         }, 
         {
             "NodeID": 7, 
-            "NodeName": "Northwestern-Western", 
+            "NodeName": "Southern", 
             "NodeAttributes": {
-                "InitialPopulation": 379720, 
+                "InitialPopulation": 370381, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0
@@ -2746,9 +2746,9 @@
         }, 
         {
             "NodeID": 8, 
-            "NodeName": "Southern", 
+            "NodeName": "Western", 
             "NodeAttributes": {
-                "InitialPopulation": 370381, 
+                "InitialPopulation": 210352, 
                 "Latitude": 0, 
                 "Longitude": 0, 
                 "Altitude": 0

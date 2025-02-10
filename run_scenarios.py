@@ -109,7 +109,6 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
     add_post_channel_config_as_asset(config_builder, reference_info['channels'],
                                      reference_info['reference'], reference_info['site_info'])
 
-
     experiment_managers = []  # All the experiment managers for all experiments
 
     # Create a suite to hold all the experiments
@@ -126,7 +125,7 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
                                                                                          campaign_template_name=campaign_template_name)
 
             # name the scenario (experiment) by combining the template set name and provided Scenario name
-            sn = scenario_params['Scenario']
+            sn = scenario_params.pop('Scenario', 'DefaultScenario')
             campaign_string = os.path.splitext(campaign_template_name)[0] if campaign_template_name else DEFAULT_CAMPAIGN
             if sn is None:
                 scenario_name = '-'.join([template_set_name, campaign_string])
@@ -186,16 +185,13 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
             suite_id = suite_id or experiment_manager.create_suite(suite_name=suite_name)
             experiment_manager.run_simulations(exp_name=scenario_name, exp_builder=experiment_builder,
                                                suite_id=suite_id)
-            
             experiment_managers.append(experiment_manager)
 
-    # return suite_id
     return experiment_managers
-    
 
 
-# # Remove NaN-valued keys/parameters from all scenarios dicts. These should be properly interpreted as "No override, run with default value"
-# # TODO: add support for blank entries for strings?
+# Remove NaN-valued keys/parameters from all scenarios dicts. These should be properly interpreted as "No override, run with default value"
+# TODO: add support for blank entries for strings?
 def remove_nans(scenario_param_dicts):
     cleaned_spds = []
     for spd in scenario_param_dicts:
@@ -234,7 +230,6 @@ def analyze_experiments(experiment_managers, output_path, suite_id, download_fil
     print(am.simulations)
     am.analyze()
 
-
 def load_scenario_table(filename):
     # returns a list of parameter dicts, one for each scenario (scenario table row)
     if filename is not None:
@@ -242,7 +237,7 @@ def load_scenario_table(filename):
         if 'Campaign' not in scenario_table.columns:
             raise MissingCampaignSpecificationException('Column \'Campaign\' is missing from %s if used' % filename)
         scenario_param_dicts = scenario_table.to_dict(orient='records')
-        # scenario_param_dicts = remove_nans(scenario_param_dicts=scenario_param_dicts)  # nan values should be mapped to the default value in the config files; don't pass along
+        scenario_param_dicts = remove_nans(scenario_param_dicts=scenario_param_dicts)  # nan values should be mapped to the default value in the config files; don't pass along
         find_and_eval(scenario_param_dicts)  # convert any strings representing lists to actual python lists
     else:
         scenario_param_dicts = [{'Scenario': None, 'Campaign': None}]
@@ -254,15 +249,53 @@ def set_parameterization_ids(samples):
     return samples
 
 def get_samples(args):
+    resample_method = args.resample_method.lower()
+
+    if resample_method == 'provided':
     # the provided csv files needs to be in the exact same format as written by resample.py
-    samples = pd.read_csv(args.samples_file)
-    sample_dicts = samples.to_dict(orient='records')
-    try:
-        samples = [ParameterSet.from_dict(d) for d in sample_dicts]
-    except NaNDetectedError as e:
-        e.args = (f"One or more blank entries or lines found in samples file {args.samples_file} . "
-                  f"Please fix/remove them. Enjoy this dolphin.\n{DOLPHIN}",)
-        raise e
+        samples = pd.read_csv(args.samples_file)
+        sample_dicts = samples.to_dict(orient='records')
+        try:
+            samples = [ParameterSet.from_dict(d) for d in sample_dicts]
+        except NaNDetectedError as e:
+            e.args = (f"One or more blank entries or lines found in samples file {args.samples_file} . "
+                    f"Please fix/remove them. Enjoy this dolphin.\n{DOLPHIN}",)
+            raise e
+    else:
+        if resample_method == 'roulette':
+            # obtain existing samples and their likelihoods
+            calib_manager = CalibManager.open_for_reading(args.calibration_dir)
+            parameter_sets = calib_manager.get_parameter_sets_with_likelihoods()
+            sorted_parameter_sets = sorted(parameter_sets, key=lambda ps: ps.likelihood_exponentiated,
+                                           reverse=True)
+            # determine distribution of top and probabilistically selected samples
+            n_top_samples = int(np.ceil(args.n_samples / 3))
+            n_roulette_samples = args.n_samples - n_top_samples
+
+            # select the top samples - sorted_parameter_sets is sorted most<->least likely
+            top_samples = sorted_parameter_sets[0:n_top_samples]
+
+            # remove selected "top" samples and roulette sample the remaining to prevent duplication
+            remaining_sorted_parameter_sets = sorted_parameter_sets[n_top_samples:-1]
+
+            # normalize the parameter set likelihoods for probabilistic selection
+            total_likelihood = sum([ps.likelihood_exponentiated for ps in remaining_sorted_parameter_sets])
+            p = [ps.likelihood_exponentiated / total_likelihood for ps in remaining_sorted_parameter_sets]
+
+            # probabilistically select the remaining samples - duplicates of top_samples are allowed
+            roulette_samples = list(np.random.choice(remaining_sorted_parameter_sets, p=p, size=n_roulette_samples, replace=False))
+
+            samples = top_samples + roulette_samples
+        else:
+            raise UnknownResampleMethodException('Unknown resample method: %s' % resample_method)
+
+        # for readable logging purposes
+        samples = set_parameterization_ids(samples)
+
+        # note that we are not re-writing this file if resample_method == 'provided'
+        samples_df = pd.DataFrame(data=[s.to_dict() for s in samples])
+        samples_df.to_csv('resampled_parameter_sets.csv', index=False)
+
     return samples
 
 
