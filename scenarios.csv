@@ -1,2 +1,6 @@
-Scenario,Campaign
-zmb,campaign_zmb.json
+Scenario,Start_Year__KP__SwitchBackToGoodART,End_Year__KP__TurnOffAccelleratedAttrition,Start_Year__KP__VMMC_Resume_Year,Campaign,Start_Year__KP__PrEP_Baseline_SY,End_Year__KP__PrEP_Baseline_EY,Start_Year__KP__PrEP_Interrupt_SY,End_Year__KP__PrEP_Interrupt_EY,Num_Targeted_Females__KP__PrEP_Interrupt_F,Num_Targeted_Males__KP__PrEP_Interrupt_M
+zmb_baseline,2025,2024,2025,campaign_zmb.json,2025,2075,2075,2076,"[1]","[1]"
+zmb_3_mo,2025.25,2025.25,2025.25,campaign_zmb.json,2025.25,2075.25,2025,2025.25,"[5000]","[2500]"
+zmb_1_yr,2026,2026,2026,campaign_zmb.json,2026,2076,2025,2026,"[20000]","[10000]"
+zmb_4_yr,2029,2029,2029,campaign_zmb.json,2029,2079,2025,2029,"[80000]","[40000]"
+zmb_forever,2079,2079,2079,campaign_zmb.json,2078,2079,2025,2075,"[1000000]","[500000]"

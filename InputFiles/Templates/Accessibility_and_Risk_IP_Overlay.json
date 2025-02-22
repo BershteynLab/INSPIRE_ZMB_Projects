@@ -25,6 +25,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -59,10 +64,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -113,6 +120,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -147,10 +159,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -201,6 +215,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -235,10 +254,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -289,6 +310,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -323,10 +349,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -377,6 +405,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -411,10 +444,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                        "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -465,6 +500,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -499,10 +539,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -553,6 +595,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -587,10 +634,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -641,6 +690,11 @@
                     "Transitions": []
                 },
                 {
+                    "Property": "RecentAttrition",
+                    "Values": [ "T", "F"],
+                    "Initial_Distribution": [ 0.0, 1.0]
+                },
+                {
                     "Property": "Risk",
                     "Values": [
                         "LOW",
@@ -675,10 +729,12 @@
                         "TestingOnANC",
                         "TestingOnChild6w",
                         "TestingOnSymptomatic",
-                        "LostForever"
+                        "LostForever",
+                         "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
+                        0,
                         0,
                         0,
                         0,
@@ -712,5 +768,14 @@
             ],
             "NodeName": "Western"
         }
-    ]
+    ],
+    "Defaults": {
+        "IndividualProperties": [
+            {
+                "Property": "RecentAttrition",
+                "Values": [ "T", "F"],
+                "Initial_Distribution": [ 0.0, 1.0]
+            }
+        ]
+    }
 }
