@@ -11,12 +11,12 @@
 #SBATCH --mem=8GB
 
 #SBATCH --job-name=Zam
-#SBATCH --chdir=/gpfs/data/bershteynlab/EMOD/kaftad01/ZMB_calib_202206
+#SBATCH --chdir=/gpfs/data/bershteynlab/EMOD/kimh47/ZMB_calib_202206
 
 #SBATCH --mail-type=END
 
-#SBATCH --mail-user=kaftand@gmail.com
+#SBATCH --mail-user=hae-young.kim@nyulangone.org
 
-#SBATCH --output=/gpfs/data/bershteynlab/EMOD/kaftad01/ZMB_calib_202206/slurm_%j.out
+#SBATCH --output=/gpfs/data/bershteynlab/EMOD/kimh47/ZMB_calib_202206/slurm_%j.out
 
-python run_scenarios.py -c optim_script.py --resample-method provided --samples resampled_parameter_sets_LITE.csv --output-dir test_art_issue --suite-name ZMB_calib_202206 --table scenarios_baseline.csv
+python -m hiv.scripts.run_scenarios -c optim_script.py --resample-method provided --samples resampled_parameter_sets_2.csv --output-dir v17 --suite-name ZMB_calib_202206 --table scenarios_HK.csv -b NYUCLUSTER

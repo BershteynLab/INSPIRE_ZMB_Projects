@@ -1,13 +1,14 @@
-import argparse
+
+
 import itertools
-import os
 import numpy as np
+import os
 import pandas as pd
 import sys
 import time
 
 from calibtool.CalibManager import CalibManager
-from calibtool.ParameterSet import ParameterSet, NaNDetectedError
+from calibtool.ParameterSet import ParameterSet
 
 from dtk.utils.builders.TemplateHelper import TemplateHelper
 from dtk.utils.core.DTKConfigBuilder import DTKConfigBuilder
@@ -18,8 +19,6 @@ from simtools.ModBuilder import ModBuilder
 from simtools.SetupParser import SetupParser
 from simtools.Utilities.Initialization import load_config_module
 
-import hiv.scripts.download as dl
-
 from hiv.utils.utils import add_post_channel_config_as_asset
 
 SetupParser.default_block = 'NYUCLUSTER'
@@ -27,7 +26,7 @@ SetupParser.default_block = 'NYUCLUSTER'
 RESAMPLING_METHODS_STR = ', '.join(['roulette', 'provided'])
 DEFAULT_N_SAMPLES = 300
 DEFAULT_BLOCK = 'NYUCLUSTER'
-DEFAULT_OUTPUT_DIR = 'Calibrated_RSA_Scenarios'
+DEFAULT_OUTPUT_DIR = 'Calibrated_Zambia_Scenarios'
 DEFAULT_DOWNLOAD_FILES = os.path.join('output', 'ReportHIVByAgeAndGender.csv')
 
 SCENARIO_TABLE_MODE = 'scenario_table'
@@ -45,27 +44,6 @@ class UnknownResampleMethodException(Exception):
 
 class MissingCampaignSpecificationException(Exception):
     pass
-
-
-DOLPHIN = '''
-                                  _
-                             _.-~~.)
-       _.--~~~~~---....__  .' . .,' 
-     ,'. . . . . . . . . .~- ._ (
-    ( .. .g. . . . . . . . . . .~-._
- .~__.-~    ~`. . . . . . . . . . . -. 
- `----..._      ~-=~~-. . . . . . . . ~-.  
-           ~-._   `-._ ~=_~~--. . . . . .~.  
-            | .~-.._  ~--._-.    ~-. . . . ~-.
-             \ .(   ~~--.._~'       `. . . . .~-.                ,
-              `._\         ~~--.._    `. . . . . ~-.    .- .   ,'/
- . _ . -~\        _ ..  _          ~~--.`_. . . . . ~-_     ,-','`  .
-           ` ._           ~                ~--. . . . .~=.-'. /. `
-     - . -~            -. _ . - ~ - _   - ~     ~--..__~ _,. /   \  -
-             . __ ..                   ~-               ~~_. (  `
-  _ _               `-       ..  - .    . - ~ ~ .    \    ~-` ` `  `.
-                                               - .  `  .   \  \ `. 
-'''
 
 
 def load_templates(loaded_module):
@@ -112,7 +90,7 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
     experiment_managers = []  # All the experiment managers for all experiments
 
     # Create a suite to hold all the experiments
-    suite_id = None
+    suite_id = None # create_suite(suite_name)
 
     # Create the scenarios
     for template_set_name, scenario_template_set in scenario_template_sets.items():
@@ -124,8 +102,12 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
             resolved_scenario_template_set = loaded_module.resolve_scenario_template_set(template_set_name=template_set_name,
                                                                                          campaign_template_name=campaign_template_name)
 
+            # campaign_template = _get_campaign_template(campaign_template_name=campaign_template_name,
+            #                                            scenario_name=scenario_params['Scenario'],
+            #                                            available_campaigns=available_campaigns)
+
             # name the scenario (experiment) by combining the template set name and provided Scenario name
-            sn = scenario_params.pop('Scenario', 'DefaultScenario')
+            sn = scenario_params['Scenario']
             campaign_string = os.path.splitext(campaign_template_name)[0] if campaign_template_name else DEFAULT_CAMPAIGN
             if sn is None:
                 scenario_name = '-'.join([template_set_name, campaign_string])
@@ -144,8 +126,8 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
                                                                  random_run_number=False)
 
                 # for tracking which parameterization & run number is which sim/result
-                mapped[dl.REP_TAG] = sample.run_number
-                mapped[dl.TPI_TAG] = sample.parameterization_id
+                mapped[REP_TAG] = sample.run_number
+                mapped[TPI_TAG] = sample.parameterization_id
 
                 mapped_sample_params.append(mapped)
 
@@ -155,16 +137,14 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
                 current = {}
                 current.update(sample)
                 current.update(scenario_params)
-                current.update({'Scenario': scenario_name, 'Config_Name': scenario_name,
-                                dl.REP_TAG: current[dl.REP_TAG]})
+                current.update({'Scenario': scenario_name, 'Config_Name': scenario_name, REP_TAG: current[REP_TAG]})
 
                 # including parameterization id number (TPI) and run number as tags
                 if 'TAGS' not in current:
                     current['TAGS'] = {}
 
-                parameterization_id = current.pop(dl.TPI_TAG)
-                current['TAGS'].update({dl.TPI_TAG: parameterization_id,
-                                        dl.REP_TAG: current[dl.REP_TAG]})
+                parameterization_id = current.pop(TPI_TAG)
+                current['TAGS'].update({TPI_TAG: parameterization_id, REP_TAG: current[REP_TAG]})
                 combined_params.append(current)
 
             # Extract the headers - replacing "well known" prefixes as needed
@@ -190,23 +170,6 @@ def build_and_run_simulations(samples, scenario_template_sets, scenario_param_di
     return experiment_managers
 
 
-# Remove NaN-valued keys/parameters from all scenarios dicts. These should be properly interpreted as "No override, run with default value"
-# TODO: add support for blank entries for strings?
-def remove_nans(scenario_param_dicts):
-    cleaned_spds = []
-    for spd in scenario_param_dicts:
-        cleaned_spd = {}
-        for k, v in spd.items():
-            try:
-                if np.isnan(v):
-                    print(f"NaN found for key: {k}")
-                else:
-                    cleaned_spd[k] = v
-            except TypeError:
-                cleaned_spd[k] = v  # keep values that can't be parsed
-        cleaned_spds.append(cleaned_spd)
-    return cleaned_spds
-
 def analyze_experiments(experiment_managers, output_path, suite_id, download_filenames):
     # if suite_id was provided AND our block type is CLUSTER, we will not wait but just download.
 
@@ -220,15 +183,13 @@ def analyze_experiments(experiment_managers, output_path, suite_id, download_fil
     print('Experiments complete, downloading...')
     am = AnalyzeManager(verbose=False)
     for em in experiment_managers:
-        print(em.experiment.simulations)
         am.add_experiment(em.experiment)
     am.add_analyzer(DownloadAnalyzerTPI(filenames=download_filenames,
                                         output_path=output_path,
-                                        TPI_tag=dl.TPI_TAG,
-                                        REP_tag=dl.REP_TAG))
-    print(am.analyzers)
-    print(am.simulations)
+                                        TPI_tag=TPI_TAG,
+                                        REP_tag=REP_TAG))
     am.analyze()
+
 
 def load_scenario_table(filename):
     # returns a list of parameter dicts, one for each scenario (scenario table row)
@@ -237,30 +198,26 @@ def load_scenario_table(filename):
         if 'Campaign' not in scenario_table.columns:
             raise MissingCampaignSpecificationException('Column \'Campaign\' is missing from %s if used' % filename)
         scenario_param_dicts = scenario_table.to_dict(orient='records')
-        scenario_param_dicts = remove_nans(scenario_param_dicts=scenario_param_dicts)  # nan values should be mapped to the default value in the config files; don't pass along
         find_and_eval(scenario_param_dicts)  # convert any strings representing lists to actual python lists
     else:
         scenario_param_dicts = [{'Scenario': None, 'Campaign': None}]
     return scenario_param_dicts
+
 
 def set_parameterization_ids(samples):
     for index in range(len(samples)):
         samples[index].parameterization_id = index
     return samples
 
+
 def get_samples(args):
     resample_method = args.resample_method.lower()
 
     if resample_method == 'provided':
-    # the provided csv files needs to be in the exact same format as written by resample.py
+        # the provided csv files needs to be in the exact same format at dumped into resampled_parameter_sets.csv below
         samples = pd.read_csv(args.samples_file)
         sample_dicts = samples.to_dict(orient='records')
-        try:
-            samples = [ParameterSet.from_dict(d) for d in sample_dicts]
-        except NaNDetectedError as e:
-            e.args = (f"One or more blank entries or lines found in samples file {args.samples_file} . "
-                    f"Please fix/remove them. Enjoy this dolphin.\n{DOLPHIN}",)
-            raise e
+        samples = [ParameterSet.from_dict(d) for d in sample_dicts]
     else:
         if resample_method == 'roulette':
             # obtain existing samples and their likelihoods
@@ -330,17 +287,15 @@ def main(args):
                                                         scenario_param_dicts=scenario_param_dicts,
                                                         suite_name=args.suite_name,
                                                         loaded_module=args.loaded_module)
-    if not args.no_download:
-        analyze_experiments(experiment_managers, output_path=args.output_path, suite_id=args.suite_id, download_filenames=args.download_filenames)
+    analyze_experiments(experiment_managers, output_path=args.output_path, suite_id=args.suite_id, download_filenames=args.download_filenames)
     print('Done!')
 
 
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--calib-dir', dest='calibration_dir', type=str, default=None,
-                        help='Directory of calibration to resample (Required for resampling method \'roulette\')).', required = False)
-
+    parser.add_argument('-d', '--calib-dir', dest='calibration_dir', type=str, required=False,
+                        help='Directory of calibration to resample (Required).')
     parser.add_argument('-c', '--calib-script', dest='calibration_script', type=str, required=True,
                         help='Script used to run the calibration (Required).')
     parser.add_argument('-m', '--resample-method', dest='resample_method', type=str, required=True,
@@ -356,9 +311,7 @@ def parse_args():
                         help='Directory to hold scenario output files (Default: %s).'
                              % DEFAULT_OUTPUT_DIR)
     parser.add_argument('-f', '--files', dest='download_filenames', type=str, default=DEFAULT_DOWNLOAD_FILES,
-                        help='Filenames to retrieve from scenario simulations (if downloading). Paths relative to simulation directories. Comma-separated list if more than one (Default: %s)' % DEFAULT_DOWNLOAD_FILES)
-    parser.add_argument('--no-download', dest='no_download', action='store_true',
-                        help='Do not download files after running scenarios (Default: download files).')
+                        help='Filenames to retrieve from scenario simulations. Paths relative to simulation directories. Comma-separated list if more than one (Default: %s)' % DEFAULT_DOWNLOAD_FILES)
     parser.add_argument('-s', '--suite-name', dest='suite_name', type=str, required=True,
                         help='Name of suite for scenario experiment to be run (Required).')
     parser.add_argument('--table', dest='scenario_table', type=str, default=None,
@@ -400,14 +353,9 @@ if __name__ == '__main__':
     if script_args.resample_method == 'provided':
         if script_args.samples_file is None:
             raise Exception('A csv file of samples must be provided via --samples when using resampling method \'provided\'.')
-        if script_args.calibration_dir is not None:
-            raise Exception('-d CALIB_DIR is not compatible with for resampling method \'provided\'')
-    else:
-        if script_args.samples_file is not None:
-            raise Exception('--samples is only compatible with resampling method \'provided\'.')
-        if script_args.calibration_dir is None:
-            raise Exception('-d CALIB_DIR is required for resampling method \'roulette\'')
-
+ #   else:
+ #       if script_args.samples_file is not None:
+ #           raise Exception('--samples is only compatible with resampling method \'provided\'.')
 
     script_args.download_filenames = script_args.download_filenames.strip().split(',')
 

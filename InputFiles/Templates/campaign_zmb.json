@@ -485,9 +485,11 @@
                "Times__KP__VMMC_Tracking":"Marker",
                "Times": [
                   2022,
-                  2025
+                  2025,
+                  2080
                ],
                "Values": [
+                  0.85,
                   0.85,
                   0.85
                ]
@@ -513,12 +515,6 @@
                   {
                      "class": "ARTDropout"
                   },
-                  {
-                     "class": "DelayedIntervention",
-                     "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
-                     "Delay_Period_Constant": 29,
-                     "Intervention_Name":"Waiting_To_Switch",
-                     "Actual_IndividualIntervention_Configs": [
                         {
                            "ART_CD4_at_Initiation_Saturating_Reduction_in_Mortality": 25.0,
                            "ART_Is_Active_Against_Mortality_And_Transmission": 1,
@@ -534,7 +530,7 @@
                            "ART_Survival_Hazard_Ratio_WHO_Stage_3Plus": 2.7142,
                            "ART_Survival_WHO_Stage_Threshold_For_Cox": 3,
                            "Cost_To_Consumer": 1,
-                           "Days_To_Achieve_Viral_Suppression": 1.0,
+                           "Days_To_Achieve_Viral_Suppression": 0.0,
                            "New_Property_Value":"CascadeState:TemporaryUnsuppressedART",
                            "Intervention_Name": "TemporaryUnsuppressedART",
                            "class": "AntiretroviralTherapy"   
@@ -543,8 +539,6 @@
                            "class": "BroadcastEvent",
                            "Broadcast_Event": "SendToTemporaryART"
                         }
-                     ]
-                  }
                ]
             },
             "Targeting_Config": {
@@ -625,21 +619,13 @@
                         "class": "ARTDropout"
                      },
                      {
-                        "class": "DelayedIntervention",
-                        "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
-                        "Delay_Period_Constant": 29,
-                        "Intervention_Name":"Waiting_To_Switch_2",
-                        "Actual_IndividualIntervention_Configs": [
-                        {
-                           "class": "BroadcastEvent",
-                           "Broadcast_Event": "OnART1"
-                        },
-                        {
-                           "class": "BroadcastEvent",
-                           "Broadcast_Event": "Back2GoodART"
-                        }
-                     ]
-                  }
+                        "class": "BroadcastEvent",
+                        "Broadcast_Event": "OnART1"
+                     },
+                     {
+                        "class": "BroadcastEvent",
+                        "Broadcast_Event": "Back2GoodART"
+                     }
                ]
             },
             "Targeting_Config": 
@@ -755,7 +741,7 @@
             },
             "Update_Period": 1,
             "class": "ReferenceTrackingEventCoordinatorTrackingConfig",
-            "End_Year": 2080,
+            "End_Year": 2024,
             "End_Year__KP__TurnOffAccelleratedAttrition":"<-MARKER"
          },
          "Event_Name": "Attrition Tracking ",
@@ -6738,29 +6724,29 @@
          "Event_Coordinator_Config": {
          "Demographic_Coverage": 1,
          "Intervention_Config": {
-         "Actual_IndividualIntervention_Config": {
-         "ART_CD4_at_Initiation_Saturating_Reduction_in_Mortality": 25.0,
-         "ART_Is_Active_Against_Mortality_And_Transmission": 1,
-         "ART_Multiplier_On_Transmission_Prob_Per_Act": 0.65,
-         "ART_Survival_Baseline_Hazard_Weibull_Scale": 39.17,
-         "ART_Survival_Baseline_Hazard_Weibull_Shape": 0.33,
-         "ART_Survival_Hazard_Ratio_Age_Over_40Yr": 1.4309,
-         "ART_Survival_Hazard_Ratio_Body_Weight_Kg_Intercept": 3.05043211490958,
-         "ART_Survival_Hazard_Ratio_Body_Weight_Kg_Slope": -0.0731529900006081,
-         "ART_Survival_Hazard_Ratio_CD4_Intercept": 0.282851687024819,
-         "ART_Survival_Hazard_Ratio_CD4_Slope": -0.00758256281931556,
-         "ART_Survival_Hazard_Ratio_Female": 0.6775,
-         "ART_Survival_Hazard_Ratio_WHO_Stage_3Plus": 2.7142,
-         "ART_Survival_WHO_Stage_Threshold_For_Cox": 3,
-         "Cost_To_Consumer": 1,
-         "Days_To_Achieve_Viral_Suppression": 183.0,
-         "Intervention_Name": "NotSuppressedOnART",
-         "class": "AntiretroviralTherapy"
-         },
-         "Trigger_Condition_List": [
-         "NonSuppressiveART"
-         ],
-         "class": "NodeLevelHealthTriggeredIV"
+            "Actual_IndividualIntervention_Config": {
+               "ART_CD4_at_Initiation_Saturating_Reduction_in_Mortality": 25.0,
+               "ART_Is_Active_Against_Mortality_And_Transmission": 1,
+               "ART_Multiplier_On_Transmission_Prob_Per_Act": 0.65,
+               "ART_Survival_Baseline_Hazard_Weibull_Scale": 39.17,
+               "ART_Survival_Baseline_Hazard_Weibull_Shape": 0.33,
+               "ART_Survival_Hazard_Ratio_Age_Over_40Yr": 1.4309,
+               "ART_Survival_Hazard_Ratio_Body_Weight_Kg_Intercept": 3.05043211490958,
+               "ART_Survival_Hazard_Ratio_Body_Weight_Kg_Slope": -0.0731529900006081,
+               "ART_Survival_Hazard_Ratio_CD4_Intercept": 0.282851687024819,
+               "ART_Survival_Hazard_Ratio_CD4_Slope": -0.00758256281931556,
+               "ART_Survival_Hazard_Ratio_Female": 0.6775,
+               "ART_Survival_Hazard_Ratio_WHO_Stage_3Plus": 2.7142,
+               "ART_Survival_WHO_Stage_Threshold_For_Cox": 3,
+               "Cost_To_Consumer": 1,
+               "Days_To_Achieve_Viral_Suppression": 183.0,
+               "Intervention_Name": "NotSuppressedOnART",
+               "class": "AntiretroviralTherapy"
+            },
+            "Trigger_Condition_List": [
+               "NonSuppressiveART"
+            ],
+            "class": "NodeLevelHealthTriggeredIV"
          },
          "class": "StandardInterventionDistributionEventCoordinator"
          },
