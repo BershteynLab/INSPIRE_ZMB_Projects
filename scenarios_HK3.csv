@@ -1,0 +1,4 @@
+Scenario,Start_Year__KP__ARTDropout_Proceed,End_Year__KP__TurnOffAccelleratedAttrition,Values__KP__VMMC_Value_Tracking,Campaign,End_Year__KP__Testingcontinue,Start_Year__KP__Testingdisruption,Start_Year__KP__PrEP_Baseline_SY,End_Year__KP__PrEP_Baseline_EY,Start_Year__KP__PrEP_Interrupt_SY,End_Year__KP__PrEP_Interrupt_EY,Num_Targeted_Females__KP__PrEP_Interrupt_F,Num_Targeted_Males__KP__PrEP_Interrupt_M
+zmb_baseline,2076,2024,"[0.85,0.85, 0.85,0.85]",campaign_zmb_goals_scenario_HK5.json,2075,2076,2025,2075,2075,2076,[1],[1]
+zmb_partial,2076,2024,"[0.85,0.85, 0.136,0.136]",campaign_zmb_goals_scenario_HK5.json,2024,2025,2078,2079,2025,2075,[1458824],[729416]
+zmb_forever,2025,2076,"[0.85,0.85, 0.136,0.136]",campaign_zmb_goals_scenario_HK5.json,2024,2025,2078,2079,2025,2075,[1458824],[729416]
