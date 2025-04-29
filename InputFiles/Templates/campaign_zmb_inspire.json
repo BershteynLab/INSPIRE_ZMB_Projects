@@ -421,6 +421,7 @@
             "class": "ReferenceTrackingEventCoordinator"
          },
          "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
+         "COMMENT": "Up to 2023",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -455,6 +456,7 @@
             "class": "ReferenceTrackingEventCoordinator"
          },
          "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
+         "COMMENT": "Age range is a kludge to avoid repeatedly staging people over many years",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -476,13 +478,11 @@
             "Target_Gender": "Male",
             "Time_Value_Map": {
                "Times": [
-                  2022,
                   2025,
                   2080
                ],
                "Times__KP__VMMC_Tracking": "Marker",
                "Values": [
-                  0.85,
                   0.85,
                   0.85
                ],
@@ -492,6 +492,7 @@
             "class": "ReferenceTrackingEventCoordinator"
          },
          "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
+         "COMMENT": "Age range is a kludge to avoid repeatedly staging people over many years",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -525,7 +526,7 @@
                   ],
                   [
                      {
-                        "IP_Key_Value": "RecentAttrition:F",
+                        "IP_Key_Value": "RecentAttrition:T",
                         "Is_Equal_To": 1,
                         "class": "HasIP"
                      }
