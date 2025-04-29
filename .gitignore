@@ -1,0 +1,4 @@
+slurm_*
+COMPS_log.log
+ZMB_calib_202206.code-workspace
+__pycache__/
