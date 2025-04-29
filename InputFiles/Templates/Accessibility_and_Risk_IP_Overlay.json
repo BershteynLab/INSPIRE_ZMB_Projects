@@ -581,7 +581,7 @@
                         "TestingOnSymptomatic",
                         "LostForever",
                         "LostForever_PEPFAR_cancelled",
-                         "TemporaryUnsuppressedART"
+                        "TemporaryUnsuppressedART"
                     ],
                     "Initial_Distribution": [
                         1,
