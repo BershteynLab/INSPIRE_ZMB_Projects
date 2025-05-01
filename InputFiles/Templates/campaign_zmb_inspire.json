@@ -492,7 +492,7 @@
             "class": "ReferenceTrackingEventCoordinator"
          },
          "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
-         "COMMENT": "Age range is a kludge to avoid repeatedly staging people over many years",
+         "COMMENT": "Post PEPFAR Cancellation. Age range is a kludge to avoid repeatedly staging people over many years",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -557,7 +557,8 @@
             "Update_Period": 1,
             "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
          },
-         "Event_Name": "Attrition Tracking ",
+         "Event_Name": "ART attrition increase post 2025 PEPFAR Cancellation",
+         "COMMENT":"Post PEPFAR Cancellation",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -645,7 +646,9 @@
       },
       {
          "Event_Coordinator_Config": {
-            "End_Year": 2026,
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
+            "Target_Demographic": "ExplicitAgeRanges",
             "Intervention_Config": {
                "Choice_Names": [
                   "PEPFAR_ARTDropout_Yes",
@@ -655,6 +658,7 @@
                   0.84,
                   0.16
                ],
+               "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
                "New_Property_Value": "PEPFAR_ARTDropout:Yes",
                "class": "HIVRandomChoice"
             },
@@ -671,7 +675,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults",
+         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
          "COMMENT": "Post PEPFAR cancellation",
          "Nodeset_Config": {
             "class": "NodeSetAll"
@@ -4920,6 +4924,9 @@
       {
          "Event_Coordinator_Config": {
             "Intervention_Config": {
+               "Target_Age_Max": 25,
+               "Target_Age_Min": 15,
+               "Target_Demographic": "ExplicitAgeRanges",
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
                      "HCTTestingLoop1_uptake",
@@ -4951,7 +4958,50 @@
             "class": "StandardInterventionDistributionEventCoordinator"
          },
          "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), Decreased Testing Uptake Post PEPFAR cancellation in 2025",
-         "COMMENT": "Post PEPFAR cancellation, delay routine testing for some",
+         "COMMENT": "Post PEPFAR cancellation, delay routine testing for youth and adolescents 15-25",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "Intervention_Config": {
+               "Target_Age_Max": 99,
+               "Target_Age_Min": 25,
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "HCTTestingLoop1_uptake",
+                     "HCTTestingLoop1_PEPFAR_Delayed"
+                  ],
+                  "Choice_Probabilities": [
+                     1,
+                     0
+                  ],
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LinkingToART",
+                     "CascadeState:OnPreART",
+                     "CascadeState:LinkingToPreART",
+                     "CascadeState:ARTStaging"
+                  ],
+                  "New_Property_Value": "CascadeState:HCTTestingLoop",
+                  "class": "HIVRandomChoice"
+               },
+               "Trigger_Condition_List": [
+                  "HCTTestingLoop1"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), for people over 25",
+         "COMMENT": "Post PEPFAR cancellation, maintain normal levels for adults over 25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -5036,6 +5086,53 @@
          "END": "HCT TESTING LOOP",
          "Event_Coordinator_Config": {
             "Intervention_Config": {
+               "Target_Age_Max": 99,
+               "Target_Age_Min": 25,
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "HCTTestingLoop0",
+                     "HCTUptakePostDebut1"
+                  ],
+                  "Choice_Probabilities": [
+                     0.95,
+                     0.05
+                  ],
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LinkingToART",
+                     "CascadeState:OnPreART",
+                     "CascadeState:LinkingToPreART",
+                     "CascadeState:ARTStaging"
+                  ],
+                  "New_Property_Value": "CascadeState:HCTTestingLoop",
+                  "class": "HIVRandomChoice"
+               },
+               "Trigger_Condition_List": [
+                  "HCTTestingLoop2"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"         
+         },
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, Adults 25+",
+         "COMMENT": "Post PEPFAR Cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "END": "HCT TESTING LOOP",
+         "Event_Coordinator_Config": {
+            "Intervention_Config": {
+               "Target_Age_Max": 25,
+               "Target_Age_Min": 15,
+               "Target_Demographic": "ExplicitAgeRanges",
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
                      "HCTTestingLoop0",
@@ -5066,8 +5163,8 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"         
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-",
-         "COMMENT": "Post PEPFAR Cancellation, drop out of testing faster",
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, adults 15-25",
+         "COMMENT": "Post PEPFAR Cancellation, drop out of testing faster, for adults 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
