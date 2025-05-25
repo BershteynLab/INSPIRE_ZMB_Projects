@@ -1,3 +1,2 @@
-Scenario,Campaign,Values__KP__VMMC_Value_Tracking,Choice_Probabilities__KP__ARTDropout_Affected,Choices__KP_TestingDelayed,Choices__KP_TestingAttrition,Values__KP__PercentTakenOffART,Start_Year__KP__PrEP_Baseline_SY,End_Year__KP__PrEP_Baseline_EY,Start_Year__KP__PrEP_Interrupt_SY,End_Year__KP__PrEP_Interrupt_EY
-zmb_baseline,campaign_zmb_inspire.json,"[0.85,0.85]","[0,1]","[1,0]","[0.95,0.05]","[0,0,0,0]",2025,2075,2075,2076
-zmb_max,campaign_zmb_inspire.json,"[0.0,0.0]","[0.84,0.16]","[0.16,0.84]","[0.8,0.2]","[0,0,0.168,0.168]",2075,2125,2025,2075
+Scenario,Campaign
+zmb_clean,campaign_zmb.json

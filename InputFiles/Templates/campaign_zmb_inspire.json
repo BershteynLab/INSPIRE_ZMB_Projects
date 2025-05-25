@@ -3,7 +3,6 @@
    "Default_Campaign_Path": "campaign_StatusQuo_Reference_Tracking.json",
    "Events": [
       {
-         "END": "PREP Background",
          "Event_Coordinator_Config": {
             "Distributions": [
                {
@@ -325,7 +324,7 @@
                         "Min": 15
                      }
                   ],
-                  "End_Year": 2076,
+                  "End_Year": 2075.25,
                   "End_Year__KP__PrEP_Interrupt_EY": "Marker",
                   "Num_Targeted_Females": [
                      1
@@ -356,7 +355,8 @@
             ],
             "Intervention_Config": {
                "Cost_To_Consumer": 1.0,
-               "Intervention_Name": "Oral_PrEP",
+               "Intervention_Name": "PrEP",
+               "Vaccine_Take": 1,
                "Vaccine_Type": "AcquisitionBlocking",
                "Waning_Config": {
                   "Durability_Map": {
@@ -385,13 +385,17 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
+         "Start_Day":1,
          "Start_Day__KP_PREP_ON_OFF": "<-- MARKER",
-         "class": "CampaignEvent"
+         "class": "CampaignEvent",
+         "END": "PREP Background"
       },
       {
          "Event_Coordinator_Config": {
             "End_Year": 2022,
             "Intervention_Config": {
+               "Apply_If_Higher_Reduced_Acquire": 0,
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0.0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "class": "MaleCircumcision"
@@ -432,6 +436,8 @@
          "Event_Coordinator_Config": {
             "End_Year": 2025,
             "Intervention_Config": {
+               "Apply_If_Higher_Reduced_Acquire": 0,
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0.0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "class": "MaleCircumcision"
@@ -455,7 +461,7 @@
             "Update_Period": 91.25,
             "class": "ReferenceTrackingEventCoordinator"
          },
-         "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
+         "Event_Name": "Approach ambitious 90% coverage targets for VMMC",
          "COMMENT": "Age range is a kludge to avoid repeatedly staging people over many years",
          "Nodeset_Config": {
             "class": "NodeSetAll"
@@ -467,6 +473,8 @@
          "Event_Coordinator_Config": {
             "End_Year": 2080,
             "Intervention_Config": {
+               "Apply_If_Higher_Reduced_Acquire": 0,
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0.0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "class": "MaleCircumcision"
@@ -501,233 +509,15 @@
       },
       {
          "Event_Coordinator_Config": {
-            "End_Year": 2024,
-            "End_Year__KP__TurnOffAccelleratedAttrition": "<-MARKER",
-            "Intervention_Config": {
-               "Intervention_List": [
-                  {
-                     "Broadcast_Event": "LostForever0",
-                     "class": "BroadcastEvent"
-                  },
-                  {
-                     "class": "ARTDropout"
-                  }
-               ],
-               "class": "MultiInterventionDistributor"
-            },
-            "Target_Demographic": "Everyone",
-            "Targeting_Config": {
-               "Logic": [
-                  [
-                     {
-                        "Is_Equal_To": 1,
-                        "class": "IsOnART"
-                     }
-                  ],
-                  [
-                     {
-                        "IP_Key_Value": "RecentAttrition:T",
-                        "Is_Equal_To": 1,
-                        "class": "HasIP"
-                     }
-                  ]
-               ],
-               "class": "TargetingLogic"
-            },
-            "Time_Value_Map": {
-               "Times": [
-                  2020,
-                  2024.99,
-                  2025,
-                  2080
-               ],
-               "Values": [
-                  0.0,
-                  0.0,
-                  0.168,
-                  0.168
-               ],
-               "Values__KP__PercentTakenOffART": "Marker"
-            },
-            "Tracking_Config": {
-               "IP_Key_Value": "RecentAttrition:T",
-               "Is_Equal_To": 1,
-               "class": "HasIP"
-            },
-            "Update_Period": 1,
-            "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
-         },
-         "Event_Name": "ART attrition increase post 2025 PEPFAR Cancellation",
-         "COMMENT":"Post PEPFAR Cancellation",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2020,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "BEGIN": "LOST FOREVER",
-         "END": "LOST FOREVER",
-         "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
-                  "Intervention_List": [
-                     {
-                        "Event_Or_Config": "Event",
-                        "New_Property_Value": "CascadeState:LostForever",
-                        "Positive_Diagnosis_Event": "LTFU0",
-                        "Target_Property_Key": "CascadeState",
-                        "Target_Property_Value": "LostForever",
-                        "class": "PropertyValueChanger"
-                     },
-                     {
-                        "Event_Or_Config": "Event",
-                        "New_Property_Value": "",
-                        "Revert": 365,
-                        "Target_Property_Key": "RecentAttrition",
-                        "Target_Property_Value": "T",
-                        "class": "PropertyValueChanger"
-                     }
-                  ],
-                  "class": "MultiInterventionDistributor"
-               },
-               "New_Property_Value": "",
-               "Trigger_Condition_List": [
-                  "LostForever0"
-               ],
-               "class": "NodeLevelHealthTriggeredIV"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "LostForever: state 0",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 1990,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "End_Year": 2080,
-            "Intervention_Config": {
-               "Enable_Is_Symptomatic": 1,
-               "New_Property_Value": "",
-               "Positive_Diagnosis_Event": "ReNewlySymptomatic",
-               "class": "HIVRapidHIVDiagnostic"
-            },
-            "Targeting_Config": {
-               "IP_Key_Value": "CascadeState:LostForever",
-               "Is_Equal_To": 1,
-               "class": "HasIP"
-            },
-            "Time_Value_Map": {
-               "Times": [
-                  2020,
-                  2025,
-                  2026,
-                  2080
-               ],
-               "Values": [
-                  0.0,
-                  1.0,
-                  1.0,
-                  1.0
-               ]
-            },
-            "Update_Period": 1,
-            "class": "ReferenceTrackingEventCoordinator"
-         },
-         "Event_Name": "Return Lost forever to testing if they are symptomatic",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2020,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "Target_Age_Max": 25,
-            "Target_Age_Min": 15,
-            "Target_Demographic": "ExplicitAgeRanges",
-            "Intervention_Config": {
-               "Choice_Names": [
-                  "PEPFAR_ARTDropout_Yes",
-                  "PEPFAR_ARTDropout_No"
-               ],
-               "Choice_Probabilities": [
-                  0.84,
-                  0.16
-               ],
-               "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
-               "New_Property_Value": "PEPFAR_ARTDropout:Yes",
-               "class": "HIVRandomChoice"
-            },
-            "Targeting_Config": {
-               "Logic": [
-                  [
-                     {
-                        "Is_Equal_To": 1,
-                        "class": "IsOnART"
-                     }
-                  ]
-               ],
-               "class": "TargetingLogic"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
-         "COMMENT": "Post PEPFAR cancellation",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2025,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "End_Year": 2076,
-            "Intervention_Config": {
-               "Actual_IndividualIntervention_Config": {
-                  "Intervention_List": [
-                     {
-                        "class": "ARTDropout"
-                     },
-                     {
-                        "Broadcast_Event": "NoARTAccess",
-                        "class": "BroadcastEvent"
-                     }, 
-                     {
-                        "class": "PropertyValueChanger",
-                        "Target_Property_Key": "InterventionStatus",
-                        "Target_Property_Value": "LostForever_PEPFAR_cancelled"
-                     }
-                  ],
-                  "class": "MultiInterventionDistributor"
-               },
-               "Trigger_Condition_List": [
-                  "PEPFAR_ARTDropout_Yes"
-               ],
-               "class": "NodeLevelHealthTriggeredIV"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         },
-         "Event_Name": "PEPFAR Cancellation - Proceed with ART Dropout",
-         "COMMENT": "Post PEPFAR cancellation",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2076,
-         "Start_Year__KP__ARTDropout_Proceed": "<- Marker",
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
-            "Intervention_Config": {
-               "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
+                  "Female_Multiplier": 1,
+                  "Interpolation_Order": 0,
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut3",
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "OnART1",
@@ -761,10 +551,13 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
+                  "Female_Multiplier": 1,
+                  "Interpolation_Order": 0,
                   "Negative_Diagnosis_Event": "LostForever0",
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "OnART1",
@@ -798,6 +591,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -809,6 +603,8 @@
                      "CascadeState:ARTStaging",
                      "CascadeState:HCTTestingLoop"
                   ],
+                  "Female_Multiplier": 1,
+                  "Interpolation_Order": 0,
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut1",
                   "New_Property_Value": "CascadeState:HCTUptakePostDebut",
                   "Positive_Diagnosis_Event": "HCTTestingLoop0",
@@ -854,6 +650,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -865,6 +662,7 @@
                      "CascadeState:ARTStaging"
                   ],
                   "Female_Multiplier": 0.1,
+                  "Interpolation_Order": 0,
                   "Negative_Diagnosis_Event": "ARTStaging1",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "Positive_Diagnosis_Event": "OnART1",
@@ -908,6 +706,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -918,6 +717,8 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Female_Multiplier": 1,
+                  "Interpolation_Order": 0,
                   "New_Property_Value": "CascadeState:TestingOnSymptomatic",
                   "Positive_Diagnosis_Event": "ARTStaging2",
                   "Time_Value_Map": {
@@ -954,6 +755,7 @@
                "Cost_To_Consumer": 1.0,
                "Distributed_Event_Trigger": "Received_PrEP",
                "Intervention_Name": "PrEP",
+               "Vaccine_Take": 1,
                "Vaccine_Type": "AcquisitionBlocking",
                "Waning_Config": {
                   "Durability_Map": {
@@ -967,6 +769,7 @@
                      ]
                   },
                   "Expire_At_Durability_Map_End": 1,
+                  "Initial_Effect": 1,
                   "class": "WaningEffectMapLinear"
                },
                "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
@@ -976,6 +779,7 @@
                "Risk:HIGH"
             ],
             "Target_Age_Max": 1,
+            "Target_Age_Min": 0,
             "Target_Demographic": "ExplicitAgeRangesAndGender",
             "Target_Disease_State": "HIV_Negative",
             "Target_Gender": "Female",
@@ -1009,6 +813,7 @@
                "Cost_To_Consumer": 1.0,
                "Distributed_Event_Trigger": "Received_PrEP",
                "Intervention_Name": "PrEP",
+               "Vaccine_Take": 1,
                "Vaccine_Type": "AcquisitionBlocking",
                "Waning_Config": {
                   "Durability_Map": {
@@ -1022,6 +827,7 @@
                      ]
                   },
                   "Expire_At_Durability_Map_End": 1,
+                  "Initial_Effect": 1,
                   "class": "WaningEffectMapLinear"
                },
                "Waning_Config__KP_PrEP_MED_Waning": "<-- MARKER",
@@ -1031,6 +837,7 @@
                "Risk:MEDIUM"
             ],
             "Target_Age_Max": 1,
+            "Target_Age_Min": 0,
             "Target_Demographic": "ExplicitAgeRangesAndGender",
             "Target_Disease_State": "HIV_Negative",
             "Target_Gender": "Female",
@@ -1061,6 +868,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "Interpolation_Order": 1,
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "Commercial_DelayFromDebutToUptake",
@@ -1094,12 +902,14 @@
             ],
             "class": "NodeSetNodeList"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "Interpolation_Order": 1,
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "Commercial_DelayFromDebutToUptake",
@@ -1131,6 +941,7 @@
             ],
             "class": "NodeSetNodeList"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
@@ -1140,6 +951,8 @@
                   "Broadcast_Event": "Commercial_Uptake",
                   "Delay_Period_Distribution": "UNIFORM_DISTRIBUTION",
                   "Delay_Period_Max": 1825,
+                  "Delay_Period_Min": 0,
+                  "Disqualifying_Properties": [],
                   "Event_Or_Config": "Event",
                   "New_Property_Value": "",
                   "class": "HIVDelayedIntervention"
@@ -1164,6 +977,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "New_Property_Value": "",
                   "Target_Property_Key": "Risk",
                   "Target_Property_Value": "HIGH",
@@ -1189,8 +1003,9 @@
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "Commercial_Dropout",
                   "Delay_Period_Distribution": "WEIBULL_DISTRIBUTION",
-                  "Delay_Period_Kappa": 3.312,
                   "Delay_Period_Lambda": 2215,
+                  "Delay_Period_Kappa": 3.312,
+                  "Disqualifying_Properties": [],
                   "Event_Or_Config": "Event",
                   "New_Property_Value": "",
                   "class": "HIVDelayedIntervention"
@@ -1215,6 +1030,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "New_Property_Value": "",
                   "Target_Property_Key": "Risk",
                   "Target_Property_Value": "MEDIUM",
@@ -1238,6 +1054,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "Interpolation_Order": 1,
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "Commercial_DelayFromDebutToUptake",
@@ -1278,6 +1095,7 @@
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Disqualifying_Properties": [],
                   "Interpolation_Order": 1,
                   "New_Property_Value": "",
                   "Positive_Diagnosis_Event": "Commercial_DelayFromDebutToUptake",
@@ -1319,6 +1137,8 @@
                   "Broadcast_Event": "Commercial_Uptake",
                   "Delay_Period_Distribution": "UNIFORM_DISTRIBUTION",
                   "Delay_Period_Max": 3650,
+                  "Delay_Period_Min": 0,
+                  "Disqualifying_Properties": [],
                   "Event_Or_Config": "Event",
                   "New_Property_Value": "",
                   "class": "HIVDelayedIntervention"
@@ -1348,6 +1168,7 @@
                   "Delay_Period_Distribution": "UNIFORM_DISTRIBUTION",
                   "Delay_Period_Max": 10950,
                   "Delay_Period_Min": 730,
+                  "Disqualifying_Properties": [],
                   "Event_Or_Config": "Event",
                   "New_Property_Value": "",
                   "class": "HIVDelayedIntervention"
@@ -1370,10 +1191,12 @@
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.01,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Central": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1386,21 +1209,23 @@
          },
          "Event_Name": "Epidemic seeding Central",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                1
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1976.2547260000001,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Central": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.11615725,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Copperbelt": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1413,21 +1238,23 @@
          },
          "Event_Name": "Epidemic seeding Copperbelt",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                2
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1981.299323,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Copperbelt": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.159848854,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Eastern": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1440,21 +1267,23 @@
          },
          "Event_Name": "Epidemic seeding Eastern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                3
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1981.4758530000001,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Eastern": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.08365547200000001,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Luapula": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1467,21 +1296,23 @@
          },
          "Event_Name": "Epidemic seeding Luapula-Muchinga-Northern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                4
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1978.021387,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Luapula": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.195010765,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Lusaka": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1494,21 +1325,23 @@
          },
          "Event_Name": "Epidemic seeding Lusaka",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                5
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1976.228593,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Lusaka": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.117108609,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Northwestern": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1521,21 +1354,23 @@
          },
          "Event_Name": "Epidemic seeding Northwestern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                6
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1979.3661329999998,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Northwestern": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.21965658899999999,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Southern": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1548,21 +1383,23 @@
          },
          "Event_Name": "Epidemic seeding Southern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                7
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1980.108273,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Southern": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
-            "Demographic_Coverage": 0.090670816,
+            "Demographic_Coverage": 0.1,
             "Demographic_Coverage__KP_Seeding_Western": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 0,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1575,12 +1412,12 @@
          },
          "Event_Name": "Epidemic seeding Western",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                8
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
-         "Start_Year": 1976.357857,
+         "Start_Year": 1982,
          "Start_Year__KP_Seeding_Year_Western": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
@@ -1589,7 +1426,9 @@
             "Demographic_Coverage": 0,
             "Demographic_Coverage__KP_Seeding_Male_15_24": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 1,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1617,7 +1456,9 @@
             "Demographic_Coverage": 0,
             "Demographic_Coverage__KP_Seeding_Female_15_24": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 1,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1645,7 +1486,9 @@
             "Demographic_Coverage": 0,
             "Demographic_Coverage__KP_Seeding_25_49": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 1,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1672,7 +1515,9 @@
             "Demographic_Coverage": 0,
             "Demographic_Coverage__KP_Seeding_50_65": "<-- MARKER",
             "Intervention_Config": {
+               "Antigen": 0,
                "Event_Name": "Outbreak (not used)",
+               "Genome": 0,
                "Incubation_Period_Override": 1,
                "Outbreak_Source": "PrevalenceIncrease",
                "class": "OutbreakIndividual"
@@ -1720,6 +1565,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
@@ -1742,6 +1588,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
@@ -1773,6 +1620,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
@@ -1800,12 +1648,14 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
+         "Start_Day": 1,
          "class": "CampaignEvent"
       },
       {
          "ALSO_BEGIN": "MALE CIRCUMCISION PRE-DATING VMMC PROGRAM",
          "BEGIN": "ALL MALE CIRCUMCISION",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -1862,6 +1712,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -1918,6 +1769,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -1974,6 +1826,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -2030,6 +1883,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -2086,6 +1940,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -2142,6 +1997,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -2198,6 +2054,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Choice_Names": [
                   "WillNotReceiveTraditionalMaleCircumcision",
@@ -2486,6 +2343,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -2766,6 +2624,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -3046,6 +2905,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -3296,6 +3156,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -3546,6 +3407,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -3826,6 +3688,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -4136,6 +3999,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -4387,6 +4251,7 @@
                }
             ],
             "Intervention_Config": {
+               "Circumcision_Reduced_Acquire": 0.6,
                "Cost_To_Consumer": 0,
                "Distributed_Event_Trigger": "Program_VMMC",
                "Intervention_Name": "Any_MC",
@@ -4407,8 +4272,11 @@
       {
          "END": "ALL MALE CIRCUMCISION",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Apply_If_Higher_Reduced_Acquire": 0,
+                  "Circumcision_Reduced_Acquire": 0.6,
                   "Distributed_Event_Trigger": "Non_Program_MC",
                   "Intervention_Name": "Any_MC",
                   "class": "MaleCircumcision"
@@ -4433,8 +4301,10 @@
          "BEGIN": "HCT UPTAKE AT DEBUT",
          "END": "HCT UPTAKE AT DEBUT",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -4445,12 +4315,14 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Female_Multiplier": 1.0,
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut1",
                   "New_Property_Value": "CascadeState:HCTUptakeAtDebut",
                   "Positive_Diagnosis_Event": "HCTTestingLoop0",
                   "Ramp_Max": 0.05,
                   "Ramp_MidYear": 2005,
                   "Ramp_Min": -0.005,
+                  "Ramp_Rate": 1,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
                "Property_Restrictions_Within_Node": [
@@ -4475,8 +4347,8 @@
       {
          "BEGIN": "HCT UPTAKE AFTER DEBUT",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
-               "Broadcast_Event": "HCTUptakePostDebut0",
                "Disqualifying_Properties": [
                   "CascadeState:LostForever",
                   "CascadeState:LostForever_PEPFAR_cancelled",
@@ -4488,6 +4360,7 @@
                   "CascadeState:ARTStaging"
                ],
                "New_Property_Value": "CascadeState:HCTUptakePostDebut",
+               "Broadcast_Event": "HCTUptakePostDebut0",
                "class": "BroadcastEvent"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -4501,6 +4374,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Event_Or_Config": "Event",
@@ -4523,6 +4397,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTUptakePostDebut2",
@@ -4539,6 +4414,7 @@
                      "CascadeState:ARTStaging",
                      "CascadeState:HCTTestingLoop"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTUptakePostDebut",
                   "New_Property_Value": "CascadeState:HCTUptakePostDebut",
                   "class": "HIVMuxer"
@@ -4564,9 +4440,11 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   ".Ramp_Max": 0.0,
+                  "Days_To_Diagnosis": 0,
                   "Default_Value": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
@@ -4579,12 +4457,14 @@
                      "CascadeState:ARTStaging",
                      "CascadeState:HCTTestingLoop"
                   ],
+                  "Female_Multiplier": 1,
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut7",
                   "New_Property_Value": "CascadeState:HCTUptakePostDebut",
                   "Positive_Diagnosis_Event": "HCTTestingLoop0",
                   "Ramp_Max": 0.15,
                   "Ramp_MidYear": 2006,
                   "Ramp_Min": -0.01,
+                  "Ramp_Rate": 1,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
                "Actual_IndividualIntervention_Config__KP_HCTUptakePostDebut": "<-- MARKER",
@@ -4610,6 +4490,7 @@
       {
          "END": "HCT UPTAKE AFTER DEBUT",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -4618,6 +4499,7 @@
                   "Choice_Probabilities": [
                      1
                   ],
+                  "Disqualifying_Properties": [],
                   "NOTE": "No Abort_States so we can churn from deep in the cascade",
                   "New_Property_Value": "CascadeState:HCTUptakePostDebut",
                   "class": "HIVRandomChoice"
@@ -4640,6 +4522,7 @@
       {
          "BEGIN": "HCT TESTING LOOP",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4655,33 +4538,35 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
                },
-               "Duration": 9125,
                "Trigger_Condition_List": [
                   "HCTTestingLoop0"
                ],
+               "Duration": 9125,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Central, Copperbelt, Eastern, Northwestern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                1,
                2,
                3,
                6
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 1990,
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4697,32 +4582,34 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
                },
-               "Duration": 9125,
                "Trigger_Condition_List": [
                   "HCTTestingLoop0"
                ],
+               "Duration": 9125,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Lusaka, Southern, Western",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                5,
                7,
                8
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 1990,
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4738,24 +4625,25 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
                },
-               "Duration": 9125,
                "Trigger_Condition_List": [
                   "HCTTestingLoop0"
                ],
-               "class": "NodeLevelHealthTriggeredIV"
+               "class": "NodeLevelHealthTriggeredIV",
+               "Duration": 9125
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Luapula-Muchinga-Northern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                4
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 1990,
          "class": "CampaignEventByYear"
@@ -4763,6 +4651,7 @@
       {
          "BEGIN": "HCT TESTING LOOP 2015",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4770,7 +4659,7 @@
                   "Delay_Period_Exponential": 250,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
-                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:LostForever_PEPFAR_cancelled",                     
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4778,6 +4667,7 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
@@ -4792,19 +4682,20 @@
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Central, Copperbelt, Eastern, Northwestern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                1,
                2,
                3,
                6
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 2015,
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4820,6 +4711,7 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
@@ -4834,18 +4726,19 @@
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Lusaka, Southern, Western",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                5,
                7,
                8
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 2015,
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "HCTTestingLoop1",
@@ -4860,6 +4753,7 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "HCTTestingLoop",
                   "New_Property_Value": "CascadeState:HCTTestingLoop",
                   "class": "HIVMuxer"
@@ -4874,16 +4768,17 @@
          },
          "Event_Name": "HCTTestingLoop: state 0 (delay to next HCT): Luapula-Muchinga-Northern",
          "Nodeset_Config": {
+            "class": "NodeSetNodeList",
             "Node_List": [
                4
-            ],
-            "class": "NodeSetNodeList"
+            ]
          },
          "Start_Year": 2015,
          "class": "CampaignEventByYear"
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -4936,7 +4831,7 @@
                      1,
                      0
                   ],
-                  "Choices__KP_TestingDelayed": "<-- MARKER",
+                  "Choice_Probabilities__KP_TestingDelayed": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5116,7 +5011,7 @@
                ],
                "class": "NodeLevelHealthTriggeredIV"
             },
-            "class": "StandardInterventionDistributionEventCoordinator"         
+            "class": "StandardInterventionDistributionEventCoordinator"
          },
          "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, Adults 25+",
          "COMMENT": "Post PEPFAR Cancellation",
@@ -5142,7 +5037,7 @@
                      0.95,
                      0.05
                   ],
-                  "Choices__KP_TestingAttrition": "<-- MARKER",
+                  "Choice_Probabilities__KP_TestingAttrition": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5175,8 +5070,11 @@
          "BEGIN": "SYMPTOMATIC TESTING",
          "END": "SYMPTOMATIC TESTING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
+                  "Removed":"CascadeState:LostForever",
                   "Disqualifying_Properties": [
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
@@ -5185,6 +5083,7 @@
                      "CascadeState:LinkingToPreART",
                      "CascadeState:ARTStaging"
                   ],
+                  "Female_Multiplier": 1,
                   "Negative_Diagnosis_Event": "ARTStaging8",
                   "New_Property_Value": "CascadeState:TestingOnSymptomatic",
                   "Positive_Diagnosis_Event": "ARTStaging0",
@@ -5213,6 +5112,7 @@
       {
          "BEGIN": "ANC and PMTCT",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -5229,6 +5129,7 @@
                   "Positive_Diagnosis_Event": "Needs_PMTCT_Diagnostic_Test",
                   "Ramp_Max": 0.975,
                   "Ramp_MidYear": 2005.87,
+                  "Ramp_Min": 0,
                   "Ramp_Rate": 0.7136,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
@@ -5340,7 +5241,9 @@
                   "Negative_Diagnosis_Event": "Needs_Combination_PMTCT",
                   "New_Property_Value": "CascadeState:TestingOnANC",
                   "Positive_Diagnosis_Event": "Needs_sdNVP_PMTCT",
+                  "Ramp_Max": 1,
                   "Ramp_MidYear": 2008.4,
+                  "Ramp_Min": 0,
                   "Ramp_Rate": -1,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
@@ -5393,6 +5296,7 @@
                      "CascadeState:ARTStaging",
                      "CascadeState:TestingOnSymptomatic"
                   ],
+                  "Interpolation_Order": 0,
                   "Negative_Diagnosis_Event": "Needs_Option_A",
                   "New_Property_Value": "CascadeState:TestingOnANC",
                   "Positive_Diagnosis_Event": "Needs_Option_B",
@@ -5467,8 +5371,10 @@
          "BEGIN": "CHILD 6W TESTING",
          "END": "CHILD 6W TESTING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:OnEffectiveART",
@@ -5479,6 +5385,7 @@
                      "CascadeState:ARTStaging",
                      "CascadeState:TestingOnSymptomatic"
                   ],
+                  "Female_Multiplier": 1,
                   "Interpolation_Order": 1,
                   "New_Property_Value": "CascadeState:TestingOnChild6w",
                   "Positive_Diagnosis_Event": "ARTStaging0",
@@ -5522,6 +5429,7 @@
       {
          "BEGIN": "ART STAGING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -5555,6 +5463,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -5565,7 +5474,7 @@
                      0.85,
                      0.15
                   ],
-                  "Choices__KP_PreStagingLoss": "<-- MARKER",
+                  "Choice_Probabilities__KP_PreStagingLoss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5578,11 +5487,11 @@
                   "New_Property_Value": "CascadeState:ARTStaging",
                   "class": "HIVRandomChoice"
                },
-               "Duration": 9125,
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "ARTStaging1"
                ],
+               "Duration": 9125,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -5596,6 +5505,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -5606,7 +5516,7 @@
                      0.98,
                      0.02
                   ],
-                  "Choices__KP_PreStagingLoss": "<-- MARKER",
+                  "Choice_Probabilities__KP_PreStagingLoss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5636,11 +5546,12 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "ARTStaging3",
-                  "Delay_Period_Constant": 1,
                   "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
+                  "Delay_Period_Constant": 1,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5650,6 +5561,7 @@
                      "CascadeState:OnPreART",
                      "CascadeState:LinkingToPreART"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "ARTStaging",
                   "New_Property_Value": "CascadeState:ARTStaging",
                   "class": "HIVMuxer"
@@ -5671,6 +5583,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -5704,6 +5617,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Adult_By_Pregnant": {
@@ -5740,6 +5654,7 @@
                         0
                      ]
                   },
+                  "Adult_Treatment_Age": 5,
                   "Child_By_TB": {
                      "Times": [
                         2002,
@@ -5804,6 +5719,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -5843,6 +5759,7 @@
       {
          "END": "ART STAGING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -5926,8 +5843,10 @@
          "BEGIN": "PRE-ART LINKING",
          "END": "PRE-ART LINKING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5940,9 +5859,10 @@
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut9",
                   "New_Property_Value": "CascadeState:LinkingToPreART",
                   "Positive_Diagnosis_Event": "OnPreART0",
-                  "Ramp_Max": 0.959334475,
-                  "Ramp_MidYear": 2008.506768,
-                  "Ramp_Min": 0.824382156,
+                  "Ramp_Max": 0.9591484679,
+                  "Ramp_MidYear": 2006.8336631523,
+                  "Ramp_Min": 0.7572242198,
+                  "Ramp_Rate": 1,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
                "Actual_IndividualIntervention_Config__KP_PreART_Link": "<-- MARKER",
@@ -5964,11 +5884,12 @@
       {
          "BEGIN": "PRE-ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "OnPreART1",
-                  "Delay_Period_Constant": 182,
                   "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
+                  "Delay_Period_Constant": 182,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -5976,6 +5897,7 @@
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "PreART",
                   "New_Property_Value": "CascadeState:OnPreART",
                   "class": "HIVMuxer"
@@ -5997,6 +5919,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6007,7 +5930,7 @@
                      0.25,
                      0.75
                   ],
-                  "Choices__KP_PreART_Loss": "<-- MARKER",
+                  "Choice_Probabilities__KP_PreART_Loss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -6018,11 +5941,11 @@
                   "New_Property_Value": "CascadeState:OnPreART",
                   "class": "HIVRandomChoice"
                },
-               "Duration": 10220,
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "OnPreART1"
                ],
+               "Duration" : 10220,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -6036,6 +5959,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6046,7 +5970,7 @@
                      0.05,
                      0.95
                   ],
-                  "Choices__KP_PreART_Loss": "<-- MARKER",
+                  "Choice_Probabilities__KP_PreART_Loss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
@@ -6074,6 +5998,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Adult_By_Pregnant": {
@@ -6110,6 +6035,7 @@
                         0
                      ]
                   },
+                  "Adult_Treatment_Age": 5,
                   "Child_By_TB": {
                      "Times": [
                         2002,
@@ -6172,6 +6098,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -6204,6 +6131,7 @@
       {
          "END": "PRE-ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
@@ -6271,18 +6199,23 @@
          "BEGIN": "ART LINKING",
          "END": "ART LINKING",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
+                  "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnART"
                   ],
+                  "Female_Multiplier": 1,
                   "Negative_Diagnosis_Event": "HCTUptakePostDebut3",
                   "New_Property_Value": "CascadeState:LinkingToART",
                   "Positive_Diagnosis_Event": "OnART0",
-                  "Ramp_Max": 0.96041509,
-                  "Ramp_MidYear": 2002.0536780000002,
+                  "Ramp_Max": 0.8507390283,
+                  "Ramp_MidYear": 1997.4462231708,
+                  "Ramp_Min": 0,
+                  "Ramp_Rate": 1,
                   "class": "HIVSigmoidByYearAndSexDiagnostic"
                },
                "Actual_IndividualIntervention_Config__KP_ART_Link": "<-- MARKER",
@@ -6303,6 +6236,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6320,11 +6254,11 @@
                   "New_Property_Value": "",
                   "class": "HIVRandomChoice"
                },
-               "Duration": 10950,
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "OnART0"
                ],
+               "Duration": 10950,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -6338,6 +6272,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6373,16 +6308,18 @@
       {
          "BEGIN": "ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "OnART1",
                   "Delay_Period_Distribution": "WEIBULL_DISTRIBUTION",
-                  "Delay_Period_Kappa": 0.711,
                   "Delay_Period_Lambda": 63.381,
+                  "Delay_Period_Kappa": 0.711,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "OnART",
                   "New_Property_Value": "",
                   "class": "HIVMuxer"
@@ -6403,6 +6340,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6423,6 +6361,7 @@
                   "class": "HIVRandomChoice"
                },
                "Duration": 10950,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6439,6 +6378,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6459,6 +6399,7 @@
                   "class": "HIVRandomChoice"
                },
                "Duration": 365,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6475,6 +6416,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6495,6 +6437,7 @@
                   "class": "HIVRandomChoice"
                },
                "Duration": 365,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6511,6 +6454,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6531,6 +6475,7 @@
                   "class": "HIVRandomChoice"
                },
                "Duration": 365,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6547,6 +6492,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6567,6 +6513,7 @@
                   "class": "HIVRandomChoice"
                },
                "Duration": 365,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6583,6 +6530,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6602,10 +6550,11 @@
                   ],
                   "class": "HIVRandomChoice"
                },
-               "Duration": 365,
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
+               "Duration": 365,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -6619,6 +6568,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -6638,6 +6588,7 @@
                   ],
                   "class": "HIVRandomChoice"
                },
+               "Target_Demographic": "Everyone",
                "Trigger_Condition_List": [
                   "OnART1"
                ],
@@ -6653,42 +6604,54 @@
          "class": "CampaignEventByYear"
       },
       {
-         "Event_Name": "Change intervention status for those initiating Effective ART",
-         "class": "CampaignEventByYear",
-         "Nodeset_Config": { "class": "NodeSetAll" },
-         "Start_Year": 1980,
          "Event_Coordinator_Config": {
-            "class": "StandardInterventionDistributionEventCoordinator",
             "Demographic_Coverage": 1,
             "Intervention_Config": {
-               "class": "NodeLevelHealthTriggeredIV",
-               "Trigger_Condition_List": [ "EffectiveART" ],
                "Actual_IndividualIntervention_Config": {
-                  "class": "PropertyValueChanger",
-                  "Target_Property_Key": "InterventionStatus",
-                  "Target_Property_Value": "OnEffectiveART"
-               }
-            }
-         }
+                  "Disqualifying_Properties": [],
+                  "New_Property_Value": "",
+                  "Target_Property_Key": "CascadeState",
+                  "Target_Property_Value": "OnEffectiveART",
+                  "class": "PropertyValueChanger"
+               },
+               "Trigger_Condition_List": [
+                  "EffectiveART"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "Change intervention status for those initiating ART",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 1980,
+         "class": "CampaignEventByYear"
       },
       {
-         "Event_Name": "Change intervention status for those initiating NonSuppressive ART",
-         "class": "CampaignEventByYear",
-         "Nodeset_Config": { "class": "NodeSetAll" },
-         "Start_Year": 1980,
          "Event_Coordinator_Config": {
-            "class": "StandardInterventionDistributionEventCoordinator",
             "Demographic_Coverage": 1,
             "Intervention_Config": {
-               "class": "NodeLevelHealthTriggeredIV",
-               "Trigger_Condition_List": [ "NonSuppressiveART" ],
                "Actual_IndividualIntervention_Config": {
-                  "class": "PropertyValueChanger",
-                  "Target_Property_Key": "InterventionStatus",
-                  "Target_Property_Value": "OnNonSuppressiveART"
-               }
-            }
-         }
+                  "Disqualifying_Properties": [],
+                  "New_Property_Value": "",
+                  "Target_Property_Key": "CascadeState",
+                  "Target_Property_Value": "OnNonSuppressiveART",
+                  "class": "PropertyValueChanger"
+               },
+               "Trigger_Condition_List": [
+                  "NonSuppressiveART"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "Change intervention status for those initiating ART",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 1980,
+         "class": "CampaignEventByYear"
       },
       {
          "Event_Name": "Initiate effective ART: MALES",
@@ -6814,90 +6777,83 @@
          "Nodeset_Config": { "class": "NodeSetAll" },
          "Start_Year": 1980,
          "Event_Coordinator_Config": {
-             "class": "StandardInterventionDistributionEventCoordinator",
-             "Demographic_Coverage": 1,
-             "Intervention_Config": {
-                 "class": "NodeLevelHealthTriggeredIV",
-                 "Trigger_Condition_List": [ 
-                     "NonSuppressiveART", 
-                     "NonSuppressiveARTDepressed" 
-                 ],
-                 "Target_Demographic": "ExplicitGender",
-                 "Target_Gender": "Male",
-                 "Actual_IndividualIntervention_Config": {
-                     "class": "ARTMortalityTable",
-                     "Intervention_Name": "NotSuppressedOnART",
-                     "Cost_To_Consumer" : 1,
-                     "ART_Multiplier_On_Transmission_Prob_Per_Act"             : 0.65,
-                     "ART_Is_Active_Against_Mortality_And_Transmission"        : 1,
-                     "Days_To_Achieve_Viral_Suppression"                       : 183.0,
-                     "ART_Duration_Days_Bins": [182, 365, 730, 1095, 45625],
-                     "Age_Years_Bins": [25, 35, 45, 125],
-                     "CD4_Count_Bins": [0, 25, 74.5, 149.5, 274.5, 424.5, 624.5],
-                     "MortalityTable": [
-                         [
-                             [0.2015, 0.2015, 0.1128, 0.0625, 0.0312, 0.0206, 0.0162],
-                             [0.2176, 0.2176, 0.1219, 0.0675, 0.0337, 0.0223, 0.0175],
-                             [0.2350, 0.2350, 0.1316, 0.0729, 0.0364, 0.0240, 0.0189],
-                             [0.2538, 0.2538, 0.1421, 0.0787, 0.0393, 0.0260, 0.0205]
-                         ],
-                         [
-                             [ 0.1715, 0.1715, 0.5600, 0.3100, 0.1550, 0.0713, 0.0465 ],
-                             [ 0.1852, 0.1852, 0.6048, 0.3348, 0.1674, 0.0770, 0.0502 ],
-                             [ 0.2000, 0.2000, 0.6532, 0.3616, 0.1808, 0.0832, 0.0542 ],
-                             [ 0.2160, 0.2160, 0.7054, 0.3905, 0.1953, 0.0898, 0.0586 ]
-                         ],
-                         [
-                             [ 0.0532, 0.0532, 0.0362, 0.0293, 0.0171, 0.0116, 0.0095 ],
-                             [ 0.0601, 0.0601, 0.0409, 0.0331, 0.0193, 0.0131, 0.0107 ],
-                             [ 0.0679, 0.0679, 0.0462, 0.0374, 0.0218, 0.0148, 0.0121 ],
-                             [ 0.0768, 0.0768 ,0.0522, 0.0422, 0.0246, 0.0168, 0.0137 ]
-                         ],
-                         [
-                             [0.0335, 0.0335, 0.0228, 0.0184, 0.0108, 0.0073, 0.0060 ],
-                             [0.0379, 0.0379, 0.0258, 0.0208, 0.0122, 0.0083, 0.0068 ],
-                             [0.0428, 0.0428, 0.0291, 0.0235, 0.0137, 0.0094, 0.0076 ],
-                             [0.0484, 0.0484, 0.0329, 0.0266, 0.0155, 0.0106 ,0.0086 ]
-                         ],
-                         [
-                             [0.0234, 0.0234, 0.0159, 0.0129, 0.0091, 0.0069, 0.0064 ],
-                             [0.0265, 0.0265, 0.0180, 0.0145, 0.0103, 0.0077, 0.0073 ],
-                             [0.0299, 0.0299, 0.0203, 0.0164, 0.0116, 0.0088, 0.0082 ],
-                             [0.0338, 0.0338, 0.0230, 0.0186, 0.0131, 0.0099, 0.0093 ]
- 
-                         ]
+            "class": "StandardInterventionDistributionEventCoordinator",
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "class": "NodeLevelHealthTriggeredIV",
+               "Trigger_Condition_List": [ "NonSuppressiveART" ],
+               "Target_Demographic": "ExplicitGender",
+               "Target_Gender": "Male",
+               "Actual_IndividualIntervention_Config": {
+                  "class": "ARTMortalityTable",
+                  "Intervention_Name": "NotSuppressedOnART",
+                  "Cost_To_Consumer" : 1,
+                  "ART_Multiplier_On_Transmission_Prob_Per_Act"             : 0.65,
+                  "ART_Is_Active_Against_Mortality_And_Transmission"        : 1,
+                  "Days_To_Achieve_Viral_Suppression"                       : 183.0,
+                  "ART_Duration_Days_Bins": [182, 365, 730, 1095, 45625],
+                  "Age_Years_Bins": [25, 35, 45, 125],
+                  "CD4_Count_Bins": [0, 25, 74.5, 149.5, 274.5, 424.5, 624.5],
+                  "MortalityTable": [
+                     [
+                        [0.2015, 0.2015, 0.1128, 0.0625, 0.0312, 0.0206, 0.0162],
+                        [0.2176, 0.2176, 0.1219, 0.0675, 0.0337, 0.0223, 0.0175],
+                        [0.2350, 0.2350, 0.1316, 0.0729, 0.0364, 0.0240, 0.0189],
+                        [0.2538, 0.2538, 0.1421, 0.0787, 0.0393, 0.0260, 0.0205]
+                     ],
+                     [
+                        [ 0.1715, 0.1715, 0.5600, 0.3100, 0.1550, 0.0713, 0.0465 ],
+                        [ 0.1852, 0.1852, 0.6048, 0.3348, 0.1674, 0.0770, 0.0502 ],
+                        [ 0.2000, 0.2000, 0.6532, 0.3616, 0.1808, 0.0832, 0.0542 ],
+                        [ 0.2160, 0.2160, 0.7054, 0.3905, 0.1953, 0.0898, 0.0586 ]
+                     ],
+                     [
+                        [ 0.0532, 0.0532, 0.0362, 0.0293, 0.0171, 0.0116, 0.0095 ],
+                        [ 0.0601, 0.0601, 0.0409, 0.0331, 0.0193, 0.0131, 0.0107 ],
+                        [ 0.0679, 0.0679, 0.0462, 0.0374, 0.0218, 0.0148, 0.0121 ],
+                        [ 0.0768, 0.0768 ,0.0522, 0.0422, 0.0246, 0.0168, 0.0137 ]
+                     ],
+                     [
+                        [0.0335, 0.0335, 0.0228, 0.0184, 0.0108, 0.0073, 0.0060 ],
+                        [0.0379, 0.0379, 0.0258, 0.0208, 0.0122, 0.0083, 0.0068 ],
+                        [0.0428, 0.0428, 0.0291, 0.0235, 0.0137, 0.0094, 0.0076 ],
+                        [0.0484, 0.0484, 0.0329, 0.0266, 0.0155, 0.0106 ,0.0086 ]
+                     ],
+                     [
+                        [0.0234, 0.0234, 0.0159, 0.0129, 0.0091, 0.0069, 0.0064 ],
+                        [0.0265, 0.0265, 0.0180, 0.0145, 0.0103, 0.0077, 0.0073 ],
+                        [0.0299, 0.0299, 0.0203, 0.0164, 0.0116, 0.0088, 0.0082 ],
+                        [0.0338, 0.0338, 0.0230, 0.0186, 0.0131, 0.0099, 0.0093 ]
                      ]
-                 }
-             }
+                  ]
+               }
+            }
          }
-     },
-     {
-      "Event_Name": "Initiate non-suppressive ART: FEMALES",
-      "class": "CampaignEventByYear",
-      "Nodeset_Config": { "class": "NodeSetAll" },
-      "Start_Year": 1980,
-      "Event_Coordinator_Config": {
-         "class": "StandardInterventionDistributionEventCoordinator",
-         "Demographic_Coverage": 1,
-         "Intervention_Config": {
-            "class": "NodeLevelHealthTriggeredIV",
-            "Trigger_Condition_List": [ 
-               "NonSuppressiveART", 
-               "NonSuppressiveARTDepressed" 
-            ],
-            "Target_Demographic": "ExplicitGender",
-            "Target_Gender": "Female",
-            "Actual_IndividualIntervention_Config": {
-               "class": "ARTMortalityTable",
-               "Intervention_Name": "NotSuppressedOnART",
-               "Cost_To_Consumer" : 1,
-               "ART_Multiplier_On_Transmission_Prob_Per_Act"             : 0.65,
-               "ART_Is_Active_Against_Mortality_And_Transmission"        : 1,
-               "Days_To_Achieve_Viral_Suppression"                       : 183.0,
-               "ART_Duration_Days_Bins": [182, 365, 730, 1095, 45625],
-               "Age_Years_Bins": [25, 35, 45, 125],
-               "CD4_Count_Bins": [0, 25, 74.5, 149.5, 274.5, 424.5, 624.5],
-               "MortalityTable": [
+      },
+      {
+         "Event_Name": "Initiate non-suppressive ART: FEMALES",
+         "class": "CampaignEventByYear",
+         "Nodeset_Config": { "class": "NodeSetAll" },
+         "Start_Year": 1980,
+         "Event_Coordinator_Config": {
+            "class": "StandardInterventionDistributionEventCoordinator",
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "class": "NodeLevelHealthTriggeredIV",
+               "Trigger_Condition_List": [ "NonSuppressiveART" ],
+               "Target_Demographic": "ExplicitGender",
+               "Target_Gender": "Female",
+               "Actual_IndividualIntervention_Config": {
+                  "class": "ARTMortalityTable",
+                  "Intervention_Name": "NotSuppressedOnART",
+                  "Cost_To_Consumer" : 1,
+                  "ART_Multiplier_On_Transmission_Prob_Per_Act"             : 0.65,
+                  "ART_Is_Active_Against_Mortality_And_Transmission"        : 1,
+                  "Days_To_Achieve_Viral_Suppression"                       : 183.0,
+                  "ART_Duration_Days_Bins": [182, 365, 730, 1095, 45625],
+                  "Age_Years_Bins": [25, 35, 45, 125],
+                  "CD4_Count_Bins": [0, 25, 74.5, 149.5, 274.5, 424.5, 624.5],
+                  "MortalityTable": [
                      [
                         [ 0.2015, 0.2015, 0.1128, 0.0625, 0.0312, 0.0206, 0.0162 ],
                         [ 0.2176, 0.2176, 0.1219, 0.0675, 0.0337, 0.0223, 0.0175 ],
@@ -6935,6 +6891,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "OnART3",
@@ -6944,16 +6901,17 @@
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "ARTDropoutDelay",
                   "New_Property_Value": "",
                   "class": "HIVMuxer"
                },
-               "Duration": 9125,
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "OnART1",
                   "Back2GoodART"
                ],
+               "Duration": 9125,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -6967,6 +6925,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Broadcast_Event": "StayOnARTChoice",
@@ -6976,6 +6935,7 @@
                      "CascadeState:LostForever",
                      "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
+                  "Max_Entries": 1,
                   "Muxer_Name": "ARTDropoutDelay",
                   "New_Property_Value": "",
                   "class": "HIVMuxer"
@@ -6983,7 +6943,8 @@
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "OnART1",
-                  "StayOnART"
+                  "StayOnART",
+                  "Back2GoodART"
                ],
                "class": "NodeLevelHealthTriggeredIV"
             },
@@ -6998,6 +6959,7 @@
       },
       {
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "class": "ARTDropout"
@@ -7020,6 +6982,7 @@
       {
          "END": "ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -7037,11 +7000,11 @@
                   "New_Property_Value": "CascadeState:OnART",
                   "class": "HIVRandomChoice"
                },
-               "Duration": 10220,
                "New_Property_Value": "",
                "Trigger_Condition_List": [
                   "OnART3"
                ],
+               "Duration": 10220,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
@@ -7056,15 +7019,16 @@
       {
          "END": "ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
-                  ".Choice_Probabilities": [
-                     0.99,
-                     0.01
-                  ],
                   "Choice_Names": [
                      "StayOnART",
                      "OnART3"
+                  ],
+                  ".Choice_Probabilities": [
+                     0.99,
+                     0.01
                   ],
                   "Choice_Probabilities": [
                      0.0,
@@ -7094,6 +7058,7 @@
       {
          "END": "ART",
          "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
@@ -7126,6 +7091,229 @@
             "class": "NodeSetAll"
          },
          "Start_Year": 2018,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "BEGIN": "LOST FOREVER",
+         "END": "LOST FOREVER",
+         "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "class": "MultiInterventionDistributor",
+                  "Intervention_List": [
+                     {
+                        "Disqualifying_Properties": [],
+                        "Event_Or_Config": "Event",
+                        "New_Property_Value": "CascadeState:LostForever",
+                        "Positive_Diagnosis_Event": "LTFU0",
+                        "class": "PropertyValueChanger",
+                        "Target_Property_Key": "CascadeState",
+                        "Target_Property_Value": "LostForever"
+                     },
+                     {
+                        "Disqualifying_Properties": [],
+                        "Event_Or_Config": "Event",
+                        "class": "PropertyValueChanger",
+                        "Target_Property_Key": "RecentAttrition",
+                        "Target_Property_Value": "T",
+                        "Revert": 365
+                     }
+                  ]
+               },
+               "New_Property_Value": "",
+               "Trigger_Condition_List": [
+                  "LostForever0"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "LostForever: state 0",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 1990,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "End_Year": 2080,
+            "Intervention_Config": {
+               "Enable_Is_Symptomatic": 1,
+               "New_Property_Value": "",
+               "Positive_Diagnosis_Event": "ReNewlySymptomatic",
+               "class": "HIVRapidHIVDiagnostic"
+            },
+            "Targeting_Config": {
+               "IP_Key_Value": "CascadeState:LostForever",
+               "Is_Equal_To": 1,
+               "class": "HasIP"
+            },
+            "Time_Value_Map": {
+               "Times": [
+                  2020,
+                  2025,
+                  2026,
+                  2080
+               ],
+               "Values": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+               ]
+            },
+            "Update_Period": 1,
+            "class": "ReferenceTrackingEventCoordinator"
+         },
+         "Event_Name": "Return Lost forever to testing if they are symptomatic",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2020,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Name": "ART attrition increase post 2025 PEPFAR Cancellation",
+         "COMMENT":"Post PEPFAR Cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2020,
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "End_Year": 2024,
+            "End_Year__KP__TurnOffAccelleratedAttrition": "<-MARKER",
+            "Intervention_Config": {
+               "Intervention_List": [
+                  {
+                     "Broadcast_Event": "LostForever0",
+                     "class": "BroadcastEvent"
+                  },
+                  {
+                     "class": "ARTDropout"
+                  }
+               ],
+               "class": "MultiInterventionDistributor"
+            },
+            "Target_Demographic": "Everyone",
+            "Targeting_Config": {
+               "Logic": [
+                  [
+                     {
+                        "Is_Equal_To": 1,
+                        "class": "IsOnART"
+                     }
+                  ],
+                  [
+                     {
+                        "IP_Key_Value": "RecentAttrition:T",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ]
+               ],
+               "class": "TargetingLogic"
+            },
+            "Time_Value_Map": {
+               "Times": [
+                  2020,
+                  2024.99,
+                  2025,
+                  2080
+               ],
+               "Values": [
+                  0.0,
+                  0.0,
+                  0.168,
+                  0.168
+               ],
+               "Values__KP__PercentTakenOffART": "Marker"
+            },
+            "Tracking_Config": {
+               "IP_Key_Value": "RecentAttrition:T",
+               "Is_Equal_To": 1,
+               "class": "HasIP"
+            },
+            "Update_Period": 1,
+            "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
+         }
+      },
+      {
+         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
+         "COMMENT": "Post PEPFAR cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
+            "Target_Demographic": "ExplicitAgeRanges",
+            "Intervention_Config": {
+               "Choice_Names": [
+                  "PEPFAR_ARTDropout_Yes",
+                  "PEPFAR_ARTDropout_No"
+               ],
+               "Choice_Probabilities": [
+                  0.84,
+                  0.16
+               ],
+               "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
+               "New_Property_Value": "PEPFAR_ARTDropout:Yes",
+               "class": "HIVRandomChoice"
+            },
+            "Targeting_Config": {
+               "Logic": [
+                  [
+                     {
+                        "Is_Equal_To": 1,
+                        "class": "IsOnART"
+                     }
+                  ]
+               ],
+               "class": "TargetingLogic"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         }
+      },
+      {
+         "Event_Coordinator_Config": {
+            "End_Year": 2076,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Intervention_List": [
+                     {
+                        "class": "ARTDropout"
+                     },
+                     {
+                        "Broadcast_Event": "NoARTAccess",
+                        "class": "BroadcastEvent"
+                     }, 
+                     {
+                        "class": "PropertyValueChanger",
+                        "Target_Property_Key": "CascadeState",
+                        "Target_Property_Value": "LostForever_PEPFAR_cancelled"
+                     }
+                  ],
+                  "class": "MultiInterventionDistributor"
+               },
+               "Trigger_Condition_List": [
+                  "PEPFAR_ARTDropout_Yes"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "PEPFAR Cancellation - Proceed with ART Dropout",
+         "COMMENT": "Post PEPFAR cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2076,
+         "Start_Year__KP__ARTDropout_Proceed": "<- Marker",
          "class": "CampaignEventByYear"
       }
    ],
