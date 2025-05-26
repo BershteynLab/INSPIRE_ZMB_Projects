@@ -425,7 +425,8 @@
             "PEPFAR_ARTDropout_Yes", 
             "PEPFAR_ARTDropout_No",
             "HCTTestingLoop1_uptake",
-            "HCTTestingLoop1_PEPFAR_Delayed"
+            "HCTTestingLoop1_PEPFAR_Delayed",
+            "Program_VMMC"
         ],
         "Report_HIV_ByAgeAndGender_Has_Intervention_With_Name": "",
         "Report_HIV_ByAgeAndGender_Start_Year": 1995,
