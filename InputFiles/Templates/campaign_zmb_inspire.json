@@ -4808,7 +4808,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout) - 1990-2025",
+         "Event_Name": "HCTTestingLoop: testing uptake check - uptake all",
          "COMMENT": "Ends at start of 2025, timed with PEPFAR cancellation",
          "Nodeset_Config": {
             "class": "NodeSetAll"
@@ -4852,7 +4852,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), Decreased Testing Uptake Post PEPFAR cancellation in 2025",
+         "Event_Name": "HCTTestingLoop: testing uptake check, Decreased Testing Uptake Post PEPFAR cancellation in 2025",
          "COMMENT": "Post PEPFAR cancellation, delay routine testing for youth and adolescents 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
@@ -4895,7 +4895,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), for people over 25",
+         "Event_Name": "HCTTestingLoop: testing uptake check, all uptake for people over 25",
          "COMMENT": "Post PEPFAR cancellation, maintain normal levels for adults over 25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
@@ -4978,7 +4978,6 @@
          "class": "CampaignEventByYear"
       },
       {
-         "END": "HCT TESTING LOOP",
          "Event_Coordinator_Config": {
             "Intervention_Config": {
                "Target_Age_Max": 99,
@@ -7162,7 +7161,8 @@
                   1.0,
                   1.0,
                   1.0
-               ]
+               ],
+               "Values__KP__ReturnToTestingOnSymptomatic": "Marker"
             },
             "Update_Period": 1,
             "class": "ReferenceTrackingEventCoordinator"
@@ -7258,8 +7258,8 @@
                   "PEPFAR_ARTDropout_No"
                ],
                "Choice_Probabilities": [
-                  0.84,
-                  0.16
+                  0.0,
+                  1.0
                ],
                "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
                "New_Property_Value": "PEPFAR_ARTDropout:Yes",
