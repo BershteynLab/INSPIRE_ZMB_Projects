@@ -477,7 +477,8 @@
                "Actual_IndividualIntervention_Config": {
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "Female_Multiplier": 1,
                   "Interpolation_Order": 0,
@@ -516,7 +517,8 @@
                "Actual_IndividualIntervention_Config": {
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+"CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "Female_Multiplier": 1,
                   "Interpolation_Order": 0,
@@ -556,6 +558,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -614,6 +617,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -669,6 +673,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4266,6 +4271,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4309,6 +4315,7 @@
             "Intervention_Config": {
                "Disqualifying_Properties": [
                   "CascadeState:LostForever",
+                  "CascadeState:LostForever_PEPFAR_cancelled",
                   "CascadeState:OnEffectiveART",
                   "CascadeState:OnNonSuppressiveART",
                   "CascadeState:LinkingToART",
@@ -4362,6 +4369,7 @@
                   "Delay_Period_Exponential": 365,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4404,6 +4412,7 @@
                   "Default_Value": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4485,6 +4494,7 @@
                   "Delay_Period_Exponential": 730,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4528,6 +4538,7 @@
                   "Delay_Period_Exponential": 365,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4570,6 +4581,7 @@
                   "Delay_Period_Exponential": 800,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4611,6 +4623,7 @@
                   "Delay_Period_Exponential": 250,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4653,6 +4666,7 @@
                   "Delay_Period_Exponential": 250,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4694,6 +4708,7 @@
                   "Delay_Period_Exponential": 250,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4730,6 +4745,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4773,6 +4789,7 @@
                   "Choice_Probabilities__KP_TestingDropout": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5165,6 +5182,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5207,6 +5225,7 @@
                   "Choice_Probabilities__KP_PreStagingLoss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5248,6 +5267,7 @@
                   "Choice_Probabilities__KP_PreStagingLoss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5282,6 +5302,7 @@
                   "Delay_Period_Constant": 1,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5315,6 +5336,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5415,6 +5437,7 @@
                   },
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5457,6 +5480,7 @@
                   ],
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5488,6 +5512,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5572,6 +5597,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5614,6 +5640,7 @@
                   "Delay_Period_Constant": 182,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5654,6 +5681,7 @@
                   "Choice_Probabilities__KP_PreART_Loss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5693,6 +5721,7 @@
                   "Choice_Probabilities__KP_PreART_Loss": "<-- MARKER",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5789,6 +5818,7 @@
                   },
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5821,6 +5851,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5853,6 +5884,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART"
@@ -5921,6 +5953,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnART"
                   ],
                   "Female_Multiplier": 1,
@@ -5963,7 +5996,8 @@
                      0.9
                   ],
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "New_Property_Value": "",
                   "class": "HIVRandomChoice"
@@ -5998,7 +6032,8 @@
                      0.5
                   ],
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "New_Property_Value": "",
                   "class": "HIVRandomChoice"
@@ -6029,7 +6064,8 @@
                   "Delay_Period_Lambda": 63.381,
                   "Delay_Period_Kappa": 0.711,
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "Max_Entries": 1,
                   "Muxer_Name": "OnART",
@@ -6067,7 +6103,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6104,7 +6141,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6141,7 +6179,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6178,7 +6217,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6215,7 +6255,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6252,7 +6293,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6289,7 +6331,8 @@
                      "ARTIneligible:Yes",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6603,7 +6646,8 @@
                   "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
                   "Delay_Period_Exponential": 7300,
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "Max_Entries": 1,
                   "Muxer_Name": "ARTDropoutDelay",
@@ -6636,7 +6680,8 @@
                   "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
                   "Delay_Period_Exponential": 7300,
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "Max_Entries": 1,
                   "Muxer_Name": "ARTDropoutDelay",
@@ -6697,7 +6742,8 @@
                      0.1
                   ],
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "New_Property_Value": "CascadeState:OnART",
                   "class": "HIVRandomChoice"
@@ -6737,7 +6783,8 @@
                      1.0
                   ],
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "class": "HIVRandomChoice"
                },
@@ -6773,7 +6820,8 @@
                      0.0
                   ],
                   "Disqualifying_Properties": [
-                     "CascadeState:LostForever"
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
                   ],
                   "New_Property_Value": "CascadeState:OnART",
                   "class": "HIVRandomChoice"
@@ -6834,6 +6882,82 @@
             "class": "NodeSetAll"
          },
          "Start_Year": 1990,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
+         "COMMENT": "Post PEPFAR cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
+            "Target_Demographic": "ExplicitAgeRanges",
+            "Intervention_Config": {
+               "Choice_Names": [
+                  "PEPFAR_ARTDropout_Yes",
+                  "PEPFAR_ARTDropout_No"
+               ],
+               "Choice_Probabilities": [
+                  0.0,
+                  1.0
+               ],
+               "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
+               "New_Property_Value": "PEPFAR_ARTDropout:Yes",
+               "class": "HIVRandomChoice"
+            },
+            "Targeting_Config": {
+               "Logic": [
+                  [
+                     {
+                        "Is_Equal_To": 1,
+                        "class": "IsOnART"
+                     }
+                  ]
+               ],
+               "class": "TargetingLogic"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         }
+      },
+      {
+         "Event_Coordinator_Config": {
+            "End_Year": 2076,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Intervention_List": [
+                     {
+                        "class": "ARTDropout"
+                     },
+                     {
+                        "Broadcast_Event": "NoARTAccess",
+                        "class": "BroadcastEvent"
+                     }, 
+                     {
+                        "class": "PropertyValueChanger",
+                        "Target_Property_Key": "CascadeState",
+                        "Target_Property_Value": "LostForever_PEPFAR_cancelled"
+                     }
+                  ],
+                  "class": "MultiInterventionDistributor"
+               },
+               "Trigger_Condition_List": [
+                  "PEPFAR_ARTDropout_Yes"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "PEPFAR Cancellation - Proceed with ART Dropout",
+         "COMMENT": "Post PEPFAR cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2076,
+         "Start_Year__KP__ARTDropout_Proceed": "<- Marker",
          "class": "CampaignEventByYear"
       }
    ],
