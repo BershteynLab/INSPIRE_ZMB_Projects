@@ -4865,6 +4865,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4906,6 +4907,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4947,6 +4949,7 @@
                   ],
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -4978,6 +4981,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5036,6 +5040,7 @@
                "Actual_IndividualIntervention_Config": {
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -5125,6 +5130,7 @@
                   "Days_To_Diagnosis": 0,
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
@@ -6882,6 +6888,59 @@
             "class": "NodeSetAll"
          },
          "Start_Year": 1990,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "End_Year": 2080,
+            "Intervention_Config": {
+               "Enable_Is_Symptomatic": 1,
+               "New_Property_Value": "",
+               "Positive_Diagnosis_Event": "ReNewlySymptomatic",
+               "class": "HIVRapidHIVDiagnostic"
+            },
+            "Targeting_Config": {
+               "class": "TargetingLogic",
+               "Logic": [
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:LostForever",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ],
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:LostForever_PEPFAR_cancelled",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ]
+               ]
+            },
+            "Time_Value_Map": {
+               "Times": [
+                  2020,
+                  2025,
+                  2026,
+                  2080
+               ],
+               "Values": [
+                  0.0,
+                  1.0,
+                  1.0,
+                  1.0
+               ],
+               "Values__KP__ReturnToTestingOnSymptomatic": "Marker"
+            },
+            "Update_Period": 1,
+            "class": "ReferenceTrackingEventCoordinator"
+         },
+         "Event_Name": "Return Lost forever to testing if they are symptomatic",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {

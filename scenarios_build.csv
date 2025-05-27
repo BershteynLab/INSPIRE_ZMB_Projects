@@ -1,5 +1,6 @@
-Scenario,Campaign,Values__KP__VMMC_Value_Tracking,Start_Year__KP__PrEP_Baseline_SY,End_Year__KP__PrEP_Baseline_EY,Start_Year__KP__PrEP_Interrupt_SY,End_Year__KP__PrEP_Interrupt_EY,Start_Year__KP__ARTDropout_Proceed,Choice_Probabilities__KP__ARTDropout_Affected
-build_baseline,campaign_zmb_build.json,"[0.85,0.85,0.85]",2025,2075,2075,2125,2075,"[0.0,1.0]"
-build_vmmc,campaign_zmb_build.json,"[0.85,0.0,0.0]",2025,2075,2075,2125,2075,"[0.0,1.0]"
-build_prep,campaign_zmb_build.json,"[0.85,0.85,0.85]",2075,2125,2025,2075,2075,"[0.0,1.0]"
-build_artdrop,campaign_zmb_build.json,"[0.85,0.85,0.85]",2075,2125,2025,2075,2025,"[.84,.16]"
+Scenario,Campaign,Values__KP__VMMC_Value_Tracking,Start_Year__KP__PrEP_Baseline_SY,End_Year__KP__PrEP_Baseline_EY,Start_Year__KP__PrEP_Interrupt_SY,End_Year__KP__PrEP_Interrupt_EY,Start_Year__KP__ARTDropout_Proceed,Choice_Probabilities__KP__ARTDropout_Affected,Values__KP__ReturnToTestingOnSymptomatic
+build_baseline,campaign_zmb_build.json,"[0.85,0.85,0.85]",2025,2075,2075,2125,2075,"[0.0,1.0]","[0.0,1.0,1.0,1.0]"
+build_vmmc,campaign_zmb_build.json,"[0.85,0.0,0.0]",2025,2075,2075,2125,2075,"[0.0,1.0]","[0.0,1.0,1.0,1.0]"
+build_prep,campaign_zmb_build.json,"[0.85,0.85,0.85]",2075,2125,2025,2075,2075,"[0.0,1.0]","[0.0,1.0,1.0,1.0]"
+build_artdrop,campaign_zmb_build.json,"[0.85,0.85,0.85]",2075,2125,2025,2075,2025,"[0.0,1.0]","[0.0,1.0,1.0,1.0]"
+build_reengage,campaign_zmb_build.json,"[0.85,0.85,0.85]",2075,2125,2025,2075,2025,"[0.0,1.0]","[0.0,0.0,0.0,0.0]"
