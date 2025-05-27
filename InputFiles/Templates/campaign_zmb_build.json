@@ -4807,7 +4807,8 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout)",
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, youth 15-25",
+         "COMMENT": "Post PEPFAR Cancellation, drop out of testing faster, for youth 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -6942,6 +6943,74 @@
          },
          "Start_Year": 2025,
          "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Name": "ART attrition increase post 2025 PEPFAR Cancellation",
+         "COMMENT":"Post PEPFAR Cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2020,
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "End_Year": 2024,
+            "End_Year__KP__TurnOffAccelleratedAttrition": "<-MARKER",
+            "Intervention_Config": {
+               "Intervention_List": [
+                  {
+                     "Broadcast_Event": "LostForever0",
+                     "class": "BroadcastEvent"
+                  },
+                  {
+                     "class": "ARTDropout"
+                  }
+               ],
+               "class": "MultiInterventionDistributor"
+            },
+            "Target_Demographic": "ExplicitAgeRanges",
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
+            "Targeting_Config": {
+               "Logic": [
+                  [
+                     {
+                        "Is_Equal_To": 1,
+                        "class": "IsOnART"
+                     }
+                  ],
+                  [
+                     {
+                        "IP_Key_Value": "RecentAttrition:T",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ]
+               ],
+               "class": "TargetingLogic"
+            },
+            "Time_Value_Map": {
+               "Times": [
+                  2020,
+                  2024.99,
+                  2025,
+                  2080
+               ],
+               "Values": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+               ],
+               "Values__KP__PercentTakenOffART": "Marker"
+            },
+            "Tracking_Config": {
+               "IP_Key_Value": "RecentAttrition:T",
+               "Is_Equal_To": 1,
+               "class": "HasIP"
+            },
+            "Update_Period": 1,
+            "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
+         }
       },
       {
          "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
