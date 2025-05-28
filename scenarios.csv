@@ -1,3 +1,2 @@
-Scenario,Campaign,Choice_Probabilities__KP__ARTDropout_Affected,Choice_Probabilities__KP_TestingDelayed,Choice_Probabilities__KP_TestingAttrition,Values__KP__PercentTakenOffART,Values__KP__ReturnToTestingOnSymptomatic,Values__KP__VMMC_Value_Tracking,Start_Year__KP__PrEP_Baseline_SY, End_Year__KP__PrEP_Baseline_EY, Start_Year__KP__PrEP_Interrupt_SY, End_Year__KP__PrEP_Interrupt_EY
-zmb_baseline,campaign_zmb_inspire.json,"[0,1]","[1,0]","[.95,.05]","[0,0,0,0]","[0,1,1,1]","[.85,.85]",2026,2076,2076,2126
-zmb_all,campaign_zmb_inspire.json,"[.84,.16]","[.16,.84]","[.8,.2]","[0,0,0.168,0.168]","[0,1,1,1]","[0,0]",2076,2126,2026,2076
+Scenario,Campaign
+zmb_baseline_testingloop1_v2,campaign_zmb_inspire.json
