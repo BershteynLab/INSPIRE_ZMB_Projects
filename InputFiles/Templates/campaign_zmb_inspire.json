@@ -434,43 +434,6 @@
       },
       {
          "Event_Coordinator_Config": {
-            "End_Year": 2025,
-            "Intervention_Config": {
-               "Apply_If_Higher_Reduced_Acquire": 0,
-               "Circumcision_Reduced_Acquire": 0.6,
-               "Cost_To_Consumer": 0.0,
-               "Distributed_Event_Trigger": "Program_VMMC",
-               "class": "MaleCircumcision"
-            },
-            "Target_Age_Max": 15.25,
-            "Target_Age_Min": 15,
-            "Target_Demographic": "ExplicitAgeRangesAndGender",
-            "Target_Disease_State": "HIV_Negative",
-            "Target_Gender": "Male",
-            "Time_Value_Map": {
-               "Times": [
-                  2022,
-                  2025
-               ],
-               "Times__KP__VMMC_Tracking": "Marker",
-               "Values": [
-                  0.85,
-                  0.85
-               ]
-            },
-            "Update_Period": 91.25,
-            "class": "ReferenceTrackingEventCoordinator"
-         },
-         "Event_Name": "Approach ambitious 90% coverage targets for VMMC",
-         "COMMENT": "Age range is a kludge to avoid repeatedly staging people over many years",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2022,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "Event_Coordinator_Config": {
             "End_Year": 2080,
             "Intervention_Config": {
                "Apply_If_Higher_Reduced_Acquire": 0,
@@ -486,25 +449,26 @@
             "Target_Gender": "Male",
             "Time_Value_Map": {
                "Times": [
+                  2022,
                   2025,
                   2080
                ],
-               "Times__KP__VMMC_Tracking": "Marker",
                "Values": [
+                  0.85,
                   0.85,
                   0.85
                ],
                "Values__KP__VMMC_Value_Tracking": "Marker"
             },
+            "NOTE": "we use a small age range matching the update period so this cohort only gets covered once",
             "Update_Period": 91.25,
             "class": "ReferenceTrackingEventCoordinator"
          },
-         "Event_Name": "Reach ambitious 90% coverage targets for VMMC",
-         "COMMENT": "Post PEPFAR Cancellation. Age range is a kludge to avoid repeatedly staging people over many years",
+         "Event_Name": "Approach ambitious 90% coverage targets for VMMC",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2022,
          "class": "CampaignEventByYear"
       },
       {
@@ -4935,6 +4899,51 @@
       {
          "Event_Coordinator_Config": {
             "Intervention_Config": {
+               "Target_Age_Max": 25,
+               "Target_Age_Min": 0,
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "HCTTestingLoop0",
+                     "HCTUptakePostDebut1"
+                  ],
+                  "Choice_Probabilities": [
+                     0.95,
+                     0.05
+                  ],
+                  "Choice_Probabilities__KP_TestingDropout": "<-- MARKER",
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LinkingToART",
+                     "CascadeState:OnPreART",
+                     "CascadeState:LinkingToPreART",
+                     "CascadeState:ARTStaging"
+                  ],
+                  "New_Property_Value": "CascadeState:HCTTestingLoop",
+                  "class": "HIVRandomChoice"
+               },
+               "Trigger_Condition_List": [
+                  "HCTTestingLoop2"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, youth 15-25",
+         "COMMENT": "Post PEPFAR Cancellation, drop out of testing faster, for youth 15-25",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "END": "HCT TESTING LOOP",
+         "Event_Coordinator_Config": {
+            "Intervention_Config": {
                "Target_Age_Max": 99,
                "Target_Age_Min": 25,
                "Target_Demographic": "ExplicitAgeRanges",
@@ -4967,53 +4976,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, Adults 25+",
-         "COMMENT": "Post PEPFAR Cancellation",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2025,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "END": "HCT TESTING LOOP",
-         "Event_Coordinator_Config": {
-            "Intervention_Config": {
-               "Target_Age_Max": 25,
-               "Target_Age_Min": 15,
-               "Target_Demographic": "ExplicitAgeRanges",
-               "Actual_IndividualIntervention_Config": {
-                  "Choice_Names": [
-                     "HCTTestingLoop0",
-                     "HCTUptakePostDebut1"
-                  ],
-                  "Choice_Probabilities": [
-                     0.95,
-                     0.05
-                  ],
-                  "Choice_Probabilities__KP_TestingAttrition": "<-- MARKER",
-                  "Disqualifying_Properties": [
-                     "CascadeState:LostForever",
-                     "CascadeState:LostForever_PEPFAR_cancelled",
-                     "CascadeState:OnEffectiveART",
-                     "CascadeState:OnNonSuppressiveART",
-                     "CascadeState:LinkingToART",
-                     "CascadeState:OnPreART",
-                     "CascadeState:LinkingToPreART",
-                     "CascadeState:ARTStaging"
-                  ],
-                  "New_Property_Value": "CascadeState:HCTTestingLoop",
-                  "class": "HIVRandomChoice"
-               },
-               "Trigger_Condition_List": [
-                  "HCTTestingLoop2"
-               ],
-               "class": "NodeLevelHealthTriggeredIV"
-            },
-            "class": "StandardInterventionDistributionEventCoordinator"         
-         },
-         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, adults 15-25",
-         "COMMENT": "Post PEPFAR Cancellation, drop out of testing faster, for adults 15-25",
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, all adults > 25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -7100,9 +7063,23 @@
                "class": "HIVRapidHIVDiagnostic"
             },
             "Targeting_Config": {
-               "IP_Key_Value": "CascadeState:LostForever",
-               "Is_Equal_To": 1,
-               "class": "HasIP"
+               "class": "TargetingLogic",
+               "Logic": [
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:LostForever",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ],
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:LostForever_PEPFAR_cancelled",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ]
+               ]
             },
             "Time_Value_Map": {
                "Times": [
@@ -7126,7 +7103,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2020,
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {
@@ -7152,7 +7129,9 @@
                ],
                "class": "MultiInterventionDistributor"
             },
-            "Target_Demographic": "Everyone",
+            "Target_Demographic": "ExplicitAgeRanges",
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
             "Targeting_Config": {
                "Logic": [
                   [
@@ -7181,8 +7160,8 @@
                "Values": [
                   0.0,
                   0.0,
-                  0.168,
-                  0.168
+                  0.0,
+                  0.0
                ],
                "Values__KP__PercentTakenOffART": "Marker"
             },

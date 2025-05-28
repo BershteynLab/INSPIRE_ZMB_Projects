@@ -4769,7 +4769,7 @@
                   "HCTTestingLoop1"
                ],
                "class": "NodeLevelHealthTriggeredIV",
-               "Duration": 12958
+               "Duration": 12780
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
@@ -4822,7 +4822,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2024.93,
          "class": "CampaignEventByYear"
       },
       {
@@ -4863,7 +4863,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2024.93,
          "class": "CampaignEventByYear"
       },
       {
@@ -4901,9 +4901,51 @@
          "class": "CampaignEventByYear"
       },
       {
-         "END": "HCT TESTING LOOP",
          "Event_Coordinator_Config": {
             "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "HCTTestingLoop0",
+                     "HCTUptakePostDebut1"
+                  ],
+                  "Choice_Probabilities": [
+                     0.95,
+                     0.05
+                  ],
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LinkingToART",
+                     "CascadeState:OnPreART",
+                     "CascadeState:LinkingToPreART",
+                     "CascadeState:ARTStaging"
+                  ],
+                  "New_Property_Value": "CascadeState:HCTTestingLoop",
+                  "class": "HIVRandomChoice"
+               },
+               "Trigger_Condition_List": [
+                  "HCTTestingLoop2"
+               ],
+               "class": "NodeLevelHealthTriggeredIV",
+               "Duration": 12780
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), up until 2025",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 1990,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "Intervention_Config": {
+               "Target_Age_Max": 25,
+               "Target_Age_Min": 0,
+               "Target_Demographic": "ExplicitAgeRanges",
                "Actual_IndividualIntervention_Config": {
                   "Choice_Names": [
                      "HCTTestingLoop0",
@@ -4939,7 +4981,50 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 1990,
+         "Start_Year": 2024.93,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "END": "HCT TESTING LOOP",
+         "Event_Coordinator_Config": {
+            "Intervention_Config": {
+               "Target_Age_Max": 99,
+               "Target_Age_Min": 25,
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "HCTTestingLoop0",
+                     "HCTUptakePostDebut1"
+                  ],
+                  "Choice_Probabilities": [
+                     0.95,
+                     0.05
+                  ],
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LinkingToART",
+                     "CascadeState:OnPreART",
+                     "CascadeState:LinkingToPreART",
+                     "CascadeState:ARTStaging"
+                  ],
+                  "New_Property_Value": "CascadeState:HCTTestingLoop",
+                  "class": "HIVRandomChoice"
+               },
+               "Trigger_Condition_List": [
+                  "HCTTestingLoop2"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "HCTTestingLoop: state 2 (HCT Testing Dropout), 2025-, all adults > 25",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2024.93,
          "class": "CampaignEventByYear"
       },
       {
