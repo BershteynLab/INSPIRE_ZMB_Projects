@@ -7225,79 +7225,105 @@
          }
       },
       {
-         "Event_Name": "PEPFAR Cancellation - Stage ART Dropout for adolescents and young adults, 15-25",
-         "COMMENT": "Post PEPFAR cancellation",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2025,
-         "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
+            "End_Year": 2024.0,
+            "End_Year__KP__ARTDropout_Affected": "<- Marker",
+            "Intervention_Config": {
+               "Intervention_List": [
+                  {
+                     "class": "ARTDropout"
+                  },
+                  {
+                     "New_Property_Value": "",
+                     "Target_Property_Key": "CascadeState",
+                     "Target_Property_Value": "LostForever_PEPFAR_cancelled",
+                     "class": "PropertyValueChanger"
+                  },
+                  {
+                     "Broadcast_Event": "PEPFAR_ARTDropout_Yes",
+                     "class": "BroadcastEvent"
+                  }
+               ],
+               "class": "MultiInterventionDistributor"
+            },
+            "Target_Demographic": "ExplicitAgeRanges",
             "Target_Age_Max": 25,
             "Target_Age_Min": 15,
-            "Target_Demographic": "ExplicitAgeRanges",
-            "Intervention_Config": {
-               "Choice_Names": [
-                  "PEPFAR_ARTDropout_Yes",
-                  "PEPFAR_ARTDropout_No"
-               ],
-               "Choice_Probabilities": [
-                  0.0,
-                  1.0
-               ],
-               "Choice_Probabilities__KP__ARTDropout_Affected": "Marker",
-               "New_Property_Value": "PEPFAR_ARTDropout:Yes",
-               "class": "HIVRandomChoice"
-            },
             "Targeting_Config": {
                "Logic": [
+                  [
+                     {
+                        "Intervention_Name": "Waiting_To_Switch",
+                        "Is_Equal_To": 1,
+                        "class": "HasIntervention"
+                     }
+                  ],
                   [
                      {
                         "Is_Equal_To": 1,
                         "class": "IsOnART"
                      }
+                  ],
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:TemporaryUnsuppressedART",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
                   ]
                ],
                "class": "TargetingLogic"
             },
-            "class": "StandardInterventionDistributionEventCoordinator"
-         }
-      },
-      {
-         "Event_Coordinator_Config": {
-            "End_Year": 2076,
-            "Intervention_Config": {
-               "Actual_IndividualIntervention_Config": {
-                  "Intervention_List": [
+            "Time_Value_Map": {
+               "Times": [
+                  2020,
+                  2024.99,
+                  2025,
+                  2080
+               ],
+               "Values": [
+                  0,
+                  0,
+                  0.84,
+                  0.84
+               ],
+               "Values__KP__ARTDRopout_Affected": "Marker"
+            },
+            "Tracking_Config": {
+               "Logic": [
+                  [
                      {
-                        "class": "ARTDropout"
-                     },
-                     {
-                        "Broadcast_Event": "NoARTAccess",
-                        "class": "BroadcastEvent"
-                     }, 
-                     {
-                        "class": "PropertyValueChanger",
-                        "Target_Property_Key": "CascadeState",
-                        "Target_Property_Value": "LostForever_PEPFAR_cancelled"
+                        "IP_Key_Value": "CascadeState:TemporaryUnsuppressedART",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
                      }
                   ],
-                  "class": "MultiInterventionDistributor"
-               },
-               "Trigger_Condition_List": [
-                  "PEPFAR_ARTDropout_Yes"
+                  [
+                     {
+                        "IP_Key_Value": "CascadeState:OnNonSuppressiveART",
+                        "Is_Equal_To": 1,
+                        "class": "HasIP"
+                     }
+                  ],
+                  [
+                     {
+                        "Intervention_Name": "Waiting_To_Switch",
+                        "Is_Equal_To": 1,
+                        "class": "HasIntervention"
+                     }
+                  ]
                ],
-               "class": "NodeLevelHealthTriggeredIV"
+               "class": "TargetingLogic"
             },
-            "class": "StandardInterventionDistributionEventCoordinator"
+            "Update_Period": 1,
+            "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
          },
          "Event_Name": "PEPFAR Cancellation - Proceed with ART Dropout",
          "COMMENT": "Post PEPFAR cancellation",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2076,
-         "Start_Year__KP__ARTDropout_Proceed": "<- Marker",
+         "Start_Year": 2020,
          "class": "CampaignEventByYear"
       }
    ],
