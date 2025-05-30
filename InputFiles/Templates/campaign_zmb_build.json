@@ -7236,7 +7236,7 @@
                   {
                      "New_Property_Value": "",
                      "Target_Property_Key": "CascadeState",
-                     "Target_Property_Value": "LostForever_PEPFAR_cancelled",
+                     "Target_Property_Value": "TemporaryUnsuppressedART",
                      "class": "PropertyValueChanger"
                   },
                   {
