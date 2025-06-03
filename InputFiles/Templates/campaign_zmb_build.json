@@ -5038,6 +5038,7 @@
                   "Removed":"CascadeState:LostForever",
                   "Disqualifying_Properties": [
                      "CascadeState:OnEffectiveART",
+                     "CascadeState:LostForever_PEPFAR_cancelled",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
                      "CascadeState:OnPreART",
