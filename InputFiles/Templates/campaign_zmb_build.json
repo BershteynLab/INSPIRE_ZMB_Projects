@@ -450,10 +450,12 @@
             "Time_Value_Map": {
                "Times": [
                   2022,
+                  2024.99,
                   2025,
                   2080
                ],
                "Values": [
+                  0.85,
                   0.85,
                   0.85,
                   0.85
@@ -5657,7 +5659,7 @@
                   },
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever",
-                     "CascadeState:LostForever_PEPFAR_cancelled",
+                     "CascadeState:LostForever_PEPFAR_cancelled", 
                      "CascadeState:OnEffectiveART",
                      "CascadeState:OnNonSuppressiveART",
                      "CascadeState:LinkingToART",
