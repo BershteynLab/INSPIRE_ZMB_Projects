@@ -5060,7 +5060,7 @@
                "Actual_IndividualIntervention_Config__KP_Sympt_Link": "<-- MARKER",
                "Trigger_Condition_List": [
                   "NewlySymptomatic",
-                  "ReNewlySymptomatic"
+                  "ARTReengagement"
                ],
                "class": "NodeLevelHealthTriggeredIV"
             },
@@ -7225,6 +7225,41 @@
             },
             "Update_Period": 1,
             "class": "ReferenceTrackingEventCoordinatorTrackingConfig"
+         }
+      },
+      {
+         "Event_Name" : "Stage people to re-engage with ART after dropout",
+         "COMMENT":"Post PEPFAR Cancellation",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2020,
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "class": "StandardInterventionDistributionEventCoordinator",
+            "Demographic_Coverage": 1,
+            "Intervention_Config" : {
+               "class": "NodeLevelHealthTriggeredIV",
+               "Trigger_Condition_List": [
+                  "ReNewlySymptomatic"
+               ],
+               "Actual_IndividualIntervention_Config": {
+                  "class":"MultiInterventionDistributor",
+                  "Intervention_List": [
+                     {
+                        "class": "HIVDelayedIntervention",
+                        "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
+                        "Delay_Period_Constant": 31,
+                        "Broadcast_Event" : "ARTReengagement"
+                     },
+                     {
+                        "class": "PropertyValueChanger",
+                        "Target_Property_Key": "CascadeState",
+                        "Target_Property_Value": "TestingOnSymptomatic"
+                     }
+                  ]
+               }
+            }
          }
       },
       {
