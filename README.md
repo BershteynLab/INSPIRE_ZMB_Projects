@@ -8,6 +8,13 @@
 
 ## Major Updates
 
+### 2025-08-01
+
+INSPIRE project: cost-effectiveness of ART retention, PrEP, and HIV incidence reduction
+
+Input files:
+* `campaign_zmb_inspire.json`
+
 ### 2025-07-01
 
 Completed one round of analysis for the INSPIRE network, investigating the effects of HIV service disruptions for adolescents and young adults on HIV outcomes. This work was submitted as an abstract to the upcoming 2025 Dissemination and Implementation Science conference.
