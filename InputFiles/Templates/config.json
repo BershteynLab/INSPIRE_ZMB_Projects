@@ -267,7 +267,10 @@
             "PEPFAR_ARTDropout_No",
             "HCTTestingLoop1_uptake",
             "HCTTestingLoop1_PEPFAR_Delayed",
-            "No_NewART"         
+            "No_NewART",
+            "ZAIMARA_INSPIRE",
+            "PrEP_INSPIRE",
+            "OnART1_INSPIRE_defaulter_tracer"
         ],
         "Custom_Node_Events": [],
         "Custom_Reports_Filename": "",
@@ -425,20 +428,14 @@
         "Report_HIV_ByAgeAndGender_Collect_Gender_Data": 1,
         "Report_HIV_ByAgeAndGender_Collect_HIV_Data": 1,
         "Report_HIV_ByAgeAndGender_Collect_HIV_Stage_Data": 0,
-        "Report_HIV_ByAgeAndGender_Collect_Intervention_Data": ["PrEP"],
+        "Report_HIV_ByAgeAndGender_Collect_Intervention_Data": ["PrEP", "PrEP_Inspire"],
         ".Report_HIV_ByAgeAndGender_Collect_IP_Data": ["CascadeState"],
         "Report_HIV_ByAgeAndGender_Collect_IP_Data": [],
         "Report_HIV_ByAgeAndGender_Collect_On_Art_Data": 0,
         "Report_HIV_ByAgeAndGender_Event_Counter_List": [
-            "ReNewlySymptomatic",
-            "ARTReengagement",
-            "SendToTemporaryART",
-            "Back2GoodART",
-            "PEPFAR_ARTDropout_Yes", 
-            "PEPFAR_ARTDropout_No",
-            "HCTTestingLoop1_uptake",
-            "HCTTestingLoop1_PEPFAR_Delayed",
-            "Program_VMMC"
+            "ZAIMARA_INSPIRE",
+            "PrEP_INSPIRE",
+            "OnART1_INSPIRE_defaulter_tracer"
         ],
         "Report_HIV_ByAgeAndGender_Has_Intervention_With_Name": "",
         "Report_HIV_ByAgeAndGender_Start_Year": 1995,
