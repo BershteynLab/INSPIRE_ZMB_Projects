@@ -6810,7 +6810,8 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2200,
+         "Start_Year__KP_INSPIRE_PrEP_Start": "<-- Marker",
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",            
@@ -6864,7 +6865,8 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2200,
+         "Start_Year__KP_INSPIRE_ZAIMARA_Start": "<-- Marker",
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",
@@ -6904,7 +6906,8 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2025,
+         "Start_Year": 2200,
+         "Start_Year__KP_INSPIRE_ART_Start": "<-- Marker",
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "StandardInterventionDistributionEventCoordinator",
@@ -6924,7 +6927,8 @@
                   "Choice_Probabilities": [
                      1.0,
                      0.0
-                  ]
+                  ],
+                  "Choice_Probabilities__KP_INSPIRE_ART": "<-- Marker"
                }
             }
          }
