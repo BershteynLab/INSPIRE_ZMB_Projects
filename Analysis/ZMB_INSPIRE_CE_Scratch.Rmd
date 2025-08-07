@@ -1,0 +1,119 @@
+---
+title: "ZMB_INSPIRE_CE"
+output: html_document
+date: "2025-08-07"
+---
+
+# Introduction
+
+Purpose of this notebook is preliminary analysis and scratch work for INSPIRE cost-effectiveness project
+
+## Load libraries
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(data.table))
+library(magrittr)
+library(rsample)
+```
+
+
+## Constants
+
+```{r}
+ZMB_CENSUS_YEAR = 2022
+ZMB_CENSUS_POP = 10868136 # ages 15-64
+```
+
+# Read data
+
+## Preliminary datasets
+
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_prep___2025_08_07_16_01_40_787314/"
+
+inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_art___2025_08_07_16_02_00_229566/"
+
+inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "art",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_zaimara___2025_08_07_16_01_58_897008/"
+
+inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "zaimara",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+inspire.test.results <- rbind(
+  inspire.test.prep,
+  inspire.test.art,
+  inspire.test.zaimara
+  )
+
+sim.results.pop.scaling <- inspire.test.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+inspire.test.results <- inspire.test.results %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+```
+
+# Event counter
+
+```{r}
+inspire.test.results %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            .groups = 'drop_last') %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer)) %>% 
+  pivot_longer(cols = c(ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer),
+           values_to = "Value", 
+           names_to = "Metric") %>% 
+```
+
+

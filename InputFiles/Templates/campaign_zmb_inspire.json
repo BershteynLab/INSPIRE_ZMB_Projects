@@ -6877,6 +6877,11 @@
                "Times": [2025,2045],
                "Values": [1,1]
             },
+            "Targeting_Config": {
+               "class": "HasIntervention",
+               "Is_Equal_To": 0,
+               "Intervention_Name": "ZAIMARA"
+            },
             "Intervention_Config": {
                "class":"MultiInterventionDistributor",
                "Intervention_List":[
@@ -6885,7 +6890,7 @@
                      "Broadcast_Event": "ZAIMARA_INSPIRE"
                   },
                   {
-                     "Intervention_Name":"CMD change CoitalActRiskFactors by multiplicative factor",
+                     "Intervention_Name":"ZAIMARA",
                      "class":"CoitalActRiskFactors",
                      "Acquisition_Multiplier":1.0,
                      "Acquisition_Multiplier__KP_CMD_increase_incidence":"<== marker", 

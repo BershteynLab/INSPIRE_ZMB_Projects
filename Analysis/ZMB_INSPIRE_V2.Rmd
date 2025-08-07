@@ -1,0 +1,1286 @@
+---
+title: "ZMB_INSPIRE_V2.Rmd"
+output: html_document
+date: "2025-06-24"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Round 2 of INSPIRE results
+
+# Libraries
+
+```{r}
+library(tidyverse)
+library(data.table)
+library(magrittr)
+library(rsample)
+
+```
+
+
+
+## Constants
+```{r}
+ZMB_CENSUS_YEAR = 2022
+ZMB_CENSUS_POP = 10868136 # ages 15-64
+```
+
+## Read Data
+
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_baseline___2025_06_21_10_03_45_836283/"
+
+inspire.results.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "baseline",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_vmmc___2025_06_21_10_05_20_527692/"
+
+inspire.results.vmmc <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "vmmc",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_prep___2025_06_21_10_07_06_126937/"
+
+inspire.results.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_prep_women___2025_06_21_10_08_18_449040/"
+
+inspire.results.prep.women <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep.women",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_artdrop___2025_06_21_10_09_30_296866/"
+
+inspire.results.artdrop <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "artdrop",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_reengage_A___2025_06_21_10_10_41_031213/"
+
+inspire.results.reengage.A <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "reengage.A",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_reengage_B___2025_06_21_10_11_57_366329/"
+
+inspire.results.reengage.B <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "reengage.B",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_attrition___2025_06_21_10_13_15_987954/"
+
+inspire.results.attrition <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "attrition",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_testdelay___2025_06_21_10_15_04_940089/"
+
+inspire.results.delay <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "delay",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_testattrition___2025_06_21_10_16_30_986321/"
+
+inspire.results.test.attrition <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "test.attrition",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions/Baseline-campaign_zmb_build-inspire_all___2025_06_21_10_18_00_064148/"
+
+inspire.results.all <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "all",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No","HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed","Program_VMMC"),
+  stratify_columns = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+zmb.results.inspire <- rbind(
+  inspire.results.baseline,
+  inspire.results.vmmc,
+  inspire.results.prep,
+  inspire.results.prep.women,
+  inspire.results.artdrop,
+  inspire.results.reengage.A,
+  inspire.results.reengage.B,
+  inspire.results.attrition,
+  inspire.results.delay,
+  inspire.results.test.attrition,
+  inspire.results.all
+  )
+
+sim.results.pop.scaling <- sim.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+zmb.results.inspire <- zmb.results.inspire %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+```
+
+
+
+## HIV metrics
+
+### All ages
+```{r}
+zmb.results.inspire %>% 
+  filter(Year > 2015) %>% 
+  group_by(scenario_name, Year, sim.ix) %>% 
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor), 
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Infected = mean(Infected), 
+            Newly.Infected = mean(Newly.Infected), 
+            On_ART = mean(On_ART)
+            ) %>% 
+    pivot_longer(cols = c(Died_from_HIV, Infected, Newly.Infected, On_ART),
+               values_to = "Value", 
+               names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name ) ) + 
+  facet_wrap(facets = vars(Metric), scales = "free_y")
+```
+
+
+### Adults over 25
+```{r, fig.width= 10}
+zmb.results.inspire %>% 
+  filter(Year > 2015) %>% 
+  filter(Age >= 25, Age < 99) %>% 
+  group_by(scenario_name, Year, sim.ix) %>% 
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor), 
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Infected = mean(Infected), 
+            Newly.Infected = mean(Newly.Infected), 
+            On_ART = mean(On_ART)
+            ) %>% 
+    pivot_longer(cols = c(Died_from_HIV, Infected, Newly.Infected, On_ART),
+               values_to = "Value", 
+               names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name ) ) + 
+  facet_wrap(facets = vars(Metric), scales = "free_y")
+```
+
+### Youth only
+```{r, fig.width= 10}
+zmb.results.inspire %>% 
+  filter(Year > 2015) %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  group_by(scenario_name, Year, sim.ix) %>% 
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor), 
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Infected = mean(Infected), 
+            Newly.Infected = mean(Newly.Infected), 
+            On_ART = mean(On_ART)
+            ) %>% 
+    pivot_longer(cols = c(Died_from_HIV, Infected, Newly.Infected, On_ART),
+               values_to = "Value", 
+               names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name ) ) + 
+  facet_wrap(facets = vars(Metric), scales = "free_y")
+```
+
+
+# Calculate Metrics
+Aggregate metrics over 10 years
+```{r}
+## All ages
+metrics.all.ages <- cbind(
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV = mean(Died_from_HIV),
+              Infected = mean(Infected), 
+              Newly.Infected = mean(Newly.Infected), 
+              On_ART = mean(On_ART),
+              Off_ART = mean(Off_ART)
+              ) %>% 
+    ungroup(),
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    filter(scenario_name == 'baseline') %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV.baseline = mean(Died_from_HIV),
+              Infected.baseline = mean(Infected), 
+              Newly.Infected.baseline = mean(Newly.Infected), 
+              On_ART.baseline = mean(On_ART),
+              Off_ART.baseline = mean(Off_ART)
+              ) %>% 
+    ungroup() %>% 
+    select(-scenario_name)
+)  %>% mutate(
+    Died_from_HIV.change = Died_from_HIV - Died_from_HIV.baseline,
+    Infected.change = Infected - Infected.baseline,
+    Newly.Infected.change = Newly.Infected - Newly.Infected.baseline,
+    On_ART.change = On_ART - On_ART.baseline,
+    Off_ART.change = Off_ART - Off_ART.baseline
+  ) %>% 
+  mutate(
+    Died_from_HIV.pct = Died_from_HIV.change/Died_from_HIV.baseline,
+    Infected.pct = Infected.change/Infected.baseline,
+    Newly.Infected.pct = Newly.Infected.change/Newly.Infected.baseline,
+    On_ART.pct = On_ART.change/On_ART.baseline,
+    Off_ART.pct = Off_ART.change/Off_ART.baseline
+  )
+
+## Adults only
+metrics.adults <- cbind(
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    filter(Age >= 25) %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV = mean(Died_from_HIV),
+              Infected = mean(Infected), 
+              Newly.Infected = mean(Newly.Infected), 
+              On_ART = mean(On_ART),
+              Off_ART = mean(Off_ART)
+              ) %>% 
+    ungroup(),
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    filter(Age >= 25) %>% 
+    filter(scenario_name == 'baseline') %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV.baseline = mean(Died_from_HIV),
+              Infected.baseline = mean(Infected), 
+              Newly.Infected.baseline = mean(Newly.Infected), 
+              On_ART.baseline = mean(On_ART),
+              Off_ART.baseline = mean(Off_ART)
+              ) %>% 
+    ungroup() %>% 
+    select(-scenario_name)
+)  %>% mutate(
+    Died_from_HIV.change = Died_from_HIV- Died_from_HIV.baseline,
+    Infected.change = Infected - Infected.baseline,
+    Newly.Infected.change = Newly.Infected - Newly.Infected.baseline,
+    On_ART.change = On_ART - On_ART.baseline,
+    Off_ART.change = Off_ART - Off_ART.baseline
+  ) %>% 
+  mutate(
+    Died_from_HIV.pct = Died_from_HIV.change/Died_from_HIV.baseline,
+    Infected.pct = Infected.change/Infected.baseline,
+    Newly.Infected.pct = Newly.Infected.change/Newly.Infected.baseline,
+    On_ART.pct = On_ART.change/On_ART.baseline,
+    Off_ART.pct = Off_ART.change/Off_ART.baseline
+  )
+
+metrics.youth <- cbind(
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    filter(Age >= 15, Age < 25) %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV = mean(Died_from_HIV),
+              Infected = mean(Infected), 
+              Newly.Infected = mean(Newly.Infected), 
+              On_ART = mean(On_ART),
+              Off_ART = mean(Off_ART)
+              ) %>% 
+    ungroup(),
+  zmb.results.inspire %>% 
+    filter(Year >= 2025.5, Year < 2035.5) %>% 
+    filter(Age >= 15, Age < 25) %>% 
+    filter(scenario_name == 'baseline') %>% 
+    mutate(Off_ART = Infected - On_ART) %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              Infected = sum(Infected * pop_scaling_factor/2), 
+              Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+              On_ART = sum(On_ART * pop_scaling_factor/2),
+              Off_ART = sum(Off_ART * pop_scaling_factor/2)) %>% 
+    group_by(scenario_name) %>% 
+    summarize(Died_from_HIV.baseline = mean(Died_from_HIV),
+              Infected.baseline = mean(Infected), 
+              Newly.Infected.baseline = mean(Newly.Infected), 
+              On_ART.baseline = mean(On_ART),
+              Off_ART.baseline = mean(Off_ART)
+              ) %>% 
+    ungroup() %>% 
+    select(-scenario_name)
+)  %>% mutate(
+    Died_from_HIV.change = Died_from_HIV- Died_from_HIV.baseline,
+    Infected.change = Infected - Infected.baseline,
+    Newly.Infected.change = Newly.Infected - Newly.Infected.baseline,
+    On_ART.change = On_ART - On_ART.baseline,
+    Off_ART.change = Off_ART - Off_ART.baseline
+  ) %>% 
+  mutate(
+    Died_from_HIV.pct = Died_from_HIV.change/Died_from_HIV.baseline,
+    Infected.pct = Infected.change/Infected.baseline,
+    Newly.Infected.pct = Newly.Infected.change/Newly.Infected.baseline,
+    On_ART.pct = On_ART.change/On_ART.baseline,
+    Off_ART.pct = Off_ART.change/Off_ART.baseline
+  )
+
+# write_csv(metrics.all.ages, "INSPIRE_ZMB_all_ages_table_V2_20250624.csv")
+# write_csv(metrics.youth, "INSPIRE_ZMB_youth_table_V2_20250624.csv")
+# write_csv(metrics.adults, "INSPIRE_ZMB_adults_table_V2_20250624.csv")
+```
+
+
+## Extract Tables
+
+### Youth
+
+```{r}
+metrics.youth %>% 
+  select(scenario_name, Newly.Infected, Died_from_HIV, On_ART, Off_ART)
+
+metrics.youth %>% 
+  select(scenario_name, Newly.Infected.pct, Died_from_HIV.pct, On_ART.pct, Off_ART.pct, Infected.pct)
+```
+
+
+### All ages
+```{r}
+metrics.all.ages %>% 
+  select(scenario_name, Newly.Infected, Died_from_HIV, On_ART, Off_ART)
+
+metrics.all.ages %>% 
+  select(scenario_name, Newly.Infected.pct, Died_from_HIV.pct, On_ART.pct, Off_ART.pct, Infected.pct)
+```
+
+## Now with 100% more error bars
+
+```{r}
+aggregate.data.differences <- function(data, scenario.name, start_year, end_year, age_min, age_max,
+                                       comparison_scenario = "baseline"){
+  
+  data.agg <- data %>% 
+    mutate(Year = floor(Year)) %>%
+    mutate(Off_ART = Infected - On_ART) %>% 
+    filter(Year >= start_year, 
+           Year < end_year,
+           Age >= age_min,
+           Age < age_max)  %>% 
+    group_by(scenario_name, sim.ix) %>% 
+    summarize(Newly.Infected = sum(Newly.Infected * pop_scaling_factor), 
+              Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+              On_ART = sum(On_ART*pop_scaling_factor/2),
+              Off_ART = sum(Off_ART*pop_scaling_factor/2),
+              .groups = 'keep') %>%
+    ungroup()
+  
+  data.agg.2 <- data.agg %>% filter(scenario_name == comparison_scenario) %>% 
+    select(sim.ix, 
+         Newly.Infected.Base = Newly.Infected,
+         Died_from_HIV.Base = Died_from_HIV,
+         On_ART.Base = On_ART,
+         Off_ART.Base = Off_ART
+         ) %>% 
+    merge(data.agg %>% filter(scenario_name == scenario.name),
+          by = c("sim.ix")) %>%
+    mutate(
+      Newly.Infected.diff = Newly.Infected - Newly.Infected.Base,
+      Newly.Infected.pct = (Newly.Infected - Newly.Infected.Base)/Newly.Infected.Base,
+      Died_from_HIV.diff = Died_from_HIV - Died_from_HIV.Base,
+      Died_from_HIV.pct = (Died_from_HIV - Died_from_HIV.Base)/Died_from_HIV.Base,
+      On_ART.diff = On_ART - On_ART.Base,
+      On_ART.pct = (On_ART - On_ART.Base)/On_ART.Base,
+      Off_ART.diff = Off_ART - Off_ART.Base,
+      Off_ART.pct = (Off_ART - Off_ART.Base)/Off_ART.Base,
+      
+    ) 
+  
+  data.agg.diffs <- data.agg.2 %>%
+    group_by(scenario_name) %>%
+    summarize(
+      Newly.Infected = mean(Newly.Infected),
+      Newly.Infected.diff.sd = sd(Newly.Infected.diff),
+      Newly.Infected.diff = mean(Newly.Infected.diff),
+      Newly.Infected.pct.sd = sd(Newly.Infected.pct),
+      Newly.Infected.pct = mean(Newly.Infected.pct),
+      Died_from_HIV = mean(Died_from_HIV),
+      Died_from_HIV.diff.sd = sd(Died_from_HIV.diff),
+      Died_from_HIV.diff = mean(Died_from_HIV.diff),
+      Died_from_HIV.pct.sd = sd(Died_from_HIV.pct),
+      Died_from_HIV.pct = mean(Died_from_HIV.pct),
+      On_ART = mean(On_ART),
+      On_ART.diff.sd = sd(On_ART.diff),
+      On_ART.diff = mean(On_ART.diff),
+      On_ART.pct.sd = sd(On_ART.pct),
+      On_ART.pct = mean(On_ART.pct),
+      Off_ART = mean(Off_ART), 
+      Off_ART.diff.sd = sd(Off_ART.diff),
+      Off_ART.diff = mean(Off_ART.diff),
+      Off_ART.pct.sd = sd(Off_ART.pct),
+      Off_ART.pct = mean(Off_ART.pct),
+      .groups = 'keep'
+      )
+
+  bt_resamples <- bootstraps(data.agg.2, times = 500)
+  bt_resamples$mean.infected <- map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected")
+  bt_resamples$mean.infected.diff <- map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected.diff")
+  bt_resamples$mean.infected.pct <- map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected.pct")
+  bt_resamples$mean.deaths <- map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV")
+  bt_resamples$mean.deaths.diff <- map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV.diff")
+  bt_resamples$mean.deaths.pct <- map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV.pct")
+  bt_resamples$mean.On_ART <- map_dbl(bt_resamples$splits, bt_mean, "On_ART")
+  bt_resamples$mean.On_ART.diff <- map_dbl(bt_resamples$splits, bt_mean, "On_ART.diff")
+  bt_resamples$mean.On_ART.pct <- map_dbl(bt_resamples$splits, bt_mean, "On_ART.pct")
+  bt_resamples$mean.Off_ART <- map_dbl(bt_resamples$splits, bt_mean, "Off_ART")
+  bt_resamples$mean.Off_ART.diff <- map_dbl(bt_resamples$splits, bt_mean, "Off_ART.diff")
+  bt_resamples$mean.Off_ART.pct <- map_dbl(bt_resamples$splits, bt_mean, "Off_ART.pct")
+  
+  infected_95 <- quantile(bt_resamples$mean.infected, probs = c(0.25, 0.975))
+  infected.diff_95 <- quantile(bt_resamples$mean.infected.diff, probs = c(.025, .975))
+  infected.pct_95 <- quantile(bt_resamples$mean.infected.pct, probs = c(.025, .975))
+  deaths_95 <- quantile(bt_resamples$mean.deaths, probs = c(0.25, 0.975))
+  deaths.diff_95 <- quantile(bt_resamples$mean.deaths.diff, probs = c(.025, .975))
+  deaths.pct_95 <- quantile(bt_resamples$mean.deaths.pct, probs = c(.025, .975))
+  onart_95 <- quantile(bt_resamples$mean.On_ART, probs = c(0.25, 0.975))
+  onart.diff_95 <- quantile(bt_resamples$mean.On_ART.diff, probs = c(.025, .975))
+  onart.pct_95 <- quantile(bt_resamples$mean.On_ART.pct, probs = c(.025, .975))
+  offart_95 <- quantile(bt_resamples$mean.Off_ART, probs = c(0.25, 0.975))
+  offart.diff_95 <- quantile(bt_resamples$mean.Off_ART.diff, probs = c(.025, .975))
+  offart.pct_95 <- quantile(bt_resamples$mean.Off_ART.pct, probs = c(.025, .975))
+  
+  data.agg.diffs$Newly.Infected_95LL <- infected_95[[1]]
+  data.agg.diffs$Newly.Infected_95UL <- infected_95[[2]]
+  data.agg.diffs$Newly.Infected.diff_95LL <- infected.diff_95[[1]]
+  data.agg.diffs$Newly.Infected.diff_95UL <- infected.diff_95[[2]]
+  data.agg.diffs$Newly.Infected.pct_95LL <- infected.pct_95[[1]]
+  data.agg.diffs$Newly.Infected.pct_95UL <- infected.pct_95[[2]]
+  data.agg.diffs$Died_from_HIV_95LL <- deaths_95[[1]]
+  data.agg.diffs$Died_from_HIV_95UL <- deaths_95[[2]]
+  data.agg.diffs$Died_from_HIV.diff_95LL <- deaths.diff_95[[1]]
+  data.agg.diffs$Died_from_HIV.diff_95UL <- deaths.diff_95[[2]]
+  data.agg.diffs$Died_from_HIV.pct_95LL <- deaths.pct_95[[1]]
+  data.agg.diffs$Died_from_HIV.pct_95UL <- deaths.pct_95[[2]]
+  data.agg.diffs$On_ART_95LL <- onart_95[[1]]
+  data.agg.diffs$On_ART_95UL <- onart_95[[2]]
+  data.agg.diffs$On_ART.diff_95LL <- onart.diff_95[[1]]
+  data.agg.diffs$On_ART.diff_95UL <- onart.diff_95[[2]]
+  data.agg.diffs$On_ART.pct_95LL <- onart.pct_95[[1]]
+  data.agg.diffs$On_ART.pct_95UL <- onart.pct_95[[2]]
+  data.agg.diffs$Off_ART_95LL <- offart_95[[1]]
+  data.agg.diffs$Off_ART_95UL <- offart_95[[2]]
+  data.agg.diffs$Off_ART.diff_95LL <- offart.diff_95[[1]]
+  data.agg.diffs$Off_ART.diff_95UL <- offart.diff_95[[2]]
+  data.agg.diffs$Off_ART.pct_95LL <- offart.pct_95[[1]]
+  data.agg.diffs$Off_ART.pct_95UL <- offart.pct_95[[2]]
+
+  data.agg.diffs <- data.agg.diffs %>% select(
+        "scenario_name",
+        "Newly.Infected", "Newly.Infected_95LL", "Newly.Infected_95UL",
+        "Newly.Infected.diff", "Newly.Infected.diff_95LL", "Newly.Infected.diff_95UL",
+        "Newly.Infected.pct", "Newly.Infected.pct_95LL","Newly.Infected.pct_95UL",
+        "Died_from_HIV", "Died_from_HIV_95LL", "Died_from_HIV_95UL",
+        "Died_from_HIV.diff", "Died_from_HIV.diff_95LL", "Died_from_HIV.diff_95UL",
+        "Died_from_HIV.pct", "Died_from_HIV.pct_95LL", "Died_from_HIV.pct_95UL",
+        "On_ART", "On_ART_95LL", "On_ART_95UL",
+        "On_ART.diff", "On_ART.diff_95LL", "On_ART.diff_95UL",
+        "On_ART.pct", "On_ART.pct_95LL", "On_ART.pct_95UL",
+        "Off_ART", "Off_ART_95LL", "Off_ART_95UL",
+        "Off_ART.diff", "Off_ART.diff_95LL", "Off_ART.diff_95UL",
+        "Off_ART.pct", "Off_ART.pct_95LL", "Off_ART.pct_95UL" )
+
+  data.agg.diffs
+  
+}
+
+ bt_mean <- function(splits, colname){
+  x <- as.data.frame(analysis(splits))
+  mean(x[[colname]])
+}
+```
+
+```{r}
+youth.abstract.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "baseline", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline")
+)
+
+youth.abstract.table %>% filter(scenario_name %in% c("all", "baseline")) %>% 
+  select("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART", 
+         "Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct") 
+```
+
+```{r}
+adults.abstract.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "baseline", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline")
+)
+
+adults.abstract.table %>% filter(scenario_name %in% c("all", "baseline")) %>% 
+  select("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART", 
+         "Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct") 
+```
+```{r}
+adults.slides.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "vmmc", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "prep", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "test.attrition", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "delay", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "attrition", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),  
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline")
+)
+
+adults.slides.table %>% select(scenario_name, "Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct")
+
+adults.slides.table %>% write_csv("INSPIRE_Abstract_adults_table.csv")
+```
+
+```{r}
+youth.slides.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "vmmc", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "prep", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "test.attrition", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "delay", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "attrition", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),  
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline")
+)
+
+youth.slides.table %>% select(scenario_name, "Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct")
+
+youth.slides.table %>% write_csv("INSPIRE_Abstract_youth_table.csv")
+```
+
+
+# Plots
+
+First set of plots are for comparing the Baseline against all assumptions
+
+Second set of plots are for comparing Baseline against both reengagement scenarios
+
+```{r}
+adults.plot.dat <- zmb.results.inspire %>%
+  filter(Age >= 15) %>%
+  filter(scenario_name %in% c("baseline", "all", "reengage.A", "reengage.B")) %>% 
+  mutate(Off_ART = Infected - On_ART) %>% 
+  mutate(Year = floor(Year)) %>% 
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor),
+            Off_ART = sum(Off_ART * pop_scaling_factor)) %>%
+  group_by(scenario_name, Year) %>%
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Newly.Infected = mean(Newly.Infected),
+            On_ART = mean(On_ART),
+            Off_ART = mean(Off_ART)
+            )
+
+adults.plot.dat$scenario <- factor(adults.plot.dat$scenario_name, levels = c( "all", "reengage.A", "reengage.B","baseline"))
+
+
+youth.plot.dat <- zmb.results.inspire %>%
+  filter(Age >= 15, Age <25) %>%
+  filter(scenario_name %in% c("baseline", "all", "reengage.A", "reengage.B")) %>% 
+  mutate(Off_ART = Infected - On_ART) %>% 
+  mutate(Year = floor(Year)) %>% 
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor),
+            Off_ART = sum(Off_ART * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor)) %>%
+  group_by(scenario_name, Year) %>%
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Newly.Infected = mean(Newly.Infected),
+            On_ART = mean(On_ART),
+            Off_ART = mean(Off_ART),
+            Infected = mean(Infected)
+            )
+
+
+youth.plot.dat$scenario <- factor(youth.plot.dat$scenario_name, levels = c( "all", "reengage.A", "reengage.B","baseline"))
+
+```
+
+
+# Baseline vs All
+
+### HIV Acquisitions
+```{r}
+hiv.acquisitions.adults <- adults.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Acquisitions") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.acquisitions.adults
+
+ggsave(filename = "INSPIRE_ZMB_HIV_acquisitions_allages_V2.pdf",  plot = hiv.acquisitions.adults, 
+       width = 5, height = 4, units = 'in')
+
+hiv.acquisitions.youth <- youth.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Acquisitions") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.acquisitions.youth
+
+ggsave(filename = "INSPIRE_ZMB_HIV_acquisitions_youth_V2.pdf",  plot = hiv.acquisitions.youth, 
+       width = 5, height = 4, units = 'in')
+```
+
+### HIV Deaths
+```{r}
+hiv.deaths.adults <- adults.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Deaths") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.deaths.adults
+
+ggsave(filename = "INSPIRE_ZMB_HIV_deaths_allages_V2.pdf",  plot = hiv.deaths.adults, 
+       width = 5, height = 4, units = 'in')
+
+
+hiv.deaths.youth <- youth.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Deaths") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.deaths.youth
+
+ggsave(filename = "INSPIRE_ZMB_HIV_deaths_youth_V2.pdf",  plot = hiv.deaths.youth, 
+       width = 5, height = 4, units = 'in')
+```
+
+## On ART
+```{r}
+hiv.onart.adults <- adults.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years on ART") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.onart.adults
+
+ggsave(filename = "INSPIRE_ZMB_HIV_onart_allages_V2.pdf",  plot = hiv.onart.adults, 
+       width = 5, height = 4, units = 'in')
+
+
+hiv.onart.youth <- youth.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years on ART") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.onart.youth
+
+ggsave(filename = "INSPIRE_ZMB_HIV_onart_youth_V2.pdf",  plot = hiv.onart.youth, 
+       width = 5, height = 4, units = 'in')
+```
+
+## Off ART
+```{r}
+hiv.offart.youth <- youth.plot.dat %>% 
+  filter(scenario_name %in% c("all", "baseline")) %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Off_ART, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years off ART") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.offart.youth
+
+ggsave(filename = "INSPIRE_ZMB_HIV_offart_youth_V2.pdf",  plot = hiv.offart.youth, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+# Reengagement
+
+## Acquisitions
+```{r}
+hiv.acquisitions.youth.reengagement <- youth.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Acquisitions", breaks = seq(0,15000,5000), limits = c(0,18000),
+                     labels = c(0, 5000, "10,000", "15,000")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.acquisitions.youth.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_acquisitions_youth_reengagment.pdf",  plot = hiv.acquisitions.youth.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+```{r}
+hiv.acquisitions.adults.reengagement <- adults.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Acquisitions", breaks = seq(0,40000,10000), limits = c(0,45000),
+                     labels = c(0, "10,000", "20,000", "30,000", "40,000")
+                     ) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.acquisitions.adults.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_acquisitions_adults_reengagment.pdf",  plot = hiv.acquisitions.adults.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+## Deaths
+
+```{r}
+hiv.deaths.youth.reengagement <- youth.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Deaths") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.deaths.youth.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_deaths_youth_reengagment.pdf",  plot = hiv.deaths.youth.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+```{r}
+hiv.deaths.adults.reengagement <- adults.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("HIV Deaths", breaks = seq(0, 25000, 5000), limits = c(0,27500),
+                     labels = c(0,"5000", "10,000", "15,000", "20,000", "25,000")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.deaths.adults.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_deaths_adults_reengagment.pdf",  plot = hiv.deaths.adults.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+## On ART
+
+```{r}
+hiv.onart.youth.reengagement <- youth.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = On_ART, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years on ART", breaks = seq(0,200000,50000), limits = c(0,200000),
+                     labels = c("0", "50,000", "100,000", "150,000", "200,000")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.onart.youth.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_onart_youth_reengagment.pdf",  plot = hiv.onart.youth.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+```{r}
+hiv.onart.adults.reengagement <- adults.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = On_ART, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years on ART", breaks = seq(0,2000000,500000), limits = c(0,2200000),
+                     labels = c(0,"0.5M", "1M", "1.5M", "2.0M")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.onart.adults.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_onart_adults_reengagment.pdf",  plot = hiv.onart.adults.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+## Off ART
+
+```{r}
+hiv.offart.youth.reengagement <- youth.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Off_ART, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years off ART", breaks = seq(0,150000,50000), limits = c(0,175000),
+                     labels = c("0","50,000", "100,000", "150,000")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.offart.youth.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_offart_youth_reengagment.pdf",  plot = hiv.offart.youth.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+```{r}
+hiv.offart.adults.reengagement <- adults.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Off_ART, color = scenario ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "#C41000", "#E69F00", "#0072B2", "black")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years off ART", breaks = seq(0,800000,200000), limits = c(0,850000),
+                     labels = c(0, "200,000", "400,000", "600,000", "800,000")) +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+hiv.offart.adults.reengagement
+
+ggsave(filename = "INSPIRE_ZMB_HIV_offart_adults_reengagment.pdf",  plot = hiv.offart.adults.reengagement, 
+       width = 5, height = 4, units = 'in')
+```
+
+
+## Infected
+
+```{r}
+youth.plot.dat %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Infected, color = scenario_name ),
+            linewidth = 3,
+            show.legend = FALSE ) + 
+  scale_color_manual(values = c( "red", "black", "purple", "darkgreen")) + 
+  scale_x_continuous("Year") +
+  scale_y_continuous("Total HIV+ Population") +
+  theme_minimal() + theme_bw() +
+  theme(panel.grid = element_blank(),
+        #axis.title.x = element_blank(),
+        #axis.text.x = element_blank(),
+        #plot.title = element_text(hjust = 0.5),
+        text = element_text(family = "sans"),
+        axis.text = element_text(size = 14),
+        axis.title= element_text(size = 16))
+
+```
+
+
+# Abstract
+
+## Base population
+
+```{r}
+zmb.results.inspire %>% 
+  filter(Year == 2025, 
+           Age >= 15, Age < 25) %>% 
+  group_by(scenario_name, sim.ix) %>% 
+  summarize(Population = sum(Population * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor)
+            ) %>% 
+  group_by(scenario_name) %>% 
+  summarize(Population = mean(Population),
+            Infected = mean(Infected))
+```
+
+
+## Results
+
+```{r}
+youth.abstract.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "baseline", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 25,
+                             comparison_scenario = "baseline")
+)
+
+youth.abstract.table %>% filter(scenario_name %in% c("all", "baseline")) %>% 
+  select(
+    "scenario_name",
+    "Newly.Infected", "Newly.Infected_95LL", "Newly.Infected_95UL",
+    "Died_from_HIV", "Died_from_HIV_95LL", "Died_from_HIV_95UL",
+    "On_ART", "On_ART_95LL", "On_ART_95UL",
+    "Off_ART", "Off_ART_95LL", "Off_ART_95UL"
+  )
+
+youth.abstract.table %>% #filter(scenario_name %in% c("all", "baseline")) %>% 
+  select(
+    "scenario_name",
+    "Newly.Infected.pct", "Newly.Infected.pct_95LL", "Newly.Infected.pct_95UL",
+    "Died_from_HIV.pct", "Died_from_HIV.pct_95LL", "Died_from_HIV.pct_95UL",
+    "On_ART.pct", "On_ART.pct_95LL", "On_ART.pct_95UL",
+    "Off_ART.pct", "Off_ART.pct_95LL", "Off_ART.pct_95UL"
+  ) 
+
+
+youth.abstract.table %>% 
+  select(
+    "scenario_name",
+    "Newly.Infected.diff", "Newly.Infected.diff_95LL", "Newly.Infected.diff_95UL",
+    "Died_from_HIV.diff", "Died_from_HIV.diff_95LL", "Died_from_HIV.diff_95UL",
+    "On_ART.diff", "On_ART.diff_95LL", "On_ART.diff_95UL",
+    "Off_ART.diff", "Off_ART.diff_95LL", "Off_ART.diff_95UL"
+  ) 
+```
+
+```{r}
+adults.abstract.table <- rbind(
+  aggregate.data.differences(zmb.results.inspire, "baseline", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "all", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.A", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline"),
+  aggregate.data.differences(zmb.results.inspire, "reengage.B", 2025, 2035, 15, 100,
+                             comparison_scenario = "baseline")
+)
+
+adults.abstract.table %>% filter(scenario_name %in% c("all", "baseline")) %>% 
+  select("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART", 
+         "Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct") 
