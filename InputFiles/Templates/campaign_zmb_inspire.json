@@ -6814,7 +6814,8 @@
          "Start_Year__KP_INSPIRE_PrEP_Start": "<-- Marker",
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
-            "class": "ReferenceTrackingEventCoordinatorHIV",            
+            "class": "ReferenceTrackingEventCoordinatorHIV",
+            "Update_Period": 30.4166666666667,
             "Target_Age_Max": 24.9999999,
             "Target_Age_Min": 15,
             "Target_Demographic": "ExplicitAgeRanges",

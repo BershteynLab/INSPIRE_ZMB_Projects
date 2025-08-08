@@ -30,7 +30,22 @@ ZMB_CENSUS_POP = 10868136 # ages 15-64
 ## Preliminary datasets
 
 ```{r}
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_prep___2025_08_07_16_01_40_787314/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_baseline___2025_08_07_17_43_20_997698/"
+
+inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "baseline",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_INSPIRE", "HasIntervention.ZAIMARA" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_prep___2025_08_08_09_45_18_369763/"
 
 inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -40,13 +55,13 @@ inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
                       "Newly.Infected","Diagnosed",
                       "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
                       ),
-  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_INSPIRE", "HasIntervention.ZAIMARA"),
   min_age_inclusive = 0,
   max_age_inclusive = 99
 )
 
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_art___2025_08_07_16_02_00_229566/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_art___2025_08_07_17_43_41_529081/"
 
 inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -56,13 +71,13 @@ inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
                       "Newly.Infected","Diagnosed",
                       "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
                       ),
-  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_INSPIRE", "HasIntervention.ZAIMARA" ),
   min_age_inclusive = 0,
   max_age_inclusive = 99
 )
 
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_zaimara___2025_08_07_16_01_58_897008/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_zaimara___2025_08_07_17_43_40_261346/"
 
 inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -72,13 +87,17 @@ inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
                       "Newly.Infected","Diagnosed",
                       "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
                       ),
-  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_Inspire" ),
+  stratify_columns = c("Year", "Age", "Gender", "HasIntervention.PrEP_INSPIRE", "HasIntervention.ZAIMARA" ),
   min_age_inclusive = 0,
   max_age_inclusive = 99
 )
 
+# inspire.test.baseline <- inspire.test.baseline %>% rename(HasIntervention.PrEP_INSPIRE = HasIntervention.PrEP_Inspire)
+# inspire.test.art <- inspire.test.art %>% rename(HasIntervention.PrEP_INSPIRE = HasIntervention.PrEP_Inspire)
+# inspire.test.zaimara <- inspire.test.zaimara %>% rename(HasIntervention.PrEP_INSPIRE = HasIntervention.PrEP_Inspire)
 
 inspire.test.results <- rbind(
+  inspire.test.baseline,
   inspire.test.prep,
   inspire.test.art,
   inspire.test.zaimara
@@ -118,6 +137,7 @@ inspire.test.results %>%
   geom_line(mapping = aes(x = Year, y = Value, color = scenario_name) )+ 
   facet_grid(rows = vars(Metric), scales = 'free_y')
 ```
+
 ```{r}
 inspire.test.results %>% 
   group_by(Year, scenario_name, sim.id) %>% 
@@ -138,7 +158,7 @@ inspire.test.results %>%
 
 ```{r}
 inspire.test.results %>% 
-  filter(HasIntervention.PrEP_Inspire == 1) %>% 
+  filter(HasIntervention.PrEP_INSPIRE == 1) %>% 
   group_by(Year, scenario_name, sim.id) %>% 
   summarize(Population = sum(Population * pop_scaling_factor),
             Infected = sum(Infected * pop_scaling_factor)) %>%
@@ -149,4 +169,43 @@ inspire.test.results %>%
   geom_line(mapping = aes(x = Year, y = Population, color = scenario_name))
 ```
 
+
+```{r}
+inspire.test.results %>% 
+  filter(HasIntervention.ZAIMARA == 1) %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(Population = sum(Population * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor)) %>%
+  group_by(Year, scenario_name) %>% 
+  summarize(Population = mean(Population),
+            Infected = mean(Infected)) %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Population, color = scenario_name))
+```
+
+# Plots
+
+Now that I've established that the interventions are going out, do they have any effect whatsoever?
+
+```{r}
+inspire.test.results %>% 
+  filter(Year > 2015) %>% 
+  group_by(scenario_name, Year, sim.ix) %>% 
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor), 
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Infected = mean(Infected), 
+            Newly.Infected = mean(Newly.Infected), 
+            On_ART = mean(On_ART)
+            ) %>% 
+    pivot_longer(cols = c(Died_from_HIV, Infected, Newly.Infected, On_ART),
+               values_to = "Value", 
+               names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name ) ) + 
+  facet_wrap(facets = vars(Metric), scales = "free_y")
+```
 
