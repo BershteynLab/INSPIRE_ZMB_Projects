@@ -103,9 +103,9 @@ inspire.test.results <- inspire.test.results %>%
 ```{r}
 inspire.test.results %>% 
   group_by(Year, scenario_name, sim.id) %>% 
-  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE * pop_scaling_factor),
-            PrEP_INSPIRE = mean(PrEP_INSPIRE * pop_scaling_factor),
-            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+  summarize(ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
             .groups = 'drop_last') %>% 
   group_by(Year, scenario_name) %>% 
   summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
@@ -114,6 +114,39 @@ inspire.test.results %>%
   pivot_longer(cols = c(ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer),
            values_to = "Value", 
            names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name) )+ 
+  facet_grid(rows = vars(Metric), scales = 'free_y')
+```
+```{r}
+inspire.test.results %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            .groups = 'drop_last') %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer),
+            .groups = 'drop_last') %>%
+  filter(scenario_name == "art") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = OnART1_INSPIRE_defaulter_tracer))
+  
+```
+
+```{r}
+inspire.test.results %>% 
+  filter(HasIntervention.PrEP_Inspire == 1) %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(Population = sum(Population * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor)) %>%
+  group_by(Year, scenario_name) %>% 
+  summarize(Population = mean(Population),
+            Infected = mean(Infected)) %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Population, color = scenario_name))
 ```
 
 
