@@ -6638,7 +6638,7 @@
             "Demographic_Coverage": 1,
             "Intervention_Config": {
                "Actual_IndividualIntervention_Config": {
-                  "Broadcast_Event": "StayOnARTChoice",
+                  "Broadcast_Event": "OnART3",
                   "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
                   "Delay_Period_Exponential": 7300,
                   "Disqualifying_Properties": [
