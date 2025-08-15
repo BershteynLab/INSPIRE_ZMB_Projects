@@ -1,5 +1,5 @@
 Scenario,Campaign,Start_Year__KP_INSPIRE_PrEP_Start,Values__KP__INSPIRE_PrEP_Distribution,Start_Year__KP_INSPIRE_ZAIMARA_Start,Acquisition_Multiplier__KP_CMD_increase_incidence,Start_Year__KP_INSPIRE_ART_Start,Choice_Probabilities__KP_INSPIRE_ART
-inspire_prelim_baseline,campaign_zmb_inspire.json,2200,"[0,0,0]",2200,0,2200,"[1,0]"
-inspire_prelim_prep,campaign_zmb_inspire.json,2025,"[1,1,0]",2200,0,2200,"[1,0]"
-inspire_prelim_zaimara,campaign_zmb_inspire.json,2200,"[0,0,0]",2025,0.43,2200,"[1,0]"
-inspire_prelim_art,campaign_zmb_inspire.json,2200,"[0,0,0]",2200,0,2025,"[0,1]"
+inspire_prelim2_baseline,campaign_zmb_inspire.json,2200,"[0,0,0]",2200,0,2200,"[1,0]"
+inspire_prelim2_prep,campaign_zmb_inspire.json,2025,"[1,1,0]",2200,0,2200,"[1,0]"
+inspire_prelim2_zaimara,campaign_zmb_inspire.json,2200,"[0,0,0]",2025,0.43,2200,"[1,0]"
+inspire_prelim2_art,campaign_zmb_inspire.json,2200,"[0,0,0]",2200,0,2025,"[0,1]"
