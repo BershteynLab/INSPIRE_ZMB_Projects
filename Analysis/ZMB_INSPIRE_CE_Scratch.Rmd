@@ -32,7 +32,8 @@ ZMB_CENSUS_POP = 10868136 # ages 15-64
 ```{r}
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_baseline___2025_08_07_17_43_20_997698/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_baseline___2025_08_11_13_01_13_519959"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_baseline___2025_08_15_17_28_08_029721/"
+#experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_baseline___2025_08_15_17_28_08_029721/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_baseline___2025_08_15_22_48_34_248775/"
 
 inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -49,7 +50,8 @@ inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
 
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_prep___2025_08_08_09_45_18_369763/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_prep___2025_08_11_17_25_27_538425/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_prep___2025_08_15_17_29_41_642958/"
+#experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_prep___2025_08_15_17_29_41_642958/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_prep___2025_08_15_22_50_00_828706/"
 
 inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -66,7 +68,8 @@ inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
 
 
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_art___2025_08_07_17_43_41_529081/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_art___2025_08_15_13_43_35_367512/"
+#experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_art___2025_08_15_13_43_35_367512/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_art___2025_08_15_22_52_16_524020/"
 
 inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -84,7 +87,8 @@ inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
 
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_zaimara___2025_08_07_17_43_40_261346/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_zaimara___2025_08_11_13_03_58_074985/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_zaimara___2025_08_15_17_30_48_027084/"
+#experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_zaimara___2025_08_15_17_30_48_027084/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_zaimara___2025_08_15_22_51_06_433149/"
 
 inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -220,12 +224,16 @@ inspire.test.results %>%
 
 ```{r}
 inspire.test.results %>% 
+  mutate(Year = floor(Year - .5)) %>% 
   filter(Year >= 2025) %>% filter(scenario_name %in% c("baseline", "art")) %>% 
   filter(Age < 25, Age >= 15) %>%
   group_by(scenario_name, Year, sim.ix) %>% 
-  summarize(On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  summarize(On_ART = sum(On_ART * pop_scaling_factor/2),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor)) %>% 
   group_by(scenario_name, Year) %>% 
-  summarize(On_ART = mean(On_ART))
+  summarize(On_ART = mean(On_ART),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer), .groups = 'drop_last') %>% 
+  mutate(rati = OnART1_INSPIRE_defaulter_tracer/On_ART)
 ```
 
 
@@ -420,15 +428,15 @@ metrics.youth <- cbind(
 
 datestring <- format(Sys.Date(), "%Y%m%d")
 
-# write_csv(metrics.all.ages, "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1599.csv")
-# write_csv(metrics.youth, "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1525.csv")
-# write_csv(metrics.adults, "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A2599.csv")
+write_csv(metrics.all.ages,paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1599_",datestring,".csv"), collapse = ''))
+write_csv(metrics.youth,paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1525_",datestring,".csv"), collapse = ''))
+write_csv(metrics.adults,  paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A2599_",datestring,".csv"), collapse = ''))
 ```
 
 ## Extract Tables
 
 ```{r}
-metrics.youth <- read_csv("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1525.csv")
+#metrics.youth <- read_csv("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1525.csv")
 
 metrics.youth %>% 
   select(scenario_name, Newly.Infected, Died_from_HIV, On_ART, Off_ART) %>% 
@@ -449,6 +457,7 @@ metrics.youth %>%
 ```{r}
 metrics.youth %>% names
 ```
+
 ```{r}
 metrics.all.ages <- read_csv("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1599.csv")
 
@@ -536,7 +545,8 @@ hiv.acquisitions.adults <- adults.plot.dat %>%
 
 hiv.acquisitions.adults
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_acquisitions_allages.pdf",  
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_acquisitions_allages","_",datestring,".pdf"), 
+                         collapse = ''),  
        plot = hiv.acquisitions.adults, 
        width = 5, height = 4, units = 'in')
 
@@ -560,7 +570,8 @@ hiv.acquisitions.youth <- youth.plot.dat %>%
 
 hiv.acquisitions.youth
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_acquisitions_youth.pdf",
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_acquisitions_youth","_",datestring,".pdf"), 
+                         collapse = ''),  
        plot = hiv.acquisitions.youth, 
        width = 5, height = 4, units = 'in')
 ```
@@ -587,7 +598,8 @@ hiv.deaths.adults <- adults.plot.dat %>%
 
 hiv.deaths.adults
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_deaths_allages.pdf",  
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_deaths_allages","_",datestring,".pdf"), 
+                         collapse = ''),  
        plot = hiv.deaths.adults, 
        width = 5, height = 4, units = 'in')
 
@@ -611,7 +623,8 @@ hiv.deaths.youth <- youth.plot.dat %>%
 
 hiv.deaths.youth
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_deaths_youth.pdf",
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_deaths_youth","_",datestring,".pdf"), 
+                         collapse = ''),
        plot = hiv.deaths.youth, 
        width = 5, height = 4, units = 'in')
 ```
@@ -625,7 +638,7 @@ hiv.onart.adults <- adults.plot.dat %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
             linewidth = 1,
-            show.legend = FALSE ) + 
+            show.legend = TRUE ) + 
   scale_color_manual(values = c( "black","#C41000", "#E69F00", "#0072B2")) + 
   scale_x_continuous("Year", breaks = seq(2015,2040,5)) +
   scale_y_continuous("Person-Years on ART") +
@@ -640,7 +653,8 @@ hiv.onart.adults <- adults.plot.dat %>%
 
 hiv.onart.adults
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_onart_allages.pdf",  
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_onart_allages","_",datestring,".pdf"), 
+                         collapse = ''),
        plot = hiv.onart.adults, 
        width = 5, height = 4, units = 'in')
 
@@ -664,7 +678,8 @@ hiv.onart.youth <- youth.plot.dat %>%
 
 hiv.onart.youth
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_onart_youth.pdf",
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_onart_youth","_",datestring,".pdf"), 
+                         collapse = ''),
        plot = hiv.onart.youth, 
        width = 5, height = 4, units = 'in')
 ```
@@ -693,7 +708,8 @@ hiv.offart.adults <- adults.plot.dat %>%
 
 hiv.offart.adults
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_offart_allages.pdf",  
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_offart_allages","_",datestring,".pdf"), 
+                         collapse = ''),
        plot = hiv.offart.adults, 
        width = 5, height = 4, units = 'in')
 
@@ -717,7 +733,8 @@ hiv.offart.youth <- youth.plot.dat %>%
 
 hiv.offart.youth
 
-ggsave(filename = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_offart_youth.pdf",
+ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Prelim_CE_HIV_offart_youth","_",datestring,".pdf"), 
+                         collapse = ''),
        plot = hiv.offart.youth, 
        width = 5, height = 4, units = 'in')
 ```

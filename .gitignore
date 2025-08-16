@@ -5,3 +5,7 @@ __pycache__/
 INSPIRE/
 resampled_parameter_sets_short.csv
 DownloadAnalyzerTPI_cache
+.Rproj.user
+Analysis/*.pdf
+Analysis/*.csv
+Analysis/*.Rproj
