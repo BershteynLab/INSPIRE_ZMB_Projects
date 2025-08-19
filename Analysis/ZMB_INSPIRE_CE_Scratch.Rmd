@@ -33,7 +33,7 @@ ZMB_CENSUS_POP = 10868136 # ages 15-64
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_baseline___2025_08_07_17_43_20_997698/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_baseline___2025_08_11_13_01_13_519959"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_baseline___2025_08_15_17_28_08_029721/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_baseline___2025_08_15_22_48_34_248775/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim3_baseline___2025_08_16_08_39_16_332719/"
 
 inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -51,7 +51,7 @@ inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_prep___2025_08_08_09_45_18_369763/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_prep___2025_08_11_17_25_27_538425/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_prep___2025_08_15_17_29_41_642958/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_prep___2025_08_15_22_50_00_828706/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim3_prep___2025_08_16_08_40_49_524005/"
 
 inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -69,7 +69,7 @@ inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
 
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_art___2025_08_07_17_43_41_529081/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_art___2025_08_15_13_43_35_367512/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_art___2025_08_15_22_52_16_524020/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim3_art___2025_08_16_08_43_20_704021/"
 
 inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -88,7 +88,7 @@ inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_test_zaimara___2025_08_07_17_43_40_261346/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_zaimara___2025_08_11_13_03_58_074985/"
 #experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim_zaimara___2025_08_15_17_30_48_027084/"
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim2_zaimara___2025_08_15_22_51_06_433149/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_prelim3_zaimara___2025_08_16_08_42_00_315581/"
 
 inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -245,7 +245,7 @@ Calculate numbers of deaths and numbers of interventions
 ## All ages
 metrics.all.ages <- cbind(
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     group_by(scenario_name, sim.ix) %>% 
     mutate(Off_ART = Infected - On_ART) %>% 
     summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
@@ -268,7 +268,7 @@ metrics.all.ages <- cbind(
               ) %>% 
     ungroup(),
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     filter(scenario_name == 'baseline') %>% 
     group_by(scenario_name, sim.ix) %>% 
     mutate(Off_ART = Infected - On_ART) %>% 
@@ -305,7 +305,7 @@ metrics.all.ages <- cbind(
 ## Adults only
 metrics.adults <- cbind(
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     filter(Age >= 25) %>% 
     group_by(scenario_name, sim.ix) %>% 
     mutate(Off_ART = Infected - On_ART) %>% 
@@ -329,7 +329,7 @@ metrics.adults <- cbind(
               ) %>% 
     ungroup(),
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     filter(Age >= 25) %>% 
     filter(scenario_name == 'baseline') %>% 
     group_by(scenario_name, sim.ix) %>% 
@@ -367,7 +367,7 @@ metrics.adults <- cbind(
 # Youth only
 metrics.youth <- cbind(
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     filter(Age >= 15, Age < 25) %>% 
     group_by(scenario_name, sim.ix) %>% 
     mutate(Off_ART = Infected - On_ART) %>% 
@@ -391,7 +391,7 @@ metrics.youth <- cbind(
               ) %>% 
     ungroup(),
   inspire.test.results %>% 
-    filter(Year >= 2025.5, Year < 2045.5) %>% 
+    filter(Year >= 2025.5, Year < 2046) %>% 
     filter(Age >= 15, Age < 25) %>% 
     filter(scenario_name == 'baseline') %>% 
     mutate(Off_ART = Infected - On_ART) %>% 
@@ -454,12 +454,9 @@ metrics.youth %>%
   select(scenario_name, ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer)
 ```
 
-```{r}
-metrics.youth %>% names
-```
 
 ```{r}
-metrics.all.ages <- read_csv("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1599.csv")
+#metrics.all.ages <- read_csv("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/INSPIRE_CE_Prelim_A1599.csv")
 
 metrics.all.ages %>% 
   select(scenario_name, Newly.Infected, Died_from_HIV, On_ART, Off_ART) %>% 
@@ -526,7 +523,7 @@ youth.plot.dat$scenario <- factor(youth.plot.dat$scenario_name, levels = c( "bas
 ### HIV Acquisitions
 ```{r}
 hiv.acquisitions.adults <- adults.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario_name ),
             linewidth = 1,
@@ -551,7 +548,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
        width = 5, height = 4, units = 'in')
 
 hiv.acquisitions.youth <- youth.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Newly.Infected, color = scenario_name ),
             linewidth = 1,
@@ -579,7 +576,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
 ### HIV Deaths
 ```{r}
 hiv.deaths.adults <- adults.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name ),
             linewidth = 1,
@@ -604,7 +601,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
        width = 5, height = 4, units = 'in')
 
 hiv.deaths.youth <- youth.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name ),
             linewidth = 1,
@@ -634,7 +631,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
 
 ```{r}
 hiv.onart.adults <- adults.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
             linewidth = 1,
@@ -659,7 +656,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
        width = 5, height = 4, units = 'in')
 
 hiv.onart.youth <- youth.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
             linewidth = 1,
@@ -689,7 +686,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
 
 ```{r}
 hiv.offart.adults <- adults.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Off_ART, color = scenario_name ),
             linewidth = 1,
@@ -714,7 +711,7 @@ ggsave(filename = paste0(c("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_2022
        width = 5, height = 4, units = 'in')
 
 hiv.offart.youth <- youth.plot.dat %>% 
-  filter(Year >= 2020, Year < 2045) %>%
+  filter(Year >= 2020.5, Year < 2045) %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = Off_ART, color = scenario_name ),
             linewidth = 1,
