@@ -635,7 +635,7 @@ hiv.onart.adults <- adults.plot.dat %>%
   ggplot() + 
   geom_line(mapping = aes(x = Year, y = On_ART, color = scenario_name ),
             linewidth = 1,
-            show.legend = TRUE ) + 
+            show.legend = FALSE ) + 
   scale_color_manual(values = c( "black","#C41000", "#E69F00", "#0072B2")) + 
   scale_x_continuous("Year", breaks = seq(2015,2040,5)) +
   scale_y_continuous("Person-Years on ART") +
@@ -813,5 +813,50 @@ inc.data.mean <- data %>%
 inc.data.mean %>% filter(Year >= 2025) %>% 
   pivot_wider(id_cols = Year, names_from = scenario_name, values_from = mean.Incidence) %>% 
   mutate(ratio = zaimara/baseline)
+```
+
+# Graveyard
+
+```{r}
+A1599.cost.threshold.calculation.CIs.staging %>% 
+  filter(scenario_name == 'art') %>% 
+  group_by(scenario_name) %>% 
+  summarize(HIV.DALY.diff = mean(HIV.DALY.diff),
+            On_ART.diff = mean(On_ART.diff))
+```
+
+```{r}
+A1599.cost.threshold.calculation.CIs.staging %>% 
+  filter(scenario_name == 'art') %>% 
+  group_by(scenario_name) %>% 
+  summarize(HIV.DALY.diff = mean(HIV.DALY.diff),
+            On_ART.diff = mean(On_ART.diff),
+            undiscounted.num = mean(undiscounted.num),
+            ART = mean(ART))
+```
+
+
+```{r}
+data.metrics.aggregated.2025.2045.adults %>% 
+    select(sim.ix, scenario_name, 
+           On_ART.diff, On_ART.discount.diff,
+           ZAIMARA_INSPIRE, ZAIMARA_INSPIRE.discount,
+           PrEP_INSPIRE, PrEP_INSPIRE.discount,
+           OnART1_INSPIRE_defaulter_tracer,
+           OnART1_INSPIRE_defaulter_tracer.discount)
+```
+
+
+```{r}
+A1599.cost.threshold.calculation.CIs.staging %>% 
+  group_by(scenario_name) %>% 
+  summarize(ARTcosts_fraction.discount = mean(ARTcosts_fraction.discount),
+            ARTcosts_fraction = mean(ARTcosts_fraction.discount), 
+            undiscounted.num = mean(undiscounted.num),
+            discounted.num = mean(discounted.num),
+            ARTcosts = mean(ppyOnART * On_ART.diff),
+            IntVencosts = mean(CET * HIV.DALY.diff ),
+            h = mean(ppyOnART * On_ART.diff/undiscounted.num),
+            h.disc = mean(ppyOnART * On_ART.discount.diff/discounted.num))
 ```
 
