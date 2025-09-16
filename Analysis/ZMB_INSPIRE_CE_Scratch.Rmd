@@ -860,3 +860,329 @@ A1599.cost.threshold.calculation.CIs.staging %>%
             h.disc = mean(ppyOnART * On_ART.discount.diff/discounted.num))
 ```
 
+```{r}
+inspire.test.results %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            .groups = 'drop_last') %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer)) %>% 
+  pivot_longer(cols = c(ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer),
+           values_to = "Value", 
+           names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name) )+ 
+  facet_grid(rows = vars(Metric), scales = 'free_y')
+```
+
+```{r}
+inspire.daly.results %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            .groups = 'drop_last') %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer)) %>% 
+  pivot_longer(cols = c(ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer),
+           values_to = "Value", 
+           names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name) )+ 
+  facet_grid(rows = vars(Metric), scales = 'free_y')
+```
+
+```{r}
+inspire.daly.results %>% 
+  mutate(Year = floor(Year +.5)) %>% 
+  filter(Age < 25, Age >= 15, scenario_name %in% c("art.artdrop", "baseline.artdrop"),
+         Year >= 2025) %>% 
+  group_by(Year, sim.ix, scenario_name) %>% 
+    summarize(OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor /2 )) %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer =mean(OnART1_INSPIRE_defaulter_tracer),
+            On_ART = mean(On_ART)) %>% 
+  mutate(ratio = OnART1_INSPIRE_defaulter_tracer/On_ART)
+```
+
+```{r}
+inspire.test.results %>% 
+    mutate(Year = floor(Year +.5)) %>% 
+  filter(Age < 25, Age >= 15, scenario_name %in% c("art", "baseline"),
+         Year >= 2025) %>% 
+  group_by(Year, sim.ix, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor /2 )) %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer =mean(OnART1_INSPIRE_defaulter_tracer),
+            On_ART = mean(On_ART)) %>% 
+  mutate(ratio = OnART1_INSPIRE_defaulter_tracer/On_ART)
+```
+
+```{r}
+inspire.test.results %>% 
+  filter(Year == 2026,
+         Age < 25, Age >= 15) %>% 
+  group_by(scenario_name, sim.ix) %>% 
+  summarize(Population = sum(Population * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>%
+   group_by(scenario_name) %>% 
+  summarize(Population = mean(Population),
+            Infected = mean(Infected),
+            On_ART = mean(On_ART))
+```
+
+```{r}
+inspire.daly.results %>% 
+  filter(Year == 2026,
+         Age < 25, Age >= 15) %>% 
+  group_by(scenario_name, sim.ix) %>% 
+  summarize(Population = sum(Population * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>%
+   group_by(scenario_name) %>% 
+  summarize(Population = mean(Population),
+            Infected = mean(Infected),
+            On_ART = mean(On_ART))
+```
+
+# Testing ART Dropout rates ugh
+
+Need to test why dropout rates in the ARTDropout campaign
+
+```{r}
+# experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop_test_art_15___2025_08_20_14_50_53_222794/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop_aya_test_art_15___2025_09_08_10_07_33_922769"
+
+sim.artdrop.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "art.artdrop.test",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer","OnART3"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+# experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop_test_baseline_15___2025_08_20_14_50_32_570301/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop_aya_test_baseline_15___2025_09_08_10_06_59_772017"
+
+
+sim.artdrop.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "baseline.artdrop.test",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer","OnART3"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+# experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2//Baseline-campaign_zmb_inspire-artdrop_test_art___2025_08_20_14_50_59_275398/"
+# 
+# sim.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
+#   experiment_path = experiment.path,
+#   scenario_name =  "art.test",
+#   summarize_columns = c("Population","Infected", "On_ART",
+#                       "Died", "Died_from_HIV",
+#                       "Newly.Infected","Diagnosed",
+#                       "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer","OnART3"
+#                       ),
+#   stratify_columns = c("Year", "Age", "Gender" ),
+#   min_age_inclusive = 0,
+#   max_age_inclusive = 99
+# )
+# 
+# experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-artdrop_test_baseline___2025_08_20_14_50_56_257542//"
+# 
+# sim.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
+#   experiment_path = experiment.path,
+#   scenario_name =  "baseline.test",
+#   summarize_columns = c("Population","Infected", "On_ART",
+#                       "Died", "Died_from_HIV",
+#                       "Newly.Infected","Diagnosed",
+#                       "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer","OnART3"
+#                       ),
+#   stratify_columns = c("Year", "Age", "Gender" ),
+#   min_age_inclusive = 0,
+#   max_age_inclusive = 99
+# )
+
+artdrop.test.results <- rbind(
+  sim.artdrop.test.baseline,
+  sim.artdrop.test.art#,
+  # sim.test.baseline,
+  # sim.test.art
+  )
+
+sim.results.pop.scaling <- artdrop.test.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+artdrop.test.results <- artdrop.test.results %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+```
+
+```{r}
+artdrop.test.results %>% 
+    mutate(Year = floor(Year +.5)) %>% 
+ filter(Age < 45, Age >= 15) %>% 
+  group_by(Year, sim.ix, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            OnART3 = sum(OnART3 * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor /2 )) %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer =mean(OnART1_INSPIRE_defaulter_tracer),
+            OnART3 = mean(OnART3),
+            On_ART = mean(On_ART)) %>% 
+  mutate(
+    ratio = OnART1_INSPIRE_defaulter_tracer/On_ART,
+    ratio.onart3 = OnART3/On_ART
+    ) %>% 
+  
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = ratio.onart3, color = scenario_name))
+```
+
+```{r}
+artdrop.test.results %>% 
+  filter(Year > 2015) %>% 
+  group_by(scenario_name, Year, sim.ix) %>% 
+  summarize(Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            Infected = sum(Infected * pop_scaling_factor), 
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Died_from_HIV = mean(Died_from_HIV),
+            Infected = mean(Infected), 
+            Newly.Infected = mean(Newly.Infected), 
+            On_ART = mean(On_ART)
+            ) %>% 
+    pivot_longer(cols = c(Died_from_HIV, Infected, Newly.Infected, On_ART),
+               values_to = "Value", 
+               names_to = "Metric") %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = Value, color = scenario_name ) ) + 
+  facet_wrap(facets = vars(Metric), scales = "free_y")
+```
+
+
+## What do these same quantities look like for the normal campaign file
+
+```{r}
+inspire.test.results %>% 
+    mutate(Year = floor(Year +.5)) %>% 
+  filter(Age < 25, Age >= 15, scenario_name %in% c("art", "baseline"),
+         Year >= 2025) %>% 
+  group_by(Year, sim.ix, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor /2 )) %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(OnART1_INSPIRE_defaulter_tracer =mean(OnART1_INSPIRE_defaulter_tracer),
+            On_ART = mean(On_ART)) %>% 
+  mutate(ratio = OnART1_INSPIRE_defaulter_tracer/On_ART)
+```
+```{r}
+
+```
+
+```{r}
+# Count AYA person-years at baseline
+
+inspire.test.results %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  mutate(Year = floor(Year - .5)) %>% 
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Population = sum(Population * pop_scaling_factor)/2,
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name) %>% 
+  summarize(Population = mean(Population),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE))
+
+inspire.daly.results %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  mutate(Year = floor(Year - .5)) %>% 
+  filter(Year >= 2025)%>%
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Population = sum(Population * pop_scaling_factor)/2,
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Population = mean(Population),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE)) %>% 
+  filter(scenario_name == 'prep.artdrop') %>% 
+  mutate(PrEP_INSPIRE/Population)
+
+inspire.daly.results %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  mutate(Year = floor(Year - .5)) %>% 
+  filter(Year >= 2025)%>%
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Population = sum(Population * pop_scaling_factor)/2,
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name) %>% 
+  summarize(Population = mean(Population),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE)) %>% 
+  filter(scenario_name == 'prep.artdrop') %>% 
+  mutate(PrEP_INSPIRE/Population)
+```
+
+```{r}
+inspire.daly.results %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  mutate(Year = floor(Year - .5)) %>% 
+  filter(Year >= 2025)%>%
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(Population = sum(Population * pop_scaling_factor)/2,
+            ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Population = mean(Population),
+            ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE)) %>% 
+  filter(scenario_name == 'zaimara.artdrop') %>% 
+  mutate(ZAIMARA_INSPIRE/Population)
+```
+
+```{r}
+basic_metrics <- read_csv("basic_metrics_with_CIs_A1525_ARTDrop.csv")
+
+basic_metrics
+```
+```{r}
+time.series.metrics.disaggregated.aya  %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(Population = mean(Population),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE)) %>% 
+  filter(scenario_name == 'prep') %>% 
+  mutate(PrEP_INSPIRE/Population)
+
+
+time.series.metrics.disaggregated.aya  %>% 
+  filter(scenario_name == 'prep') %>% 
+  group_by(scenario_name, sim.ix) %>% 
+  summarize(Population = sum(Population),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE)) %>% 
+  group_by(scenario_name) %>%
+  summarize(Population = mean(Population),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE)) %>% 
+  mutate(PrEP_INSPIRE/Population)
+```
+

@@ -1,7 +1,6 @@
 ---
 title: "ZMB_INSPIRE_CE_DALY"
 output: html_document
-date: "2025-08-17"
 ---
 
 ```{r setup, include=FALSE}
@@ -772,7 +771,7 @@ daly.tibble <- merge(
   ),
   all = TRUE
 ) %>% 
-  merge(  tibble(sim.ix = seq(1,10)), all=TRUE)
+  merge(  tibble(sim.ix = seq(1,250)), all=TRUE)
 
 daly_expanded <- tibble(
     year = seq(min(m4$Year_Integer), max(m4$Year_Integer))
@@ -877,7 +876,6 @@ daly.cis %>% write_csv("INSPIRE_CE_DALY_calculation_CIs.csv")
 
 ```{r}
 daly.cis <- read_csv("INSPIRE_CE_DALY_calculation_CIs.csv")
-
 metrics.A1525 <- read_csv("basic_metrics_with_CIs_A1525.csv")
 metrics.A1599 <- read_csv("basic_metrics_with_CIs_A1599.csv")
 ```
@@ -1473,3 +1471,253 @@ A1599.cost.threshold.calculation.CIs %>%
   select(scenario_name, metric, formatted)
 ```
 
+# Checking results
+
+```{r}
+metrics.A1599 <- read_csv("basic_metrics_with_CIs_A1599.csv")
+
+metrics.A1599 %>% View
+```
+# Recalculate with ARTdrop differences
+```{r}
+daly.cis.artdrop <- read_csv("INSPIRE_CE_DALY_calculation_CIs_ARTDrop.csv")
+metrics.A1525.artdrop <- read_csv("basic_metrics_with_CIs_A1525_ARTDrop.csv")
+metrics.A1599.artdrop <- read_csv("basic_metrics_with_CIs_A1599_ARTDrop.csv")
+```
+
+```{r}
+metrics.A1599.artdrop %>% filter(scenario_name == "baseline.artdrop")
+```
+
+```{r}
+metrics.A1525.artdrop %>% filter(scenario_name == "prep.artdrop")
+```
+
+
+```{r}
+daly.cis.artdrop
+```
+
+## Calculate CIs on Upper Bound Cost Thresholds
+
+```{r}
+time.series.metrics.disaggregated.all <- read_csv("basic_metrics_A1599_ARTDrop.csv")
+
+time.series.metrics.disaggregated.all <- time.series.metrics.disaggregated.all %>%
+  mutate(discount_factor = (1 - discount_percent)^(Year - discount_start_year) ) %>%
+  mutate(On_ART.discount = On_ART * discount_factor,
+         ZAIMARA_INSPIRE.discount = ZAIMARA_INSPIRE * discount_factor,
+         PrEP_INSPIRE.discount = PrEP_INSPIRE * discount_factor,
+         OnART1_INSPIRE_defaulter_tracer.discount = OnART1_INSPIRE_defaulter_tracer * discount_factor)
+
+data.metrics.aggregated.2025.2045.all <- time.series.metrics.disaggregated.all %>% 
+  group_by(scenario_name, sim.ix) %>% 
+  summarize(Newly.Infected = sum(Newly.Infected),
+            Died_from_HIV = sum(Died_from_HIV),
+            On_ART = sum(On_ART), 
+            On_ART.discount = sum(On_ART.discount),
+            Off_ART = sum(Off_ART),
+            ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE),
+            ZAIMARA_INSPIRE.discount = sum(ZAIMARA_INSPIRE.discount),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE),
+            PrEP_INSPIRE.discount = sum(PrEP_INSPIRE.discount),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer),
+            OnART1_INSPIRE_defaulter_tracer.discount = sum(OnART1_INSPIRE_defaulter_tracer.discount),
+            .groups = 'drop_last'
+  ) %>% 
+  ungroup()
+
+data.metrics.aggregated.2025.2045.all <- data.metrics.aggregated.2025.2045.all %>% merge(
+  data.metrics.aggregated.2025.2045.all %>% filter(scenario_name == 'baseline') %>% 
+    select(sim.ix, 
+           Newly.Infected.baseline = Newly.Infected,
+           Died_from_HIV.baseline = Died_from_HIV,
+           On_ART.baseline = On_ART, 
+           On_ART.discount.baseline = On_ART.discount, 
+           Off_ART.baseline = Off_ART),
+  by = c("sim.ix")
+) %>% 
+  mutate(Newly.Infected.diff = Newly.Infected - Newly.Infected.baseline,
+         Died_from_HIV.diff = Died_from_HIV - Died_from_HIV.baseline,
+         On_ART.diff = On_ART - On_ART.baseline,
+         On_ART.discount.diff = On_ART.discount - On_ART.discount.baseline,
+         Off_ART.diff = Off_ART - Off_ART.baseline) %>% 
+  mutate(Newly.Infected.pct = Newly.Infected.diff/Newly.Infected.baseline,
+         Died_from_HIV.pct = Died_from_HIV.diff/Died_from_HIV.baseline,
+         On_ART.pct = On_ART.diff/On_ART, 
+         On_ART.discount.pct = On_ART.discount.diff/On_ART.discount, 
+         Off_ART.pct = Off_ART.diff/Off_ART)
+
+
+HIV.DALYs <- read_csv("INSPIRE_CE_DALY_calculation_ARTDrop.csv")
+# Aggregate over years and calculate DALYs averted
+HIV.DALYs.agg <- HIV.DALYs %>% 
+  group_by(sim.ix, scenario_name) %>% 
+  summarize(HIV.DALY= sum(HIV.DALY),
+            HIV.DALY.discounted = sum(HIV.DALY.discounted), .groups = 'drop_last') %>% 
+  ungroup() 
+  
+HIV.DALYs.agg <- HIV.DALYs.agg %>% merge(
+    HIV.DALYs.agg %>% filter(scenario_name == 'baseline.artdrop') %>% 
+      select(sim.ix, 
+             HIV.DALY.baseline = HIV.DALY,
+             HIV.DALY.discounted.baseline = HIV.DALY.discounted),
+    by = c('sim.ix')
+  ) %>% 
+  mutate(
+    HIV.DALY.diff = HIV.DALY - HIV.DALY.baseline,
+    HIV.DALY.discounted.diff = HIV.DALY.discounted - HIV.DALY.discounted.baseline
+  ) %>% 
+  mutate(
+    HIV.DALY.pct = HIV.DALY.diff/HIV.DALY,
+    HIV.DALY.discounted.pct = HIV.DALY.discounted.diff/HIV.DALY.discounted
+  )
+```
+
+
+```{r}
+A1599.cost.threshold.calculation.CIs.staging <- merge(
+  HIV.DALYs.agg %>% 
+    select(sim.ix, scenario_name, HIV.DALY.diff, HIV.DALY.discounted.diff),
+  data.metrics.aggregated.2025.2045.all %>% 
+    select(sim.ix, scenario_name, 
+           On_ART.diff, On_ART.discount.diff,
+           ZAIMARA_INSPIRE, ZAIMARA_INSPIRE.discount,
+           PrEP_INSPIRE, PrEP_INSPIRE.discount,
+           ART = OnART1_INSPIRE_defaulter_tracer,
+           ART.discount = OnART1_INSPIRE_defaulter_tracer.discount),
+    by = c("sim.ix", "scenario_name")
+  ) %>% merge(
+    data.metrics.aggregated.2025.2045.aya %>% 
+    select(scenario_name, sim.ix, 
+           ART.maintenance = On_ART,
+           ART.maintenance.discount = On_ART.discount),
+    by = c("sim.ix", "scenario_name")
+) %>% 
+  mutate(
+    undiscounted.num = - CET * HIV.DALY.diff - ppyOnART * On_ART.diff,
+    discounted.num = - CET * HIV.DALY.discounted.diff - ppyOnART * On_ART.discount.diff
+  ) %>% 
+  mutate(
+    ART.cost = case_when(
+      ART == 0 ~ 0,
+      ART != 0 ~ undiscounted.num/ART),
+    ART.discount.cost = case_when(
+      ART.discount == 0 ~ 0,
+      ART.discount != 0 ~ discounted.num/ART.discount),
+    ART.maintenance.cost = case_when(
+      ART == 0 ~ 0,
+      ART != 0 ~ undiscounted.num/ART.maintenance),
+    ART.maintenance.discount.cost = case_when(
+      ART == 0 ~ 0,
+      ART != 0 ~ undiscounted.num/ART.maintenance.discount),
+    PREP.cost = case_when(
+      PrEP_INSPIRE == 0 ~ 0,
+      PrEP_INSPIRE != 0 ~ undiscounted.num/PrEP_INSPIRE),
+    PREP.discount.cost = case_when(
+      PrEP_INSPIRE.discount == 0 ~ 0,
+      PrEP_INSPIRE.discount != 0 ~ discounted.num/PrEP_INSPIRE.discount),
+    ZAIMARA.cost = case_when(
+      ZAIMARA_INSPIRE == 0 ~ 0,
+      ZAIMARA_INSPIRE != 0 ~ undiscounted.num/ZAIMARA_INSPIRE),
+    ZAIMARA.discount.cost = case_when(
+      ZAIMARA_INSPIRE.discount == 0 ~ 0,
+      ZAIMARA_INSPIRE.discount != 0 ~ discounted.num/ZAIMARA_INSPIRE.discount)
+  ) %>% 
+  mutate(
+    ARTcosts_fraction = ppyOnART * On_ART.diff/undiscounted.num,
+    ARTcosts_fraction.discount = ppyOnART * On_ART.discount.diff/ discounted.num)
+
+A1599.cost.threshold.calculation.CIs.staging
+
+A1599.cost.threshold.calculation.CIs <- data.frame()
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ART.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ART.discount.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ART.maintenance.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ART.maintenance.discount.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ARTcosts_fraction")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "art",
+      metric = "ARTcosts_fraction.discount")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep",
+      metric = "PREP.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep",
+      metric = "PREP.discount.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep",
+      metric = "ARTcosts_fraction")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep",
+      metric = "ARTcosts_fraction.discount")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "zaimara",
+      metric = "ZAIMARA.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "zaimara",
+      metric = "ZAIMARA.discount.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "zaimara",
+      metric = "ARTcosts_fraction")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "zaimara",
+      metric = "ARTcosts_fraction.discount")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+
+A1599.cost.threshold.calculation.CIs %>% write_csv("Cost_Threshold_Calculations_A1599_with_ART_maintenance.csv")
+
+A1599.cost.threshold.calculation.CIs
+```

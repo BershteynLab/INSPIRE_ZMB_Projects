@@ -50,6 +50,12 @@
                     "Initial_Distribution__KP_Risk_Central": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },
+                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -152,6 +158,11 @@
                     "Initial_Distribution__KP_Risk_Copperbelt": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -254,6 +265,11 @@
                     "Initial_Distribution__KP_Risk_Eastern": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -356,6 +372,11 @@
                     "Initial_Distribution__KP_Risk_Luapula": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -458,6 +479,11 @@
                     "Initial_Distribution__KP_Risk_Lusaka": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -560,6 +586,11 @@
                     "Initial_Distribution__KP_Risk_Northwestern": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -662,6 +693,11 @@
                     "Initial_Distribution__KP_Risk_Southern": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
@@ -764,6 +800,11 @@
                     "Initial_Distribution__KP_Risk_Western": "<-- MARKER"
                 },
                 {
+                    "Property": "OnPrEP",
+                    "Values": ["False", "True"],
+                    "Initial_Distribution": [1, 0],
+                    "Transitions": []
+                },                {
                     "Property": "CascadeState",
                     "Transitions": [],
                     "Values": [
