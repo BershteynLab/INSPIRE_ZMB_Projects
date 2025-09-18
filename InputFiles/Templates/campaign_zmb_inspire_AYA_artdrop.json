@@ -283,74 +283,6 @@
                      ]
                   ],
                   "Target_Disease_State_Has_Intervention_Name": "PrEP"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 35,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2075,
-                  "End_Year__KP__PrEP_Baseline_EY": "Marker",
-                  "Num_Targeted_Females": [
-                     9117650
-                  ],
-                  "Num_Targeted_Males": [
-                     4558850
-                  ],
-                  "Property_Restrictions_Within_Node": [
-                     {
-                        "Risk": "HIGH"
-                     },
-                     {
-                        "Risk": "MEDIUM"
-                     }
-                  ],
-                  "Start_Year": 2025,
-                  "Start_Year__KP__PrEP_Baseline_SY": "Marker",
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "PrEP"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 35,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2075.25,
-                  "End_Year__KP__PrEP_Interrupt_EY": "Marker",
-                  "Num_Targeted_Females": [
-                     1
-                  ],
-                  "Num_Targeted_Females__KP__PrEP_Interrupt_F": "marker",
-                  "Num_Targeted_Males": [
-                     1
-                  ],
-                  "Num_Targeted_Males__KP__PrEP_Interrupt_M": "marker",
-                  "Property_Restrictions_Within_Node": [
-                     {
-                        "Risk": "HIGH"
-                     },
-                     {
-                        "Risk": "MEDIUM"
-                     }
-                  ],
-                  "Start_Year": 2075,
-                  "Start_Year__KP__PrEP_Interrupt_SY": "Marker",
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "PrEP"
                }
             ],
             "Intervention_Config": {
@@ -376,6 +308,8 @@
                   "class": "WaningEffectMapLinear",
                   "source": "doi/full/10.1056/NEJMoa1108524"
                },
+               "Distributed_Event_Trigger": "Initiate_Background_PrEP",
+               "Expired_Event_Trigger": "Background_PrEP_Expired",
                "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
                "class": "ControlledVaccine"
             },
@@ -706,122 +640,6 @@
             "class": "NodeSetAll"
          },
          "Start_Year": 1990,
-         "class": "CampaignEventByYear"
-      },
-      {
-         "BEGIN": "PREP INTERVENTION",
-         "Event_Coordinator_Config": {
-            "End_Year": 2100,
-            "Intervention_Config": {
-               "Cost_To_Consumer": 1.0,
-               "Distributed_Event_Trigger": "Received_PrEP",
-               "Intervention_Name": "PrEP",
-               "Vaccine_Take": 1,
-               "Vaccine_Type": "AcquisitionBlocking",
-               "Waning_Config": {
-                  "Durability_Map": {
-                     "Times": [
-                        0,
-                        1825
-                     ],
-                     "Values": [
-                        0.73,
-                        0.73
-                     ]
-                  },
-                  "Expire_At_Durability_Map_End": 1,
-                  "Initial_Effect": 1,
-                  "class": "WaningEffectMapLinear"
-               },
-               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
-               "class": "ControlledVaccine"
-            },
-            "Property_Restrictions": [
-               "Risk:HIGH"
-            ],
-            "Target_Age_Max": 1,
-            "Target_Age_Min": 0,
-            "Target_Demographic": "ExplicitAgeRangesAndGender",
-            "Target_Disease_State": "HIV_Negative",
-            "Target_Gender": "Female",
-            "Time_Value_Map": {
-               "Times": [
-                  2017,
-                  2020
-               ],
-               "Values": [
-                  0.0,
-                  0.0
-               ]
-            },
-            "Update_Period": 7.01923076923,
-            "class": "ReferenceTrackingEventCoordinatorHIV"
-         },
-         "Event_Coordinator_Config__KP_PrEP_HIGH_Event": "<-- MARKER",
-         "Event_Name": "PrEP Reference Tracking [HIGH]",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2099,
-         "Start_Year__KP_PrEP_HIGH_Start_Year": "<-- MARKER",
-         "class": "CampaignEventByYear"
-      },
-      {
-         "END": "PREP INTERVENTION",
-         "Event_Coordinator_Config": {
-            "End_Year": 2100,
-            "Intervention_Config": {
-               "Cost_To_Consumer": 1.0,
-               "Distributed_Event_Trigger": "Received_PrEP",
-               "Intervention_Name": "PrEP",
-               "Vaccine_Take": 1,
-               "Vaccine_Type": "AcquisitionBlocking",
-               "Waning_Config": {
-                  "Durability_Map": {
-                     "Times": [
-                        0,
-                        1825
-                     ],
-                     "Values": [
-                        0.73,
-                        0.73
-                     ]
-                  },
-                  "Expire_At_Durability_Map_End": 1,
-                  "Initial_Effect": 1,
-                  "class": "WaningEffectMapLinear"
-               },
-               "Waning_Config__KP_PrEP_MED_Waning": "<-- MARKER",
-               "class": "ControlledVaccine"
-            },
-            "Property_Restrictions": [
-               "Risk:MEDIUM"
-            ],
-            "Target_Age_Max": 1,
-            "Target_Age_Min": 0,
-            "Target_Demographic": "ExplicitAgeRangesAndGender",
-            "Target_Disease_State": "HIV_Negative",
-            "Target_Gender": "Female",
-            "Time_Value_Map": {
-               "Times": [
-                  2017,
-                  2020
-               ],
-               "Values": [
-                  0.0,
-                  0.0
-               ]
-            },
-            "Update_Period": 7.01923076923,
-            "class": "ReferenceTrackingEventCoordinatorHIV"
-         },
-         "Event_Coordinator_Config__KP_PrEP_MED_Event": "<-- MARKER",
-         "Event_Name": "PrEP Reference Tracking [MEDIUM]",
-         "Nodeset_Config": {
-            "class": "NodeSetAll"
-         },
-         "Start_Year": 2099,
-         "Start_Year__KP_PrEP_MED_Start_Year": "<-- MARKER",
          "class": "CampaignEventByYear"
       },
       {
@@ -6923,7 +6741,7 @@
       {
          "BEGIN": "INSPIRE Interventions",
          "Event_Name": "Distribute PrEP annually to Adolescents and Young Adults",
-         "COMMENT": "INSPIRE Intervention - distribute perfect PrEP to all AYA, ages 15-25",
+         "COMMENT": "INSPIRE Intervention - distribute perfect PrEP to all sexually active AYA, ages 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -6936,46 +6754,112 @@
             "Target_Age_Max": 24.9999999,
             "Target_Age_Min": 15,
             "Target_Demographic": "ExplicitAgeRanges",
+                        "Targeting_Config": {
+               "class" : "TargetingLogic",
+               "Logic" : [
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 0,
+                        "IP_Key_Value": "Risk:LOW"
+                     }
+                  ]
+               ]
+            },
             "Time_Value_Map": { 
                "Times": [2025,2045],
                "Values": [1,1]
             },
             "Intervention_Config": {
-               "class": "MultiInterventionDistributor",
-               "Intervention_List": [
-                  {
-                     "class":"BroadcastEvent",
-                     "Broadcast_Event": "PrEP_INSPIRE"
+               "Cost_To_Consumer": 1.0,
+               "Intervention_Name": "PrEP_INSPIRE",
+               "Vaccine_Take": 1,
+               "Vaccine_Type": "AcquisitionBlocking",
+               "Waning_Config": {
+                  "Durability_Map": {
+                     "Times": [
+                        0,
+                        364,
+                        365
+                     ],
+                     "Values": [
+                        0,
+                        0,
+                        0
+                     ],
+                     "Values__KP__INSPIRE_PrEP_Distribution": "<-- MARKER"
                   },
-                  {
-                     "Cost_To_Consumer": 1.0,
-                     "Intervention_Name": "PrEP_INSPIRE",
-                     "Vaccine_Take": 1,
-                     "Vaccine_Type": "AcquisitionBlocking",
-                     "Waning_Config": {
-                        "Durability_Map": {
-                           "Times": [
-                              0,
-                              364,
-                              365
-                           ],
-                           "Values": [
-                              0,
-                              0,
-                              0
-                           ],
-                           "Values__KP__INSPIRE_PrEP_Distribution": "<-- MARKER"
-                        },
-                        "Expire_At_Durability_Map_End": 1,
-                        "Initial_Effect": 1,
-                        "class": "WaningEffectMapLinear"
-                     },
-                     "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
-                     "class": "ControlledVaccine"
-                  }
-               ]
+                  "Expire_At_Durability_Map_End": 1,
+                  "Initial_Effect": 1,
+                  "class": "WaningEffectMapLinear"
+               },
+               "Distributed_Event_Trigger": "PrEP_INSPIRE",
+               "Expired_Event_Trigger":"PrEP_INSPIRE_Expired",
+               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
+               "class": "ControlledVaccine"
             }
          }
+      },
+      {
+            "Event_Coordinator_Config": {
+                "Intervention_Config": {
+                    "Actual_IndividualIntervention_Config": {
+                        "New_Property_Value": "",
+                        "Target_Property_Key": "OnPrEP",
+                        "Target_Property_Value": "True",
+                        "class": "PropertyValueChanger"
+                    },
+                    "Trigger_Condition_List": [
+                        "Initiate_Background_PrEP",
+                        "PrEP_INSPIRE"
+                    ],
+                    "class": "NodeLevelHealthTriggeredIV"
+                },
+                "class": "StandardInterventionDistributionEventCoordinator"
+            },
+            "Event_Name": "Set OnPrEP Status after initiation",
+            "Nodeset_Config": {
+                "class": "NodeSetAll"
+            },
+            "Start_Year": 2000,
+            "End_Year": 2099,
+            "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+               "Intervention_Config": {
+                  "Actual_IndividualIntervention_Config": {
+                     "New_Property_Value": "",
+                     "Target_Property_Key": "OnPrEP",
+                     "Target_Property_Value": "False",
+                     "class": "PropertyValueChanger"
+                  },
+                  "Target_Demographic": "ExplicitAgeRangesAndGender",
+                  "Target_Gender": "Female",
+                  "Trigger_Condition_List": [
+                     "Background_PrEP_Expired",
+                     "PrEP_INSPIRE_Expired"
+                  ],
+                  "class": "NodeLevelHealthTriggeredIV"
+               },
+               "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "Remove OnPrEP Status after Expiry",
+         "Nodeset_Config": {
+               "class": "NodeSetAll"
+         },
+         "Start_Year": 2000,
+         "End_Year": 2099,
+         "class": "CampaignEventByYear"
       },
       {
          "Event_Name": "Reduce HIV incidence among AYA",

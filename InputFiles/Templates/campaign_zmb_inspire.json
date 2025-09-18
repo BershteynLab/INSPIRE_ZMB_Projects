@@ -283,74 +283,6 @@
                      ]
                   ],
                   "Target_Disease_State_Has_Intervention_Name": "PrEP"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 35,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2075,
-                  "End_Year__KP__PrEP_Baseline_EY": "Marker",
-                  "Num_Targeted_Females": [
-                     9117650
-                  ],
-                  "Num_Targeted_Males": [
-                     4558850
-                  ],
-                  "Property_Restrictions_Within_Node": [
-                     {
-                        "Risk": "HIGH"
-                     },
-                     {
-                        "Risk": "MEDIUM"
-                     }
-                  ],
-                  "Start_Year": 2025,
-                  "Start_Year__KP__PrEP_Baseline_SY": "Marker",
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "PrEP"
-               },
-               {
-                  "Age_Ranges_Years": [
-                     {
-                        "Max": 35,
-                        "Min": 15
-                     }
-                  ],
-                  "End_Year": 2075.25,
-                  "End_Year__KP__PrEP_Interrupt_EY": "Marker",
-                  "Num_Targeted_Females": [
-                     1
-                  ],
-                  "Num_Targeted_Females__KP__PrEP_Interrupt_F": "marker",
-                  "Num_Targeted_Males": [
-                     1
-                  ],
-                  "Num_Targeted_Males__KP__PrEP_Interrupt_M": "marker",
-                  "Property_Restrictions_Within_Node": [
-                     {
-                        "Risk": "HIGH"
-                     },
-                     {
-                        "Risk": "MEDIUM"
-                     }
-                  ],
-                  "Start_Year": 2075,
-                  "Start_Year__KP__PrEP_Interrupt_SY": "Marker",
-                  "Target_Disease_State": [
-                     [
-                        "HIV_Negative",
-                        "Not_Have_Intervention"
-                     ]
-                  ],
-                  "Target_Disease_State_Has_Intervention_Name": "PrEP"
                }
             ],
             "Intervention_Config": {
@@ -377,7 +309,8 @@
                   "source": "doi/full/10.1056/NEJMoa1108524"
                },
                "Distributed_Event_Trigger": "Initiate_Background_PrEP",
-               "Expired_Event_Trigger": "Background_PrEP_Expired",               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
+               "Expired_Event_Trigger": "Background_PrEP_Expired",
+               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
                "class": "ControlledVaccine"
             },
             "class": "NChooserEventCoordinatorHIV"
@@ -6747,20 +6680,22 @@
             "Targeting_Config": {
                "class" : "TargetingLogic",
                "Logic" : [
-                  {
-                     "class": "HasIP",
-                     "Is_Equal_To": 1,
-                     "IP_Key_Value": "OnPrEP:FALSE"
-                  },
-                  {
-                     "class" : "IsPostDebut",
-                     "Is_Equal_To": 1
-                  },
-                  {
-                     "class": "HasIP",
-                     "Is_Equal_To": 0,
-                     "IP_Key_Value": "Risk:LOW"
-                  }
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 0,
+                        "IP_Key_Value": "Risk:LOW"
+                     }
+                  ]
                ]
             },
             "Time_Value_Map": { 

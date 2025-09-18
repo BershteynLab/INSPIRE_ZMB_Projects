@@ -620,6 +620,167 @@ daly.cis %>% write_csv("INSPIRE_CE_DALY_calculation_CIs_ARTDrop.csv")
 
 ```
 
+## DALY Calculations - Youth
+
+### Calculate DALYs for each individual run
+```{r}
+data_by_age_year <- inspire.daly.results %>%
+  filter(Year >= 2025.5) %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  dplyr::group_by(Year, Age, sim.ix, scenario_name) %>%
+  dplyr::summarise(
+    Died_from_HIV = sum(Died_from_HIV),
+     Infected = sum(Infected),
+     On_ART = sum(On_ART),
+     pop_scaling_factor = mean(pop_scaling_factor),
+     .groups = "drop_last"
+   )
+
+data_by_age_year$Year_Integer <- floor((data_by_age_year$Year-0.5))
+
+m2 <- data_by_age_year %>%
+        dplyr::group_by(Year_Integer, Age, sim.ix, scenario_name) %>%
+        dplyr::summarise(
+          Died_from_HIV = sum(Died_from_HIV),
+          Infected = mean(Infected),
+          On_ART = mean(On_ART),
+          pop_scaling_factor = mean(pop_scaling_factor),
+          .groups = "drop_last"
+         )
+
+m2 <- m2 %>%
+        mutate(On_ART_calib = On_ART*pop_scaling_factor,
+        Infected_calib = Infected*pop_scaling_factor,
+        Died_from_HIV_calib = Died_from_HIV*pop_scaling_factor,
+        Infected_off_ART_calib = (Infected - On_ART)*pop_scaling_factor)
+
+life_expectancy = 80
+m2$Age <- ifelse(m2$Age >life_expectancy, life_expectancy, m2$Age)
+
+m3 <- m2 %>%
+      dplyr::group_by(Year_Integer, Age, scenario_name, sim.ix) %>%
+      dplyr::select(Year_Integer, Age, scenario_name, sim.ix, 
+                    Died_from_HIV_calib, Infected_off_ART_calib, On_ART_calib) %>%
+      dplyr::summarise_all(list(median=median))
+
+disability.tibble <- m3 %>%
+  dplyr::group_by(Year_Integer, scenario_name, sim.ix) %>%
+  dplyr::summarize(
+    infected_untreated = sum(Infected_off_ART_calib_median),
+    on_art = sum(On_ART_calib_median)
+    ) %>%
+  dplyr::rename(year = Year_Integer)
+
+m4 <- m3 %>% mutate(year_applied = Year_Integer - (Age - (life_expectancy + 1)))
+
+daly.tibble <- merge(
+  tibble(scenario_name_ = scenario.names),
+  tibble(
+    year = seq(min(m4$Year_Integer), max(m4$Year_Integer))
+  ),
+  all = TRUE
+) %>% 
+  merge(  tibble(sim.ix = seq(1,10)), all=TRUE)
+
+daly_expanded <- tibble(
+    year = seq(min(m4$Year_Integer), max(m4$Year_Integer))
+  ) %>% 
+  crossing(
+    sim.ix = unique(m4$sim.ix),
+    scenario_name = unique(m4$scenario_name)
+  )
+
+yll <- daly_expanded %>%
+  left_join(m4, by = c("sim.ix", "scenario_name")) %>%
+  filter(Year_Integer <= year, year_applied > year) %>%
+  group_by(year, sim.ix, scenario_name) %>%
+  summarize(
+    yll = sum(Died_from_HIV_calib_median, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+daly = left_join(
+  yll, 
+  disability.tibble, 
+  by=c("year", "sim.ix", "scenario_name")
+  ) %>%
+ replace(is.na(.), 0)
+
+daly <- daly %>% mutate(daly = infected_untreated*infected_weight + on_art*art_weight + yll)
+daly <- daly %>% mutate(discount_factor = (1 - discount_percent)^(year - discount_start_year) )
+daly[daly$year < discount_start_year,'discount_factor'] <- 1.0
+daly <- daly %>% mutate(daly_future_discounted = daly*discount_factor )
+
+# Intermediate table!
+HIV.DALYs <- daly %>% select(
+  Year = year, 
+  scenario_name,
+  sim.ix,
+  HIV.DALY = daly,
+  HIV.DALY.discounted = daly_future_discounted)
+
+HIV.DALYs %>% write_csv("INSPIRE_CE_DALY_calculation_ARTDrop_AYA.csv")
+```
+
+### DALY CIs
+Aggregate and calculate total DALYs averted
+```{r}
+HIV.DALYs <- read_csv("INSPIRE_CE_DALY_calculation_ARTDrop_AYA.csv")
+# Aggregate over years and calculate DALYs averted
+HIV.DALYs.agg <- HIV.DALYs %>% 
+  group_by(sim.ix, scenario_name) %>% 
+  summarize(HIV.DALY= sum(HIV.DALY),
+            HIV.DALY.discounted = sum(HIV.DALY.discounted), .groups = 'drop_last') %>% 
+  ungroup() 
+  
+HIV.DALYs.agg <- HIV.DALYs.agg %>% merge(
+    HIV.DALYs.agg %>% filter(scenario_name == 'baseline.artdrop') %>% 
+      select(sim.ix, 
+             HIV.DALY.baseline = HIV.DALY,
+             HIV.DALY.discounted.baseline = HIV.DALY.discounted),
+    by = c('sim.ix')
+  ) %>% 
+  mutate(
+    HIV.DALY.diff = HIV.DALY - HIV.DALY.baseline,
+    HIV.DALY.discounted.diff = HIV.DALY.discounted - HIV.DALY.discounted.baseline
+  ) %>% 
+  mutate(
+    HIV.DALY.pct = HIV.DALY.diff/HIV.DALY,
+    HIV.DALY.discounted.pct = HIV.DALY.discounted.diff/HIV.DALY.discounted
+  )
+
+```
+
+Then, calculate total DALYs averted and estimate confidence intervals
+
+```{r}
+metric.names = c("HIV.DALY", "HIV.DALY.discounted",
+                 "HIV.DALY.diff", "HIV.DALY.discounted.diff",
+                 "HIV.DALY.pct", "HIV.DALY.discounted.pct")
+
+scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "zaimara.artdrop")
+
+daly.cis = data.frame()
+
+for (i in metric.names){
+  for (j in scenario.names) {
+    
+    #print(c(i,j))
+    h <- calculate.CI.by.metric(
+      data = HIV.DALYs.agg,
+      scenario.name = j,
+      metric = i)
+    
+    daly.cis = rbind(daly.cis, h)
+  }
+}
+
+daly.cis
+
+daly.cis %>% write_csv("INSPIRE_CE_DALY_calculation_CIs_ARTDrop_AYA.csv")
+
+```
+
 ## Upper bound cost calculations
 
 ```{r}
@@ -1226,3 +1387,31 @@ A1599.cost.threshold.calculation.CIs %>%
   ) %>%
   select(scenario_name, metric, formatted)
 ```
+
+
+## Calculate Improvement in retention
+
+How many AYA person-years with ART intervention vs baseline
+
+```{r}
+inspire.daly.results %>% 
+  filter(Age < 25, Age >= 15) %>% 
+  group_by(Year, scenario_name, sim.ix) %>% 
+  summarize(Infected = sum(Infected * pop_scaling_factor),
+            On_ART = sum(On_ART * pop_scaling_factor)) %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(Infected = mean(Infected),
+            On_ART = mean(On_ART)) %>% 
+  mutate(coverage = On_ART/Infected) %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = coverage, color = scenario_name)) 
+```
+
+
+How much does ART coverage change for AYA with ART intervention vs basline
+```{r}
+
+
+
+```
+

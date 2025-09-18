@@ -1186,3 +1186,59 @@ time.series.metrics.disaggregated.aya  %>%
   mutate(PrEP_INSPIRE/Population)
 ```
 
+# Testing new PrEP distribution
+
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-test_inspire_artdrop_daly_prep___2025_09_17_17_19_39_240291"
+
+test.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep.test",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+test.results <- rbind(test.results, inspire.daly.baseline, inspire.daly.prep)
+
+sim.results.pop.scaling <- test.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+test.results <- test.results %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+
+```
+
+```{r}
+test.results %>% 
+  group_by(sim.ix, scenario_name, Year) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE)) %>% 
+  pivot_wider(id_cols = Year, names_from = scenario_name, values_from = PrEP_INSPIRE)
+```
+
+Have concluded this is going out to fewer people
+
+What about making sure it's going out to the right age groups?
+
+```{r}
+test.results %>% 
+  group_by(sim.ix, scenario_name, Year, Age, Gender) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year, Age, Gender) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE))
+```
+

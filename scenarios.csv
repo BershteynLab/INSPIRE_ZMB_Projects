@@ -1,3 +1,3 @@
 Scenario,Campaign,Start_Year__KP_INSPIRE_PrEP_Start,Values__KP__INSPIRE_PrEP_Distribution,Start_Year__KP_INSPIRE_ZAIMARA_Start,Acquisition_Multiplier__KP_CMD_increase_incidence,Start_Year__KP_INSPIRE_ART_Start,Choice_Probabilities__KP_INSPIRE_ART
-artdrop_aya_test_baseline_15,campaign_zmb_inspire_AYA_artdrop.json,2200,"[0,0,0]",2200,0,2200,"[1,0]"
-artdrop_aya_test_art_15,campaign_zmb_inspire_AYA_artdrop.json,2200,"[0,0,0]",2200,0,2025,"[0,1]"
+inspire_daly_prep,campaign_zmb_inspire.json,2025,"[1,1,0]",2200,0,2200,"[1,0]"
+inspire_artdrop_daly_prep,campaign_zmb_inspire_AYA_artdrop.json,2025,"[1,1,0]",2200,0,2200,"[1,0]"
