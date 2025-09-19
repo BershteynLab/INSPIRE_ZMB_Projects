@@ -535,8 +535,8 @@
         "Report_HIV_ByAgeAndGender_Collect_HIV_Stage_Data": 0,
         "Report_HIV_ByAgeAndGender_Collect_Intervention_Data": [],
         ".Report_HIV_ByAgeAndGender_Collect_Intervention_Data": ["PrEP_INSPIRE", "ZAIMARA"],
-        ".Report_HIV_ByAgeAndGender_Collect_IP_Data": ["OnPrEP", "Risk"],
         "Report_HIV_ByAgeAndGender_Collect_IP_Data": [],
+        ".Report_HIV_ByAgeAndGender_Collect_IP_Data": ["OnPrEP", "Risk"],
         "Report_HIV_ByAgeAndGender_Collect_On_Art_Data": 0,
         "Report_HIV_ByAgeAndGender_Event_Counter_List": [
             "ZAIMARA_INSPIRE",

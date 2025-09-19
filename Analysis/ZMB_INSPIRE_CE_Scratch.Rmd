@@ -1236,9 +1236,172 @@ What about making sure it's going out to the right age groups?
 
 ```{r}
 test.results %>% 
-  group_by(sim.ix, scenario_name, Year, Age, Gender) %>% 
+  filter(scenario_name == "prep.test") %>% 
+  group_by(sim.ix, scenario_name, Year, Age, Gender, ) %>% 
   summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
   group_by(scenario_name, Year, Age, Gender) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE))
+```
+Counting all the oth
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-test_inspire_artdrop_daly_prep___2025_09_17_17_19_39_240291"
+
+test.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep.test",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer","Initiate_Background_PrEP","Background_PrEP_Expired","PrEP_INSPIRE_Expired"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "IP_Key.Risk" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+sim.results.pop.scaling <- test.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+test.results <- test.results %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+```
+
+
+
+```{r}
+test.results %>% 
+  filter(scenario_name == "prep.test") %>% 
+  group_by(sim.ix, scenario_name, Year, Age, IP_Key.Risk) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE_Expired = sum(PrEP_INSPIRE_Expired * pop_scaling_factor),
+            Initiate_Background_PrEP = sum(Initiate_Background_PrEP * pop_scaling_factor),
+            Background_PrEP_Expired = sum(Background_PrEP_Expired * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year, Age, IP_Key.Risk) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            PrEP_INSPIRE_Expired = mean(PrEP_INSPIRE_Expired),
+            Initiate_Background_PrEP = mean(Initiate_Background_PrEP), 
+            Background_PrEP_Expired = mean(Background_PrEP_Expired)
+            ) %>% 
+  filter(Year > 2025)
+```
+## Looking at PrEP distribution in the BIG outputs, just to be sure:
+
+```{r}
+time.series.metrics.disaggregated.aya <- inspire.daly.results %>% 
+  filter(Year >= 2025.5, Year < 2046, Age >= 15, Age < 25) %>% 
+  mutate(Year = ceiling(Year) - 1) %>% 
+  group_by(Year, sim.ix, scenario_name) %>% 
+  summarize(Population = sum(Population*pop_scaling_factor)/2,
+            PLHIV = sum(Infected * pop_scaling_factor)/2,
+            Diagnosed = sum(Diagnosed * pop_scaling_factor)/2,
+            On_ART = sum(On_ART * pop_scaling_factor)/2,
+            Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+            Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+            ZAIMARA_INSPIRE = sum( ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor), 
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor), 
+            .groups = 'drop_last'
+  ) %>% 
+  ungroup() %>% 
+  mutate(Off_ART = PLHIV - On_ART) 
+
+dat <- time.series.metrics.disaggregated.aya %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(
+    Newly.Infected = mean(Newly.Infected),
+    Died_from_HIV = mean(Died_from_HIV),
+    PrEP_INSPIRE = mean(PrEP_INSPIRE),
+  )
+
+dat %>% 
+  pivot_longer(names_to ="metric", values_to = "values", cols = c(Newly.Infected, Died_from_HIV, PrEP_INSPIRE) ) %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = values))  + 
+  facet_grid(cols = vars(scenario_name), 
+             rows = vars(metric),
+             scales = 'free_y')
+```
+
+```{r}
+dat %>% 
+filter(scenario_name %in% c("prep.artdrop", "prep.2.artdrop")) %>% 
+    ggplot() + 
+  geom_line(mapping = aes(x = Year, y =PrEP_INSPIRE ))  + 
+  facet_grid(rows = vars(scenario_name), 
+             scales = 'free_y')
+```
+
+# Testing VOICE scoring 
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-test_voice_prep___2025_09_18_16_43_08_061096"
+
+voice.test <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "voice",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "PrEP_INSPIRE","PrEP_INSPIRE_VOICE4_AGYW","PrEP_INSPIRE_VOICE4_nonAGYW"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender", "IP_Key.Risk"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+sim.results.pop.scaling <- voice.test %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+voice.test <- voice.test %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+
+```
+
+```{r}
+voice.test %>%
+  group_by(sim.ix, scenario_name, Year, Gender, Age) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE_VOICE4_AGYW = sum(PrEP_INSPIRE_VOICE4_AGYW *pop_scaling_factor),
+            PrEP_INSPIRE_VOICE4_nonAGYW = sum(PrEP_INSPIRE_VOICE4_nonAGYW * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year, Gender, Age) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            PrEP_INSPIRE_VOICE4_AGYW = mean(PrEP_INSPIRE_VOICE4_AGYW),
+            PrEP_INSPIRE_VOICE4_nonAGYW = mean(PrEP_INSPIRE_VOICE4_nonAGYW))
+
+
+voice.test %>%
+  mutate(Year = ceiling(Year) - 1) %>% 
+  group_by(sim.ix, scenario_name, Year) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE_VOICE4_AGYW = sum(PrEP_INSPIRE_VOICE4_AGYW *pop_scaling_factor),
+            PrEP_INSPIRE_VOICE4_nonAGYW = sum(PrEP_INSPIRE_VOICE4_nonAGYW * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            PrEP_INSPIRE_VOICE4_AGYW = mean(PrEP_INSPIRE_VOICE4_AGYW),
+            PrEP_INSPIRE_VOICE4_nonAGYW = mean(PrEP_INSPIRE_VOICE4_nonAGYW)) %>% 
+  mutate(PrEP = PrEP_INSPIRE_VOICE4_nonAGYW + PrEP_INSPIRE_VOICE4_AGYW)
+```
+
+```{r}
+test.results%>%
+  filter(Year > 2025) %>%
+  mutate(Year = ceiling(Year) - 1) %>% 
+  group_by(sim.ix, scenario_name, Year, Gender, Age) %>% 
+  summarize(PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor)) %>% 
+  group_by(scenario_name, Year, Gender, Age) %>% 
   summarize(PrEP_INSPIRE = mean(PrEP_INSPIRE))
 ```
 

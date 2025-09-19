@@ -6753,6 +6753,7 @@
             "Update_Period": 30.4166666666667,
             "Target_Age_Max": 24.9999999,
             "Target_Age_Min": 15,
+            "Target_Disease_State":"HIV_Negative",
             "Target_Demographic": "ExplicitAgeRanges",
                         "Targeting_Config": {
                "class" : "TargetingLogic",
@@ -6766,6 +6767,289 @@
                      {
                         "class" : "IsPostDebut",
                         "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 0,
+                        "IP_Key_Value": "Risk:LOW"
+                     }
+                  ]
+               ]
+            },
+            "Time_Value_Map": { 
+               "Times": [2025,2045],
+               "Values": [1,1]
+            },
+            "Intervention_Config": {
+               "Cost_To_Consumer": 1.0,
+               "Intervention_Name": "PrEP_INSPIRE",
+               "Vaccine_Take": 1,
+               "Vaccine_Type": "AcquisitionBlocking",
+               "Waning_Config": {
+                  "Durability_Map": {
+                     "Times": [
+                        0,
+                        364,
+                        365
+                     ],
+                     "Values": [
+                        0,
+                        0,
+                        0
+                     ],
+                     "Values__KP__INSPIRE_PrEP_Distribution": "<-- MARKER"
+                  },
+                  "Expire_At_Durability_Map_End": 1,
+                  "Initial_Effect": 1,
+                  "class": "WaningEffectMapLinear"
+               },
+               "Distributed_Event_Trigger": "PrEP_INSPIRE",
+               "Expired_Event_Trigger":"PrEP_INSPIRE_Expired",
+               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
+               "class": "ControlledVaccine"
+            }
+         }
+      },
+            {
+         "Event_Name": "Distribute PrEP annually VOICE Score 4 AGYW",
+         "COMMENT": "INSPIRE Intervention - distribute perfect PrEP to AGYW with VOICE score 4",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2200,
+         "Start_Year__KP_INSPIRE_PrEP_VOICE4_Start": "<-- Marker",
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "class": "ReferenceTrackingEventCoordinatorHIV",
+            "Update_Period": 30.4166666666667,
+            "Target_Age_Max": 24.9999999,
+            "Target_Age_Min": 15,
+            "Target_Gender": "Female",
+            "Target_Demographic": "ExplicitAgeRangesAndGender",
+            "Target_Disease_State":"HIV_Negative",
+            "Targeting_Config": {
+               "class" : "TargetingLogic",
+               "Logic": [
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "MARITAL",
+                        "Num_Partners": 1,
+                        "More_Or_Less": "LESS"
+                     }
+                  ],
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class" : "HasRelationship",
+                        "Is_Equal_To": 1,
+                        "With_Partner_Who" : {
+                           "class" : "HasHadMultiplePartnersInLastNumMonths",
+                           "Is_Equal_To": 1,
+                           "Num_Months_Type": "THREE_MONTHS"
+                        }
+                     }
+                  ],
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 0,
+                        "IP_Key_Value": "Risk:LOW"
+                     }
+                  ]
+               ]
+            },
+            "Time_Value_Map": { 
+               "Times": [2025,2045],
+               "Values": [1,1]
+            },
+            "Intervention_Config": {
+               "Cost_To_Consumer": 1.0,
+               "Intervention_Name": "PrEP_INSPIRE",
+               "Vaccine_Take": 1,
+               "Vaccine_Type": "AcquisitionBlocking",
+               "Waning_Config": {
+                  "Durability_Map": {
+                     "Times": [
+                        0,
+                        364,
+                        365
+                     ],
+                     "Values": [
+                        0,
+                        0,
+                        0
+                     ],
+                     "Values__KP__INSPIRE_PrEP_Distribution": "<-- MARKER"
+                  },
+                  "Expire_At_Durability_Map_End": 1,
+                  "Initial_Effect": 1,
+                  "class": "WaningEffectMapLinear"
+               },
+               "Distributed_Event_Trigger": "PrEP_INSPIRE",
+               "Expired_Event_Trigger":"PrEP_INSPIRE_Expired",
+               "Waning_Config__KP_PrEP_HIGH_Waning": "<-- MARKER",
+               "class": "ControlledVaccine"
+            }
+         }
+      },
+      {
+         "Event_Name": "Distribute PrEP annually VOICE Score 4, non-AGYW",
+         "COMMENT": "INSPIRE Intervention - distribute perfect PrEP to all non-AGYW with VOICE score 4",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2200,
+         "Start_Year__KP_INSPIRE_PrEP_VOICE4_Start": "<-- Marker",
+         "class": "CampaignEventByYear",
+         "Event_Coordinator_Config": {
+            "class": "ReferenceTrackingEventCoordinatorHIV",
+            "Update_Period": 30.4166666666667,
+            "Target_Age_Max": 25,
+            "Target_Age_Min": 15,
+            "Target_Gender":"Male",
+            "Target_Demographic": "ExplicitAgeRangesAndGender",
+            "Target_Disease_State":"HIV_Negative",
+            "Targeting_Config": {
+               "class" : "TargetingLogic",
+               "Logic": [
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "MARITAL",
+                        "Num_Partners": 1,
+                        "More_Or_Less": "LESS"
+                     },
+                     {
+                        "class" : "HasRelationship",
+                        "Is_Equal_To": 1,
+                        "With_Partner_Who" : {
+                           "class" : "HasHadMultiplePartnersInLastNumMonths",
+                           "Is_Equal_To": 1,
+                           "Num_Months_Type": "THREE_MONTHS"
+                        }
+                     }
+                  ],
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "MARITAL",
+                        "Num_Partners": 1,
+                        "More_Or_Less": "LESS"
+                     },
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 0,
+                        "IP_Key_Value": "Risk:LOW"
+                     }
+                  ],
+                  [
+                     {
+                        "class": "HasIP",
+                        "Is_Equal_To": 1,
+                        "IP_Key_Value": "OnPrEP:False"
+                     },
+                     {
+                        "class" : "IsPostDebut",
+                        "Is_Equal_To": 1
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "NA",
+                        "Num_Partners": 0,
+                        "More_Or_Less": "MORE"
+                     },
+                     {
+                        "class" : "HasRelationship",
+                        "Is_Equal_To": 1,
+                        "With_Partner_Who" : {
+                           "class" : "HasHadMultiplePartnersInLastNumMonths",
+                           "Is_Equal_To": 1,
+                           "Num_Months_Type": "THREE_MONTHS"
+                        }
                      },
                      {
                         "class": "HasIP",

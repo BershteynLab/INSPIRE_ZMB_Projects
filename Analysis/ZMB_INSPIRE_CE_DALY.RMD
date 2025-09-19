@@ -660,6 +660,22 @@ inspire.daly.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   max_age_inclusive = 99
 )
 
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_daly_prep___2025_09_18_09_44_58_145807/"
+
+inspire.daly.prep.2 <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep.2",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
 experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire-inspire_daly_art___2025_08_16_12_35_45_968411/"
 
 inspire.daly.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
@@ -693,6 +709,7 @@ inspire.daly.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
 inspire.daly.results <- rbind(
   inspire.daly.baseline,
   inspire.daly.prep,
+  inspire.daly.prep.2,
   inspire.daly.art,
   inspire.daly.zaimara
   )
