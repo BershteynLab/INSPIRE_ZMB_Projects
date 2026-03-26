@@ -108,11 +108,27 @@ inspire.daly.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
 )
 
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-inspire_artdrop_daly_prep___2025_09_18_09_46_45_242468/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-inspire_artdrop_daly_prep___2025_09_18_23_39_05_820450"
 
 inspire.daly.prep.2 <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
   scenario_name =  "prep.2.artdrop",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/PHASE_2/Baseline-campaign_zmb_inspire_AYA_artdrop-inspire_artdrop_daly_prep_voice___2025_09_18_23_40_09_338184"
+
+inspire.daly.prep.voice <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep.voice.artdrop",
   summarize_columns = c("Population","Infected", "On_ART",
                       "Died", "Died_from_HIV",
                       "Newly.Infected","Diagnosed",
@@ -157,6 +173,7 @@ inspire.daly.results <- rbind(
   inspire.daly.baseline,
   inspire.daly.prep,
   inspire.daly.prep.2,
+  inspire.daly.prep.voice,
   inspire.daly.art,
   inspire.daly.zaimara
   )
@@ -270,7 +287,7 @@ metric.names = c(
   "Off_ART.pct"
 )
 
-scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop",  "prep.2.artdrop", "zaimara.artdrop")
+scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop",  "prep.2.artdrop", "prep.voice.artdrop", "zaimara.artdrop")
 
 metrics.A1525 = data.frame()
 
@@ -320,6 +337,18 @@ metrics.A1525 = rbind(metrics.A1525, h)
 h <- calculate.CI.by.metric(
       data = data.metrics.aggregated.2025.2045.aya,
       scenario.name = "prep.2.artdrop",
+      metric = "PrEP_INSPIRE.discount")
+metrics.A1525 = rbind(metrics.A1525, h)
+
+h <- calculate.CI.by.metric(
+      data = data.metrics.aggregated.2025.2045.aya,
+      scenario.name = "prep.voice.artdrop",
+      metric = "PrEP_INSPIRE")
+metrics.A1525 = rbind(metrics.A1525, h)
+
+h <- calculate.CI.by.metric(
+      data = data.metrics.aggregated.2025.2045.aya,
+      scenario.name = "prep.voice.artdrop",
       metric = "PrEP_INSPIRE.discount")
 metrics.A1525 = rbind(metrics.A1525, h)
 
@@ -428,7 +457,7 @@ metric.names = c(
   "Off_ART.pct"
 )
 
-scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "zaimara.artdrop")
+scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "prep.voice.artdrop", "zaimara.artdrop")
 
 metrics.A1599 = data.frame()
 
@@ -480,6 +509,19 @@ h <- calculate.CI.by.metric(
       scenario.name = "prep.2.artdrop",
       metric = "PrEP_INSPIRE.discount")
 metrics.A1599 = rbind(metrics.A1599, h)
+
+h <- calculate.CI.by.metric(
+      data = data.metrics.aggregated.2025.2045.all,
+      scenario.name = "prep.voice.artdrop",
+      metric = "PrEP_INSPIRE")
+metrics.A1599 = rbind(metrics.A1599, h)
+
+h <- calculate.CI.by.metric(
+      data = data.metrics.aggregated.2025.2045.all,
+      scenario.name = "prep.voice.artdrop",
+      metric = "PrEP_INSPIRE.discount")
+metrics.A1599 = rbind(metrics.A1599, h)
+
 
 h <- calculate.CI.by.metric(
       data = data.metrics.aggregated.2025.2045.all,
@@ -638,7 +680,7 @@ metric.names = c("HIV.DALY", "HIV.DALY.discounted",
                  "HIV.DALY.diff", "HIV.DALY.discounted.diff",
                  "HIV.DALY.pct", "HIV.DALY.discounted.pct")
 
-scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "zaimara.artdrop")
+scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "prep.voice.artdrop", "zaimara.artdrop")
 
 daly.cis = data.frame()
 
@@ -661,7 +703,7 @@ daly.cis %>% write_csv("INSPIRE_CE_DALY_calculation_CIs_ARTDrop.csv")
 
 ```
 
-## DALY Calculations - Youth
+## AYA DALY Calculations - Youth
 
 ### Calculate DALYs for each individual run
 ```{r}
@@ -799,7 +841,7 @@ metric.names = c("HIV.DALY", "HIV.DALY.discounted",
                  "HIV.DALY.diff", "HIV.DALY.discounted.diff",
                  "HIV.DALY.pct", "HIV.DALY.discounted.pct")
 
-scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "zaimara.artdrop")
+scenario.names = c("baseline.artdrop", "art.artdrop", "prep.artdrop", "prep.2.artdrop", "prep.voice.artdrop", "zaimara.artdrop")
 
 daly.cis = data.frame()
 
@@ -987,6 +1029,30 @@ A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CI
 h <- calculate.CI.by.metric(
       data = A1599.cost.threshold.calculation.CIs.staging,
       scenario.name = "prep.2.artdrop",
+      metric = "ARTcosts_fraction.discount")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep.voice.artdrop",
+      metric = "PREP.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep.voice.artdrop",
+      metric = "PREP.discount.cost")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep.voice.artdrop",
+      metric = "ARTcosts_fraction")
+A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
+
+h <- calculate.CI.by.metric(
+      data = A1599.cost.threshold.calculation.CIs.staging,
+      scenario.name = "prep.voice.artdrop",
       metric = "ARTcosts_fraction.discount")
 A1599.cost.threshold.calculation.CIs = rbind(A1599.cost.threshold.calculation.CIs, h)
 
@@ -1302,7 +1368,7 @@ metrics.A1525 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
    pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1525 %>%
   filter(metric %in% c("OnART1_INSPIRE_defaulter_tracer", "PrEP_INSPIRE", "ZAIMARA_INSPIRE")) %>% 
@@ -1316,7 +1382,7 @@ metrics.A1525 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
    pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, art.artdrop, zaimara.artdrop, prep.artdrop)
+  select(metric, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1525 %>%
   filter(metric %in% c("Newly.Infected.diff", "Died_from_HIV.diff", "On_ART.diff", "Off_ART.diff")) %>% 
@@ -1334,7 +1400,7 @@ metrics.A1525 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
    pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1525 %>%
   filter(metric %in% c("Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct")) %>% 
@@ -1352,7 +1418,7 @@ metrics.A1525 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
    pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 ```
 
 
@@ -1370,7 +1436,7 @@ metrics.A1599 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
   pivot_wider(names_from = scenario_name, values_from = value)  %>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1599 %>%
   filter(metric %in% c("OnART1_INSPIRE_defaulter_tracer", "PrEP_INSPIRE", "ZAIMARA_INSPIRE")) %>% 
@@ -1384,7 +1450,7 @@ metrics.A1599 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
   pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, art.artdrop, zaimara.artdrop, prep.artdrop)
+  select(metric, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1599 %>%
   filter(metric %in% c("Newly.Infected.diff", "Died_from_HIV.diff", "On_ART.diff", "Off_ART.diff")) %>% 
@@ -1402,7 +1468,7 @@ metrics.A1599 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
    pivot_wider(names_from = scenario_name, values_from = value) %>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 
 metrics.A1599 %>%
   filter(metric %in% c("Newly.Infected.pct", "Died_from_HIV.pct", "On_ART.pct", "Off_ART.pct")) %>% 
@@ -1420,10 +1486,12 @@ metrics.A1599 %>%
   ) %>% 
   pivot_longer(-scenario_name, names_to = "metric", values_to = "value") %>% 
   pivot_wider(names_from = scenario_name, values_from = value )%>% 
-  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop)
+  select(metric, baseline.artdrop, art.artdrop, zaimara.artdrop, prep.artdrop, prep.2.artdrop, prep.voice.artdrop)
 ```
 ## DALYs
 ```{r}
+daly.cis <- read_csv("INSPIRE_CE_DALY_calculation_CIs_ARTDrop.csv")
+
 daly.cis %>% filter(metric == 'HIV.DALY.diff') %>% 
   mutate(
         formatted = sprintf( "%s (%s, %s)",
