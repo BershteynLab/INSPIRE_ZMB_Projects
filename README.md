@@ -8,6 +8,11 @@
 
 ## Major Updates
 
+### 2026-03-31
+
+* Newest version of INSPIRE disruptions to HIV services for AYA
+* Taking information from new survey of INSPIRE study sites - RISE in Zambia - on the sizes of disruptions
+
 ### 2025-07-01
 
 Completed one round of analysis for the INSPIRE network, investigating the effects of HIV service disruptions for adolescents and young adults on HIV outcomes. This work was submitted as an abstract to the upcoming 2025 Dissemination and Implementation Science conference.
