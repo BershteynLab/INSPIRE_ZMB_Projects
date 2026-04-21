@@ -1,0 +1,910 @@
+---
+title: "INSPIRE_Disruptions_V2"
+output: html_document
+date: "2026-04-21"
+---
+
+The purpose of this notebook is to generate an updated version of the 2025 INSPIRE 
+disruptions to HIV Services for AYA, evaluating the health impacts of different
+changes to HIV care for AYA between the ages of 15 and 25.
+
+This time we are using effects sizes drawn from the survey data collected by Gianna
+from our in-country study site partners in Zambia, compiled at the end of 2025.
+
+
+# Libraries, Constants, Helper Functions
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+
+library(tidyverse)
+library(data.table)
+library(magrittr)
+library(rsample)
+library(fs)
+library(stringr)
+library(readr)
+library(purrr)
+
+
+# Demographic constants
+ZMB_CENSUS_YEAR <- 2022
+ZMB_CENSUS_POP  <- 10868136 # ages 15-64
+
+# Paths
+base_experiment_root <- "/gpfs/scratch/citrod01/experiments/INSPIRE"
+output_root          <- "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
+
+# CSV listing scenarios and campaigns
+scenario_csv_path <- file.path("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/scenarios_inspire_disruptions_v2.csv")
+
+```
+
+## Helper functions
+```{r}
+# Population scaling per scenario
+compute_pop_scaling <- function(dat) {
+  dat %>%
+    dplyr::filter(Year == ZMB_CENSUS_YEAR,
+                  Age  >= 15, Age < 65) %>%
+    dplyr::group_by(sim.ix) %>%
+    dplyr::summarize(total.pop = sum(Population),
+                     .groups = "drop") %>%
+    dplyr::mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+}
+
+# 10-year metrics (same structure as metrics.* in original Rmd) [1]
+compute_10yr_metrics_single <- function(dat, age_min, age_max,
+                                        start_year = 2025.5, end_year = 2035.5) {
+
+  # Baseline metrics for this age band; used to compute deltas
+  baseline <- dat %>%
+    dplyr::filter(Year >= start_year, Year < end_year,
+                  Age  >= age_min,  Age < age_max,
+                  scenario_name == "inspire_disruptions_baseline") %>%
+    dplyr::group_by(scenario_name, sim.ix) %>%
+    dplyr::mutate(Off_ART = Infected - On_ART) %>%
+    dplyr::summarize(
+      Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+      Infected       = sum(Infected      * pop_scaling_factor / 2),
+      Newly.Infected = sum(Newly.Infected* pop_scaling_factor),
+      On_ART         = sum(On_ART        * pop_scaling_factor / 2),
+      Off_ART        = sum(Off_ART       * pop_scaling_factor / 2),
+      .groups = "drop_last"
+    ) %>%
+    dplyr::group_by(scenario_name) %>%
+    dplyr::summarize(
+      Died_from_HIV.baseline  = mean(Died_from_HIV),
+      Infected.baseline        = mean(Infected),
+      Newly.Infected.baseline  = mean(Newly.Infected),
+      On_ART.baseline          = mean(On_ART),
+      Off_ART.baseline         = mean(Off_ART),
+      .groups = "drop"
+    ) %>%
+    dplyr::select(-scenario_name)
+
+  # Metrics by scenario
+  metrics <- dat %>%
+    dplyr::filter(Year >= start_year, Year < end_year,
+                  Age  >= age_min,  Age < age_max) %>%
+    dplyr::group_by(scenario_name, sim.ix) %>%
+    dplyr::mutate(Off_ART = Infected - On_ART) %>%
+    dplyr::summarize(
+      Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+      Infected       = sum(Infected      * pop_scaling_factor / 2),
+      Newly.Infected = sum(Newly.Infected* pop_scaling_factor),
+      On_ART         = sum(On_ART        * pop_scaling_factor / 2),
+      Off_ART        = sum(Off_ART       * pop_scaling_factor / 2),
+      .groups = "drop_last"
+    ) %>%
+    dplyr::group_by(scenario_name) %>%
+    dplyr::summarize(
+      Died_from_HIV = mean(Died_from_HIV),
+      Infected       = mean(Infected),
+      Newly.Infected = mean(Newly.Infected),
+      On_ART         = mean(On_ART),
+      Off_ART        = mean(Off_ART),
+      .groups = "drop"
+    )
+
+  metrics <- cbind(metrics, baseline) %>%
+    dplyr::mutate(
+      Died_from_HIV.change  = Died_from_HIV  - Died_from_HIV.baseline,
+      Infected.change        = Infected        - Infected.baseline,
+      Newly.Infected.change  = Newly.Infected  - Newly.Infected.baseline,
+      On_ART.change          = On_ART          - On_ART.baseline,
+      Off_ART.change         = Off_ART         - Off_ART.baseline
+    ) %>%
+    dplyr::mutate(
+      Died_from_HIV.pct  = Died_from_HIV.change  / Died_from_HIV.baseline,
+      Infected.pct        = Infected.change        / Infected.baseline,
+      Newly.Infected.pct  = Newly.Infected.change  / Newly.Infected.baseline,
+      On_ART.pct          = On_ART.change          / On_ART.baseline,
+      Off_ART.pct         = Off_ART.change         / Off_ART.baseline
+    )
+
+  metrics
+}
+
+bt_mean <- function(splits, colname){
+  x <- as.data.frame(rsample::analysis(splits))
+  mean(x[[colname]])
+}
+
+# Error-bar metrics (now with 100% more error bars) [1]
+aggregate.data.differences <- function(data, scenario.name, start_year, end_year, age_min, age_max,
+                                       comparison_scenario = "inspire_disruptions_baseline"){
+
+  data.agg <- data %>%
+    dplyr::mutate(Year = floor(Year),
+                  Off_ART = Infected - On_ART) %>%
+    dplyr::filter(Year >= start_year, Year < end_year,
+                  Age  >= age_min,  Age < age_max) %>%
+    dplyr::group_by(scenario_name, sim.ix) %>%
+    dplyr::summarize(
+      Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+      Died_from_HIV  = sum(Died_from_HIV  * pop_scaling_factor),
+      On_ART         = sum(On_ART         * pop_scaling_factor / 2),
+      Off_ART        = sum(Off_ART        * pop_scaling_factor / 2),
+      .groups = "keep"
+    ) %>%
+    dplyr::ungroup()
+
+  data.agg.2 <- data.agg %>%
+    dplyr::filter(scenario_name == comparison_scenario) %>%
+    dplyr::select(
+      sim.ix,
+      Newly.Infected.Base = Newly.Infected,
+      Died_from_HIV.Base  = Died_from_HIV,
+      On_ART.Base         = On_ART,
+      Off_ART.Base        = Off_ART
+    ) %>%
+    merge(
+      data.agg %>% dplyr::filter(scenario_name == scenario.name),
+      by = "sim.ix"
+    ) %>%
+    dplyr::mutate(
+      Newly.Infected.diff = Newly.Infected - Newly.Infected.Base,
+      Newly.Infected.pct  = (Newly.Infected - Newly.Infected.Base)/Newly.Infected.Base,
+      Died_from_HIV.diff  = Died_from_HIV  - Died_from_HIV.Base,
+      Died_from_HIV.pct   = (Died_from_HIV  - Died_from_HIV.Base)/Died_from_HIV.Base,
+      On_ART.diff         = On_ART         - On_ART.Base,
+      On_ART.pct          = (On_ART         - On_ART.Base)/On_ART.Base,
+      Off_ART.diff        = Off_ART        - Off_ART.Base,
+      Off_ART.pct         = (Off_ART        - Off_ART.Base)/Off_ART.Base
+    )
+
+  data.agg.diffs <- data.agg.2 %>%
+    dplyr::group_by(scenario_name) %>%
+    dplyr::summarize(
+      Newly.Infected        = mean(Newly.Infected),
+      Newly.Infected.diff.sd= sd(Newly.Infected.diff),
+      Newly.Infected.diff   = mean(Newly.Infected.diff),
+      Newly.Infected.pct.sd = sd(Newly.Infected.pct),
+      Newly.Infected.pct    = mean(Newly.Infected.pct),
+      Died_from_HIV         = mean(Died_from_HIV),
+      Died_from_HIV.diff.sd = sd(Died_from_HIV.diff),
+      Died_from_HIV.diff    = mean(Died_from_HIV.diff),
+      Died_from_HIV.pct.sd  = sd(Died_from_HIV.pct),
+      Died_from_HIV.pct     = mean(Died_from_HIV.pct),
+      On_ART                = mean(On_ART),
+      On_ART.diff.sd        = sd(On_ART.diff),
+      On_ART.diff           = mean(On_ART.diff),
+      On_ART.pct.sd         = sd(On_ART.pct),
+      On_ART.pct            = mean(On_ART.pct),
+      Off_ART               = mean(Off_ART),
+      Off_ART.diff.sd       = sd(Off_ART.diff),
+      Off_ART.diff          = mean(Off_ART.diff),
+      Off_ART.pct.sd        = sd(Off_ART.pct),
+      Off_ART.pct           = mean(Off_ART.pct),
+      .groups = "keep"
+    )
+
+  bt_resamples <- rsample::bootstraps(data.agg.2, times = 500)
+  bt_resamples$mean.infected       <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected")
+  bt_resamples$mean.infected.diff  <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected.diff")
+  bt_resamples$mean.infected.pct   <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Newly.Infected.pct")
+  bt_resamples$mean.deaths         <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV")
+  bt_resamples$mean.deaths.diff    <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV.diff")
+  bt_resamples$mean.deaths.pct     <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Died_from_HIV.pct")
+  bt_resamples$mean.On_ART         <- purrr::map_dbl(bt_resamples$splits, bt_mean, "On_ART")
+  bt_resamples$mean.On_ART.diff    <- purrr::map_dbl(bt_resamples$splits, bt_mean, "On_ART.diff")
+  bt_resamples$mean.On_ART.pct     <- purrr::map_dbl(bt_resamples$splits, bt_mean, "On_ART.pct")
+  bt_resamples$mean.Off_ART        <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Off_ART")
+  bt_resamples$mean.Off_ART.diff   <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Off_ART.diff")
+  bt_resamples$mean.Off_ART.pct    <- purrr::map_dbl(bt_resamples$splits, bt_mean, "Off_ART.pct")
+
+  infected_95      <- quantile(bt_resamples$mean.infected,      probs = c(0.025, 0.975))
+  infected.diff_95 <- quantile(bt_resamples$mean.infected.diff, probs = c(0.025, 0.975))
+  infected.pct_95  <- quantile(bt_resamples$mean.infected.pct,  probs = c(0.025, 0.975))
+  deaths_95        <- quantile(bt_resamples$mean.deaths,        probs = c(0.025, 0.975))
+  deaths.diff_95   <- quantile(bt_resamples$mean.deaths.diff,   probs = c(0.025, 0.975))
+  deaths.pct_95    <- quantile(bt_resamples$mean.deaths.pct,    probs = c(0.025, 0.975))
+  onart_95         <- quantile(bt_resamples$mean.On_ART,        probs = c(0.025, 0.975))
+  onart.diff_95    <- quantile(bt_resamples$mean.On_ART.diff,   probs = c(0.025, 0.975))
+  onart.pct_95     <- quantile(bt_resamples$mean.On_ART.pct,    probs = c(0.025, 0.975))
+  offart_95        <- quantile(bt_resamples$mean.Off_ART,       probs = c(0.025, 0.975))
+  offart.diff_95   <- quantile(bt_resamples$mean.Off_ART.diff,  probs = c(0.025, 0.975))
+  offart.pct_95    <- quantile(bt_resamples$mean.Off_ART.pct,   probs = c(0.025, 0.975))
+
+  data.agg.diffs$Newly.Infected_95LL      <- infected_95[[1]]
+  data.agg.diffs$Newly.Infected_95UL      <- infected_95[[2]]
+  data.agg.diffs$Newly.Infected.diff_95LL <- infected.diff_95[[1]]
+  data.agg.diffs$Newly.Infected.diff_95UL <- infected.diff_95[[2]]
+  data.agg.diffs$Newly.Infected.pct_95LL  <- infected.pct_95[[1]]
+  data.agg.diffs$Newly.Infected.pct_95UL  <- infected.pct_95[[2]]
+
+  data.agg.diffs$Died_from_HIV_95LL       <- deaths_95[[1]]
+  data.agg.diffs$Died_from_HIV_95UL       <- deaths_95[[2]]
+  data.agg.diffs$Died_from_HIV.diff_95LL  <- deaths.diff_95[[1]]
+  data.agg.diffs$Died_from_HIV.diff_95UL  <- deaths.diff_95[[2]]
+  data.agg.diffs$Died_from_HIV.pct_95LL   <- deaths.pct_95[[1]]
+  data.agg.diffs$Died_from_HIV.pct_95UL   <- deaths.pct_95[[2]]
+
+  data.agg.diffs$On_ART_95LL              <- onart_95[[1]]
+  data.agg.diffs$On_ART_95UL              <- onart_95[[2]]
+  data.agg.diffs$On_ART.diff_95LL         <- onart.diff_95[[1]]
+  data.agg.diffs$On_ART.diff_95UL         <- onart.diff_95[[2]]
+  data.agg.diffs$On_ART.pct_95LL          <- onart.pct_95[[1]]
+  data.agg.diffs$On_ART.pct_95UL          <- onart.pct_95[[2]]
+
+  data.agg.diffs$Off_ART_95LL             <- offart_95[[1]]
+  data.agg.diffs$Off_ART_95UL             <- offart_95[[2]]
+  data.agg.diffs$Off_ART.diff_95LL        <- offart.diff_95[[1]]
+  data.agg.diffs$Off_ART.diff_95UL        <- offart.diff_95[[2]]
+  data.agg.diffs$Off_ART.pct_95LL         <- offart.pct_95[[1]]
+  data.agg.diffs$Off_ART.pct_95UL         <- offart.pct_95[[2]]
+
+  data.agg.diffs %>%
+    dplyr::select(
+      "scenario_name",
+      "Newly.Infected", "Newly.Infected_95LL", "Newly.Infected_95UL",
+      "Newly.Infected.diff", "Newly.Infected.diff_95LL", "Newly.Infected.diff_95UL",
+      "Newly.Infected.pct", "Newly.Infected.pct_95LL","Newly.Infected.pct_95UL",
+      "Died_from_HIV", "Died_from_HIV_95LL", "Died_from_HIV_95UL",
+      "Died_from_HIV.diff", "Died_from_HIV.diff_95LL", "Died_from_HIV.diff_95UL",
+      "Died_from_HIV.pct", "Died_from_HIV.pct_95LL", "Died_from_HIV.pct_95UL",
+      "On_ART", "On_ART_95LL", "On_ART_95UL",
+      "On_ART.diff", "On_ART.diff_95LL", "On_ART.diff_95UL",
+      "On_ART.pct", "On_ART.pct_95LL", "On_ART.pct_95UL",
+      "Off_ART", "Off_ART_95LL", "Off_ART_95UL",
+      "Off_ART.diff", "Off_ART.diff_95LL", "Off_ART.diff_95UL",
+      "Off_ART.pct", "Off_ART.pct_95LL", "Off_ART.pct_95UL"
+    )
+}
+
+
+# Helper: compute yearly per-sim metrics and then bootstrap means + 95% CI
+compute_ts_with_ci <- function(data, age_min, age_max) {
+
+  # Aggregate per sim, per scenario, per year
+  yearly <- data %>%
+    filter(Age >= age_min, Age < age_max) %>%
+    mutate(Off_ART = Infected - On_ART,
+           Year    = floor(Year)) %>%
+    group_by(scenario_name, Year, sim.ix) %>%
+    summarize(
+      Died_from_HIV  = sum(Died_from_HIV  * pop_scaling_factor),
+      Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+      On_ART         = sum(On_ART         * pop_scaling_factor),
+      Off_ART        = sum(Off_ART        * pop_scaling_factor),
+      .groups = "drop"
+    )
+
+  ts_ci <- yearly %>%
+    group_by(scenario_name, Year) %>%
+    group_modify(~{
+      df <- .x
+
+      # rsample bootstraps() expects a data frame
+      bts <- bootstraps(df, times = 500)
+
+      # For each metric, compute 95% CI of the mean across sims
+      metrics <- c("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART")
+
+      summary_list <- lapply(metrics, function(metric) {
+        m <- paste0("mean.", metric)
+        bts[[m]] <- map_dbl(bts$splits, bt_mean, metric)
+        q <- quantile(bts[[m]], probs = c(0.025, 0.975))
+        list(
+          mean = mean(df[[metric]]),
+          ll   = unname(q[1]),
+          ul   = unname(q[2])
+        )
+      })
+      names(summary_list) <- metrics
+
+      tibble(
+        Newly.Infected_mean = summary_list$Newly.Infected$mean,
+        Newly.Infected_ll   = summary_list$Newly.Infected$ll,
+        Newly.Infected_ul   = summary_list$Newly.Infected$ul,
+        Died_from_HIV_mean  = summary_list$Died_from_HIV$mean,
+        Died_from_HIV_ll    = summary_list$Died_from_HIV$ll,
+        Died_from_HIV_ul    = summary_list$Died_from_HIV$ul,
+        On_ART_mean         = summary_list$On_ART$mean,
+        On_ART_ll           = summary_list$On_ART$ll,
+        On_ART_ul           = summary_list$On_ART$ul,
+        Off_ART_mean        = summary_list$Off_ART$mean,
+        Off_ART_ll          = summary_list$Off_ART$ll,
+        Off_ART_ul          = summary_list$Off_ART$ul
+      )
+    }) %>%
+    ungroup()
+
+  ts_ci
+}
+
+```
+
+
+## Set up: find the directories
+
+```{r}
+
+# Read the scenario CSV
+scenarios_df <- read_csv(scenario_csv_path, show_col_types = FALSE)
+
+# Scenario names as listed in the CSV
+scenario_names <- unique(scenarios_df$Scenario)
+
+# Discover experiment directories under the base experiment root
+all_experiments <- list.dirs(path = base_experiment_root,
+                             full.names = TRUE,
+                             recursive  = FALSE)
+
+# Helper: extract scenario token from an experiment directory name.
+# Adjust "campaign_zmb_build-" if your naming differs.
+get_experiment_scenario <- function(exp_dir) {
+  b <- basename(exp_dir)
+  parts <- str_split_fixed(b, "campaign_zmb_build-", 2)
+  if (ncol(parts) < 2) return(NA_character_)
+  right <- parts[, 2]
+  scen <- str_split_fixed(right, "___", 2)[, 1]
+  scen
+}
+
+# Precompute scenario token for each experiment dir
+experiment_df <- tibble(
+  experiment_path  = all_experiments,
+  experiment_scen  = map_chr(all_experiments, get_experiment_scenario)
+)
+
+# Helper: does an experiment dir have at least one non-empty ReportHIVByAgeAndGender.csv?
+experiment_has_valid_reports <- function(exp_dir) {
+  message("Checking experiment dir: ", exp_dir)
+
+  # List Simulation_* subdirectories (names that start with "Simulation_")
+  sim_dirs <- dir_ls(exp_dir,
+                     type = "directory",
+                     glob = "*Simulation_*")
+
+  if (length(sim_dirs) == 0) {
+    warning("No Simulation_* subdirectories found under: ", exp_dir)
+    return(FALSE)
+  }
+
+  # Build candidate report paths: Simulation_*/output/ReportHIVByAgeAndGender.csv
+  report_paths <- file.path(sim_dirs, "output", "ReportHIVByAgeAndGender.csv")
+
+  # Keep those that exist
+  report_paths <- report_paths[file_exists(report_paths)]
+  if (length(report_paths) == 0) {
+    warning("No ReportHIVByAgeAndGender.csv found under any Simulation_* for: ", exp_dir)
+    return(FALSE)
+  }
+
+  # Check file sizes
+  sizes <- as.numeric(file_size(report_paths))
+  df_check <- tibble(path = report_paths, size = sizes)
+  print(df_check)
+
+  if (any(sizes > 0, na.rm = TRUE)) {
+    #message("Found at least one non-empty report in: ", exp_dir)
+    return(TRUE)
+  } else {
+    warning("All ReportHIVByAgeAndGender.csv files are size 0 for: ", exp_dir)
+    return(FALSE)
+  }
+}
+
+# Helper: given a scenario name, find the first experiment directory whose
+# parsed scenario token exactly matches and has valid reports.
+find_valid_experiment_dir <- function(scn) {
+  message("Looking for experiment dir for scenario: ", scn)
+
+  candidate_dirs <- experiment_df %>%
+    filter(experiment_scen == scn) %>%
+    pull(experiment_path)
+
+  if (length(candidate_dirs) == 0) {
+    warning("No experiment directories found matching scenario exactly: ", scn)
+    return(NA_character_)
+  }
+
+  for (d in candidate_dirs) {
+    if (experiment_has_valid_reports(d)) {
+      message("Using ", d, " for scenario ", scn)
+      return(d)
+    }
+  }
+
+  warning("No valid populated ReportHIVByAgeAndGender.csv found for scenario: ", scn)
+  NA_character_
+}
+
+# Build scenario-to-experiment-path map with validation and exact matching
+scenario_dirs <- vapply(
+  scenario_names,
+  find_valid_experiment_dir,
+  FUN.VALUE = character(1)
+)
+
+scenario_map <- tibble(
+  scenario_name   = scenario_names,
+  experiment_path = scenario_dirs
+) %>%
+  filter(!is.na(experiment_path))
+
+scenario_map
+```
+
+# Run analysis
+
+Need to compute/load baseline first
+```{r}
+
+baseline_experiment.path <-scenario_map[scenario_map$scenario_name == "inspire_disruptions_baseline",]$experiment_path
+#"/gpfs/scratch/citrod01/experiments/INSPIRE/Baseline-campaign_zmb_build-inspire_disruptions_baseline___2025_06_21_10_03_45_836283/"
+
+
+baseline.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = baseline_experiment.path,
+  scenario_name     = "inspire_disruptions_baseline",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+    "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No",
+    "HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+# Compute population scaling and attach to baseline
+baseline.pop.scaling <- baseline.results %>%
+  filter(Year == ZMB_CENSUS_YEAR,
+         Age  >= 15, Age < 65) %>%
+  group_by(sim.ix) %>%
+  summarize(total.pop = sum(Population), .groups = "drop") %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+
+baseline.results <- baseline.results %>%
+  left_join(baseline.pop.scaling, by = "sim.ix")
+
+# Save baseline as an RDS to re-use for comparison with other scenarios
+baseline_rds_path <- "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_disruptions/baseline_scaled.rds"
+dir.create(dirname(baseline_rds_path), showWarnings = FALSE, recursive = TRUE)
+write_rds(baseline.results, baseline_rds_path)
+```
+
+```{r}
+#----------------------------------------------------------
+# Load baseline with pop_scaling_factor already attached
+#----------------------------------------------------------
+baseline.results <- read_rds(baseline_rds_path)
+
+# Make sure the scenario_name is consistent across all analysis
+baseline.results <- baseline.results %>%
+  mutate(scenario_name = "inspire_disruptions_baseline")
+
+# Deprecated way to detect experiments, assumes that everything is populated.
+# Instead, use the scenario_map already calculated above 
+
+# all_experiments <- list.dirs(path = base_experiment_root,
+#                              full.names = TRUE,
+#                              recursive  = FALSE)
+# 
+# experiment_df <- tibble::tibble(
+#   experiment_path = all_experiments,
+#   scenario_name   = purrr::map_chr(all_experiments, get_experiment_scenario)
+# ) %>%
+#   filter(!is.na(scenario_name)) %>%
+#   # keep only the disruptions scenarios you care about
+#   filter(startsWith(scenario_name, "inspire_disruptions_"))
+
+#----------------------------------------------------------
+# Loop over all non-baseline scenarios:
+#    - Read scenario data
+#    - Attach pop_scaling_factor (recompute or reuse baseline scaling if desired)
+#    - Bind with baseline and run aggregate.data.differences(...)
+#    - Save per-scenario comparison tables
+#----------------------------------------------------------
+
+for (i in seq_len(5)){ #nrow(scenario_map))) {
+  scn  <- scenario_map$scenario_name[i]
+  path <- scenario_map$experiment_path[i]
+
+  message("Comparing scenario ", scn, " to baseline")
+
+  scn_dat <- EMODAnalyzeR::read.simulation.results.bigpurple(
+    experiment_path   = path,
+    scenario_name     = scn,
+    summarize_columns = c(
+      "Population","Infected", "On_ART",
+      "Died", "Died_from_HIV",
+      "Newly.Infected","Diagnosed",
+      "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+      "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No",
+      "HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed",
+      "Program_VMMC"
+    ),
+    stratify_columns  = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+    min_age_inclusive = 0,
+    max_age_inclusive = 99
+  )
+
+  # Compute scaling for this scenario (separate from baseline)
+  scn_scaling <- scn_dat %>%
+    filter(Year == ZMB_CENSUS_YEAR,
+           Age  >= 15, Age < 65) %>%
+    group_by(sim.ix) %>%
+    summarize(total.pop = sum(Population), .groups = "drop") %>%
+    mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+
+  scn_dat <- scn_dat %>%
+    left_join(scn_scaling, by = "sim.ix")
+
+  # Calculate and save time series
+  ts_adults <- compute_ts_with_ci(scn_dat, age_min = 15, age_max = 100)
+  ts_youth  <- compute_ts_with_ci(scn_dat, age_min = 15, age_max = 25)
+  
+  # Scenario directory (assuming you already created scn_dir earlier in loop)
+  scn_dir <- file.path(output_root, scn)
+  dir.create(scn_dir, showWarnings = FALSE, recursive = TRUE)
+  
+  # Save CSVs for plotting later
+  write_csv(ts_adults,
+            file.path(scn_dir, paste0("timeseries_adults15plus_with_ci_", scn, ".csv")))
+  write_csv(ts_youth,
+            file.path(scn_dir, paste0("timeseries_youth15_24_with_ci_", scn, ".csv")))
+  
+  # Calculate differences: Combine with baseline for comparison
+  dat_pair <- bind_rows(baseline.results, scn_dat)
+  
+  # Compute 2025–2035 metrics for 15–25 (youth) and 15–100 (adults+)
+  youth_compare   <- aggregate.data.differences(dat_pair, scenario.name = scn,
+                                                start_year = 2025, end_year = 2035,
+                                                age_min = 15, age_max = 25)
+  adults_compare  <- aggregate.data.differences(dat_pair, scenario.name = scn,
+                                                start_year = 2025, end_year = 2035,
+                                                age_min = 15, age_max = 100)
+
+  write_csv(youth_compare,
+            file.path(scn_dir, paste0("compare_youth_15_25_vs_baseline_", scn, ".csv")))
+  write_csv(adults_compare,
+            file.path(scn_dir, paste0("compare_adults_15plus_vs_baseline_", scn, ".csv")))
+
+  # Clear memory for this scenario
+  rm(scn_dat, scn_scaling, dat_pair, youth_compare, adults_compare)
+  gc()
+}
+
+```
+
+
+
+```{r}
+for (i in seq_len(2)){ #nrow(scenario_map))) {
+  scn  <- scenario_map$scenario_name[i]
+  path <- scenario_map$experiment_path[i]
+
+  message("Processing scenario: ", scn, "  at: ", path)
+
+  # Read this scenario’s simulations
+  dat <- EMODAnalyzeR::read.simulation.results.bigpurple(
+    experiment_path   = path,
+    scenario_name     = scn,
+    summarize_columns = c("Population","Infected", "On_ART",
+                          "Died", "Died_from_HIV",
+                          "Newly.Infected","Diagnosed",
+                          "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+                          "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No",
+                          "HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed",
+                          "Program_VMMC"),
+    stratify_columns  = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+    min_age_inclusive = 0,
+    max_age_inclusive = 99
+  )
+
+  # Compute scaling factor for this scenario and attach [1]
+  sim_scaling <- compute_pop_scaling(dat)
+  dat <- dat %>%
+    dplyr::left_join(sim_scaling, by = "sim.ix")
+
+  # Save raw scaled data per scenario (optional, but can help debugging)
+  # scn_dir <- file.path(output_root, scn)
+  # dir.create(scn_dir, recursive = TRUE, showWarnings = FALSE)
+  # 
+  # readr::write_rds(dat, file.path(scn_dir, paste0("zmb_results_", scn, "_scaled.rds")))
+
+  # Compute metrics for this scenario + all others **requires** baseline scenario present,
+  # but here we only have this scenario in memory.
+  # Strategy: for metrics that depend on baseline vs other scenarios, we will aggregate
+  # using the global “baseline” files at the final step. For per-scenario tables that do
+  # not require comparing multiple scenarios, compute now.
+
+  # 10-year metrics for this scenario alone (you can join to baseline later)
+  metrics_all_ages_scn <- compute_10yr_metrics_single(dat, age_min = 0,  age_max = 100)
+  metrics_adults_scn   <- compute_10yr_metrics_single(dat, age_min = 25, age_max = 100)
+  metrics_youth_scn    <- compute_10yr_metrics_single(dat, age_min = 15, age_max = 25)
+
+  readr::write_csv(metrics_all_ages_scn,
+                   file.path(scn_dir, paste0("metrics_all_ages_", scn, ".csv")))
+  readr::write_csv(metrics_adults_scn,
+                   file.path(scn_dir, paste0("metrics_adults_", scn, ".csv")))
+  readr::write_csv(metrics_youth_scn,
+                   file.path(scn_dir, paste0("metrics_youth_", scn, ".csv")))
+
+  # Plot-ready time series for this scenario (adults/youth) – you can merge across scenarios later
+  adults_plot_scn <- dat %>%
+    dplyr::filter(Age >= 15) %>%
+    dplyr::mutate(Off_ART = Infected - On_ART,
+                  Year    = floor(Year)) %>%
+    dplyr::group_by(scenario_name, Year, sim.ix) %>%
+    dplyr::summarize(
+      Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+      Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+      On_ART = sum(On_ART * pop_scaling_factor),
+      Off_ART = sum(Off_ART * pop_scaling_factor),
+      .groups = "drop_last"
+    ) %>%
+    dplyr::group_by(scenario_name, Year) %>%
+    dplyr::summarize(
+      Died_from_HIV = mean(Died_from_HIV),
+      Newly.Infected = mean(Newly.Infected),
+      On_ART = mean(On_ART),
+      Off_ART = mean(Off_ART),
+      .groups = "drop"
+    )
+
+  youth_plot_scn <- dat %>%
+    dplyr::filter(Age >= 15, Age < 25) %>%
+    dplyr::mutate(Off_ART = Infected - On_ART,
+                  Year    = floor(Year)) %>%
+    dplyr::group_by(scenario_name, Year, sim.ix) %>%
+    dplyr::summarize(
+      Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+      Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+      On_ART = sum(On_ART * pop_scaling_factor),
+      Off_ART = sum(Off_ART * pop_scaling_factor),
+      Infected = sum(Infected * pop_scaling_factor),
+      .groups = "drop_last"
+    ) %>%
+    dplyr::group_by(scenario_name, Year) %>%
+    dplyr::summarize(
+      Died_from_HIV = mean(Died_from_HIV),
+      Newly.Infected = mean(Newly.Infected),
+      On_ART = mean(On_ART),
+      Off_ART = mean(Off_ART),
+      Infected = mean(Infected),
+      .groups = "drop"
+    )
+
+  readr::write_csv(adults_plot_scn,
+                   file.path(scn_dir, paste0("adults_plot_data_", scn, ".csv")))
+  readr::write_csv(youth_plot_scn,
+                   file.path(scn_dir, paste0("youth_plot_data_", scn, ".csv")))
+
+  # Error-bar tables for this scenario vs baseline cannot be computed with only this
+  # scenario in memory. They will be constructed later by reading the per-scenario
+  # scaled RDS files together in smaller batches.
+
+  # Clear memory for this scenario's data before next iteration
+  rm(dat, sim_scaling, metrics_all_ages_scn, metrics_adults_scn, metrics_youth_scn,
+     adults_plot_scn, youth_plot_scn)
+  gc()
+}
+```
+
+# Tables and plots
+
+```{r}
+# Base paths (must match earlier chunks)
+output_root <- "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_disruptions_V2"
+
+# -------------------------------------------------------------------
+# 1. Rebuild combined zmb.results.inspire from per-scenario RDS files
+# -------------------------------------------------------------------
+
+# Each scenario directory has zmb_results_<scenario>_scaled.rds
+scenario_dirs <- fs::dir_ls(output_root, type = "directory", recurse = FALSE)
+
+rds_files <- file.path(scenario_dirs,
+                       paste0("zmb_results_",
+                              basename(scenario_dirs),
+                              "_scaled.rds"))
+
+rds_files <- rds_files[file.exists(rds_files)]
+
+if (length(rds_files) == 0) {
+  stop("No per-scenario scaled RDS files found under ", output_root,
+       ". Make sure the per-scenario loop has run.")
+}
+
+zmb.results.inspire <- purrr::map_dfr(
+  rds_files,
+  ~ readr::read_rds(.x)
+)
+
+# Ensure key columns exist
+stopifnot(all(c("scenario_name", "Year", "Age", "sim.ix",
+                "Died_from_HIV", "Newly.Infected",
+                "Infected", "On_ART", "pop_scaling_factor") %in%
+                colnames(zmb.results.inspire)))
+
+
+  mutate(Off_ART = Infected - On_ART) %>%
+  mutate(Year = floor(Year)) %>%
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(
+    Died_from_HIV  = sum(Died_from_HIV  * pop_scaling_factor),
+    Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+    On_ART         = sum(On_ART         * pop_scaling_factor),
+    Off_ART        = sum(Off_ART        * pop_scaling_factor),
+    .groups = "drop_last"
+  ) %>%
+  group_by(scenario_name, Year) %>%
+  summarize(
+    Died_from_HIV  = mean(Died_from_HIV),
+    Newly.Infected = mean(Newly.Infected),
+    On_ART         = mean(On_ART),
+    Off_ART        = mean(Off_ART),
+    .groups = "drop"
+  )
+
+# AYA 15–24
+youth.plot.dat <- zmb.results.inspire %>%
+  filter(Age >= 15, Age < 25) %>%
+  filter(scenario_name %in% c("inspire_disruptions_baseline",
+                              "inspire_disruptions_all",
+                              "inspire_disruptions_artdrop_reengage",
+                              "inspire_disruptions_artdrop_reengage_no")) %>%
+  mutate(Off_ART = Infected - On_ART) %>%
+  mutate(Year = floor(Year)) %>%
+  group_by(scenario_name, Year, sim.ix) %>%
+  summarize(
+    Died_from_HIV  = sum(Died_from_HIV  * pop_scaling_factor),
+    Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+    On_ART         = sum(On_ART         * pop_scaling_factor),
+    Off_ART        = sum(Off_ART        * pop_scaling_factor),
+    Infected       = sum(Infected       * pop_scaling_factor),
+    .groups = "drop_last"
+  ) %>%
+  group_by(scenario_name, Year) %>%
+  summarize(
+    Died_from_HIV  = mean(Died_from_HIV),
+    Newly.Infected = mean(Newly.Infected),
+    On_ART         = mean(On_ART),
+    Off_ART        = mean(Off_ART),
+    Infected       = mean(Infected),
+    .groups = "drop"
+  )
+
+# Factor levels to match older-style plotting order [1]
+adults.plot.dat$scenario <- factor(
+  adults.plot.dat$scenario_name,
+  levels = c("inspire_disruptions_all",
+             "inspire_disruptions_artdrop_reengage",
+             "inspire_disruptions_artdrop_reengage_no",
+             "inspire_disruptions_baseline")
+)
+
+youth.plot.dat$scenario <- factor(
+  youth.plot.dat$scenario_name,
+  levels = c("inspire_disruptions_all",
+             "inspire_disruptions_artdrop_reengage",
+             "inspire_disruptions_artdrop_reengage_no",
+             "inspire_disruptions_baseline")
+)
+
+# Save plot-ready data
+readr::write_csv(adults.plot.dat,
+                 file.path(output_root, "adults_plot_data_all_scenarios.csv"))
+readr::write_csv(youth.plot.dat,
+                 file.path(output_root, "youth_plot_data_all_scenarios.csv"))
+
+```
+
+## Generate tables
+```{r}
+# Assumes aggregate.data.differences() and bt_mean() already defined in notebook
+
+# Youth 15–24, all key disruption scenarios vs baseline
+metrics.youth_with_errorbars <- dplyr::bind_rows(
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_baseline",
+                             start_year          = 2025,
+                             end_year            = 2035,
+                             age_min             = 15,
+                             age_max             = 25,
+                             comparison_scenario = "inspire_disruptions_baseline"),
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_all",
+                             start_year          = 2025,
+                             end_year            = 2035,
+                             age_min             = 15,
+                             age_max             = 25,
+                             comparison_scenario = "inspire_disruptions_baseline"),
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_artdrop_reengage",
+                             start_year          = 2025,
+                             end_year            = 2035,
+                             age_min             = 15,
+                             age_max             = 25,
+                             comparison_scenario = "inspire_disruptions_baseline"),
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_artdrop_reengage_no",
+                             start_year          = 2025,
+                             end_year            = 2035,
+                             age_min             = 15,
+                             age_max             = 25,
+                             comparison_scenario = "inspire_disruptions_baseline")
+)
+
+readr::write_csv(
+  metrics.youth_with_errorbars,
+  file.path(output_root, "INSPIRE_disruptions_metrics_youth_15_24_with_errorbars.csv")
+)
+
+# All ages 15+ (or 0–100 if you prefer; here I use 15–100 as in older Abstract tables [1])
+metrics.all_ages_with_errorbars <- dplyr::bind_rows(
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_baseline",
+                             start_year          = 2025,
+                             end_year            = 2035,
+                             age_min             = 15,
+                             age_max             = 100,
+                             comparison_scenario = "inspire_disruptions_baseline"),
+  aggregate.data.differences(zmb.results.inspire,
+                             scenario.name       = "inspire_disruptions_all",
+                             start_year          = 2025
+  )
+)
+```
+
+
+## Generate plots
+
+```{r}
+# -------------------------------------------------------------------
+  scale_y_continuous("Person-Years on ART") +
+  base_theme
+
+ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_onart_youth15_24.pdf"),
+       plot = hiv.onart.youth,
+       width = 5, height = 4, units = "in")
+
+hiv.offart.youth <- youth.plot.dat %>%
+  filter(scenario_name %in% c("inspire_disruptions_all",
+                              "inspire_disruptions_baseline")) %>%
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+  geom_line(aes(x = Year, y = Off_ART, color = scenario_name),
+            linewidth = 3,
+            show.legend = FALSE) +
+  scale_color_manual(values = c("inspire_disruptions_all"      = "red",
+                                "inspire_disruptions_baseline" = "black")) +
+  scale_x_continuous("Year") +
+  scale_y_continuous("Person-Years off ART") +
+  base_theme
+
+ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_offart_youth15_24.pdf"),
+       plot = hiv.offart.youth,
+       width = 5, height = 4, units = "in")
+
+```
+
