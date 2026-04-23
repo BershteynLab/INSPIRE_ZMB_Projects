@@ -12,8 +12,9 @@ Analysis/.RData
 Analysis/.Rhistory
 Analysis/.Rproj.user/
 Analysis/Analysis.Rproj
-Analysis/Inspire_disruptions_V2/baseline_scaled.rds
-
+Analysis/Inspire_Disruptions_V2/baseline_scaled.rds
+Analysis/Inspire_Disruptions_V2/inspire_disruptions*
+Analysis/Inspire_Disruptions_V2/*.pdf
 daly/
 prelim/
 test/

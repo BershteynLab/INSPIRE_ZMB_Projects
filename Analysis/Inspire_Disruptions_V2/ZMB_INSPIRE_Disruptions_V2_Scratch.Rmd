@@ -1,0 +1,91 @@
+---
+title: "ZMB_INSPIRE_Disruptions_Scratch"
+output: html_document
+date: "2026-04-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Scratch work
+
+```{r}
+scn  <- scenario_map$scenario_name[1]
+path <- scenario_map$experiment_path[1]
+
+message("Comparing scenario ", scn, " to baseline")
+
+scn_dat <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = path,
+  scenario_name     = scn,
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "ReNewlySymptomatic","SendToTemporaryART","Back2GoodART",
+    "PEPFAR_ARTDropout_Yes","PEPFAR_ARTDropout_No",
+    "HCTTestingLoop1_uptake","HCTTestingLoop1_PEPFAR_Delayed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender", "IsCircumcised", "HasIntervention.PrEP"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+# Compute scaling for this scenario (separate from baseline)
+scn_scaling <- scn_dat %>%
+  filter(Year == ZMB_CENSUS_YEAR,
+         Age  >= 15, Age < 65) %>%
+  group_by(sim.ix) %>%
+  summarize(total.pop = sum(Population), .groups = "drop") %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+
+scn_dat <- scn_dat %>%
+  left_join(scn_scaling, by = "sim.ix")
+
+```
+
+Now that we have the scn_dat, let's manually check what's going on with baseline
+```{r}
+# Calculate differences: Combine with baseline for comparison
+dat_pair <- bind_rows(baseline.results, scn_dat)
+
+
+dat_pair %>% 
+  group_by(scenario_name, sim.ix)
+```
+
+
+```{r}
+
+# Compute 2025–2035 metrics for 15–25 (youth) and 15–100 (adults+)
+youth_compare   <- aggregate.data.differences(dat_pair, scenario.name = scn,
+                                              start_year = 2025, end_year = 2035,
+                                              age_min = 15, age_max = 25)
+adults_compare  <- aggregate.data.differences(dat_pair, scenario.name = scn,
+                                              start_year = 2025, end_year = 2035,
+                                              age_min = 15, age_max = 100)
+```
+
+
+
+```{r}
+
+  # Calculate and save time series
+  ts_adults <- compute_ts_with_ci(scn_dat, age_min = 15, age_max = 100)
+  ts_youth  <- compute_ts_with_ci(scn_dat, age_min = 15, age_max = 25)
+  
+  # Scenario directory (assuming you already created scn_dir earlier in loop)
+  scn_dir <- file.path(output_root, scn)
+  dir.create(scn_dir, showWarnings = FALSE, recursive = TRUE)
+  
+  # Save CSVs for plotting later
+  write_csv(ts_adults,
+            file.path(scn_dir, paste0("timeseries_adults15plus_with_ci_", scn, ".csv")))
+  write_csv(ts_youth,
+            file.path(scn_dir, paste0("timeseries_youth15_24_with_ci_", scn, ".csv")))
+  
+
+```
+
