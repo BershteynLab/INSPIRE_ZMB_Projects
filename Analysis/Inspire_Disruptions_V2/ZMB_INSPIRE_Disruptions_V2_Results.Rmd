@@ -32,16 +32,27 @@ ZMB_CENSUS_YEAR <- 2022
 ZMB_CENSUS_POP  <- 10868136 # ages 15-64
 
 # Paths
-base_experiment_root <- "/gpfs/scratch/citrod01/experiments/INSPIRE"
-output_root          <- "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
+base_experiment_root <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/"
+output_root          <- "/gpfs/data/bershteynlab/EMOD/citrod01/INSPIRE_ZMB_Projects/Analysis/Inspire_Disruptions_V2/" #"/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
 
 # CSV listing scenarios and campaigns
-scenario_csv_path <- file.path("/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/scenarios_inspire_disruptions_v2.csv")
+scenario_csv_path <- file.path("/gpfs/data/bershteynlab/EMOD/citrod01/INSPIRE_ZMB_Projects/scenarios_inspire_disruptions_v2.csv")
 
 ```
 
 ## Helper functions
 ```{r}
+base_theme <- list(
+  theme_minimal(),
+  theme_bw(),
+  theme(
+    panel.grid = element_blank(),
+    text       = element_text(family = "sans"),
+    axis.text  = element_text(size = 14),
+    axis.title = element_text(size = 16)
+  )
+)
+
 bt_mean <- function(splits, colname){
   x <- as.data.frame(rsample::analysis(splits))
   mean(x[[colname]])
@@ -519,9 +530,27 @@ for (i in c(1)){#seq_len(nrow(scenario_map))) {
 
 ## Aggregate data for plots
 
+
+```{r}
+dir_ls(path = scenario_dirs,
+    recurse = TRUE,
+  glob = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/*inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv",
+      type = "file")
+
+fs::dir_ls(
+  path = scenario_dirs,
+  recurse = TRUE,
+  glob = "*inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv",
+  type = "file"
+)
+
+```
+
+
 ```{r}
 # All immediate scenario directories
-scenario_dirs <- dir_ls(output_root, type = "directory", recurse = FALSE)
+output_root_2 = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
+scenario_dirs <- dir_ls(output_root_2, type = "directory", recurse = FALSE)
 
 # Helper to find and bind CSVs matching a pattern
 read_timeseries_files <- function(pattern) {
@@ -551,8 +580,8 @@ read_timeseries_files <- function(pattern) {
 }
 
 # Combine all youth and adult time series
-youth_ts_all  <- read_timeseries_files(paste0(output_root,"inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv"))
-adults_ts_all <- read_timeseries_files(paste0(output_root,"inspire_disruptions_*/timeseries_adults15plus_with_ci_*.csv"))
+youth_ts_all  <- read_timeseries_files(paste0(output_root_2,"inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv"))
+adults_ts_all <- read_timeseries_files(paste0(output_root_2,"inspire_disruptions_*/timeseries_adults15plus_with_ci_*.csv"))
 
 # Save combined tables for later use
 if (!is.null(youth_ts_all)) {
@@ -567,6 +596,9 @@ if (!is.null(adults_ts_all)) {
 
 ## Generate data for plots
 ```{r}
+youth_ts_all <- read_csv(file.path(output_root, "timeseries_youth15_24_with_ci_all_scenarios.csv"))
+adults_ts_all <- read_csv(file.path(output_root, "timeseries_adults15plus_with_ci_all_scenarios.csv"))
+
 # Subset complete dataset to create plots
 scenario_levels <- c("inspire_disruptions_all",
                      "inspire_disruptions_artdrop_reengage",
@@ -633,10 +665,14 @@ plot_metric_ci <- function(dat, metric_prefix, ylab, scenarios, filename) {
                                   "inspire_disruptions_baseline" = "black")) + 
     scale_x_continuous("Year") +
     scale_y_continuous(ylab) +
-    base_theme
+    base_theme +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
 
     ggsave(filename = file.path(plot_dir, filename),
-           plot = p, width = 5, height = 4, units = "in")
+           plot = p, width = 5, height = 3, units = "in")
   
     p
 }
@@ -650,7 +686,7 @@ scn_compare <- c("inspire_disruptions_all",
 ## Adults 15+ plots
 
 # 1. HIV acquisitions (Newly.Infected)
-hiv_acq_adults <- plot_metric_ci(adults_plot_ts_plots,
+hiv_acq_adults <- plot_metric_ci(adults_plot_ts,
                                  metric_prefix = "Newly.Infected",
                                  ylab = "HIV Acquisitions",
                                  scenarios = scn_compare,
@@ -663,19 +699,19 @@ hiv_deaths_adults <- plot_metric_ci(adults_plot_ts,
                                     scenarios = scn_compare,
                                     filename = "INSPIRE_disruptions_HIV_deaths_adults15plus_withCI.pdf")
 
-# 3. Person-years on ART
-hiv_onart_adults <- plot_metric_ci(adults_plot_ts,
-                                   metric_prefix = "On_ART",
-                                   ylab = "Person-Years on ART",
-                                   scenarios = scn_compare,
-                                   filename = "INSPIRE_disruptions_HIV_onart_adults15plus_withCI.pdf")
-
-# 4. Person-years off ART
-hiv_offart_adults <- plot_metric_ci(adults_plot_ts,
-                                    metric_prefix = "Off_ART",
-                                    ylab = "Person-Years off ART",
-                                    scenarios = scn_compare,
-                                    filename = "INSPIRE_disruptions_HIV_offart_adults15plus_withCI.pdf")
+# # 3. Person-years on ART
+# hiv_onart_adults <- plot_metric_ci(adults_plot_ts,
+#                                    metric_prefix = "On_ART",
+#                                    ylab = "Person-Years on ART",
+#                                    scenarios = scn_compare,
+#                                    filename = "INSPIRE_disruptions_HIV_onart_adults15plus_withCI.pdf")
+# 
+# # 4. Person-years off ART
+# hiv_offart_adults <- plot_metric_ci(adults_plot_ts,
+#                                     metric_prefix = "Off_ART",
+#                                     ylab = "Person-Years off ART",
+#                                     scenarios = scn_compare,
+#                                     filename = "INSPIRE_disruptions_HIV_offart_adults15plus_withCI.pdf")
 
 ## Youth 15–24 plots
 
@@ -693,19 +729,19 @@ hiv_deaths_youth <- plot_metric_ci(youth_plot_ts,
                                    scenarios = scn_compare,
                                    filename = "INSPIRE_disruptions_HIV_deaths_youth15_24_withCI.pdf")
 
-# 7. Person-years on ART
-hiv_onart_youth <- plot_metric_ci(youth_plot_ts,
-                                  metric_prefix = "On_ART",
-                                  ylab = "Person-Years on ART",
-                                  scenarios = scn_compare,
-                                  filename = "INSPIRE_disruptions_HIV_onart_youth15_24_withCI.pdf")
-
-# 8. Person-years off ART
-hiv_offart_youth <- plot_metric_ci(youth_plot_ts,
-                                   metric_prefix = "Off_ART",
-                                   ylab = "Person-Years off ART",
-                                   scenarios = scn_compare,
-                                   filename = "INSPIRE_disruptions_HIV_offart_youth15_24_withCI.pdf")
+# # 7. Person-years on ART
+# hiv_onart_youth <- plot_metric_ci(youth_plot_ts,
+#                                   metric_prefix = "On_ART",
+#                                   ylab = "Person-Years on ART",
+#                                   scenarios = scn_compare,
+#                                   filename = "INSPIRE_disruptions_HIV_onart_youth15_24_withCI.pdf")
+# 
+# # 8. Person-years off ART
+# hiv_offart_youth <- plot_metric_ci(youth_plot_ts,
+#                                    metric_prefix = "Off_ART",
+#                                    ylab = "Person-Years off ART",
+#                                    scenarios = scn_compare,
+#                                    filename = "INSPIRE_disruptions_HIV_offart_youth15_24_withCI.pdf")
 ```
 
 
@@ -713,7 +749,7 @@ hiv_offart_youth <- plot_metric_ci(youth_plot_ts,
 
 ```{r}
 # All immediate scenario directories (each should hold per-scenario compare_* files)
-scenario_dirs <- dir_ls(output_root, type = "directory", recurse = FALSE)
+scenario_dirs <- dir_ls(output_root_2, type = "directory", recurse = FALSE)
 
 # Generic helper: find and bind CSVs matching a glob pattern under scenario_dirs
 read_compare_files <- function(pattern) {
@@ -953,5 +989,541 @@ compare_adults_all %>%
     scenario_short = scenario_order_map[scenario_name],
     scenario_short = factor(scenario_short, levels = desired_levels)
   ) %>% arrange(scenario_short)
+```
+
+# ART Coverage and Diagnosis Rates
+
+## Read in Data
+```{r}
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_testdelay___2026_03_31_17_26_52_937393/"
+
+testdelay.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_testdelay",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_baseline___2026_03_31_17_10_07_037873/"
+
+baseline.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_baseline",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_artdrop_reengage___2026_04_21_11_39_39_064302/"
+
+artdrop_reengage.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_artdrop_reengage",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_artdrop_reengage_no___2026_03_31_17_42_27_968399/"
+
+artdrop_reengage_no.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_artdrop_reengage_no",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_all___2026_04_01_10_12_43_785614/"
+
+all.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_all",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+scn_dat <- rbind(baseline.results, artdrop_reengage_no.results, 
+                 artdrop_reengage.results, all.results,
+                 testdelay.results)
+
+# Compute scaling for this scenario (separate from baseline)
+scn_scaling <- scn_dat %>%
+  filter(Year == ZMB_CENSUS_YEAR,
+         Age  >= 15, Age < 65) %>%
+  group_by(sim.ix) %>%
+  summarize(total.pop = sum(Population), .groups = "drop") %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+
+scn_dat <- scn_dat %>%
+  left_join(scn_scaling, by = "sim.ix")
+
+```
+
+## Aggregate
+
+```{r}
+ART.coverage.aggregated.data.adults <- scn_dat %>% 
+  filter(Age >= 15) %>% 
+  mutate(Year = ceiling(Year)) %>% 
+  group_by(scenario_name, sim.ix, Year) %>% 
+  summarize(
+    Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+    Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+    Infected = sum(Infected * pop_scaling_factor/2),
+    Diagnosed = sum(Diagnosed * pop_scaling_factor/2),
+    On_ART = sum(On_ART * pop_scaling_factor/2), .groups = 'drop_last'
+      ) %>% 
+  mutate(
+    KnowStatus = Diagnosed/Infected,
+    ARTCovDiagnosed = On_ART/Diagnosed,
+    ARTCov = On_ART/Infected
+  ) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(
+    Newly.Infected = mean(Newly.Infected), 
+    Died_from_HIV = mean(Died_from_HIV),
+    Infected = mean(Infected),
+    Diagnosed = mean(Diagnosed), 
+    On_ART = mean(On_ART), 
+    KnowStatus = mean(KnowStatus),
+    ARTCovDiagnosed = mean(ARTCovDiagnosed),
+    ARTCov = mean(ARTCov), .groups = 'drop_last')
+
+ART.coverage.aggregated.data.AYA <- scn_dat %>% 
+  filter(Age >= 15, Age < 25) %>% 
+  mutate(Year = ceiling(Year)) %>% 
+  group_by(scenario_name, sim.ix, Year) %>% 
+    summarize(
+    Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
+    Died_from_HIV = sum(Died_from_HIV * pop_scaling_factor),
+    Infected = sum(Infected * pop_scaling_factor/2),
+    Diagnosed = sum(Diagnosed * pop_scaling_factor/2),
+    On_ART = sum(On_ART * pop_scaling_factor/2), .groups = 'drop_last'
+      ) %>% 
+  mutate(
+    KnowStatus = Diagnosed/Infected,
+    ARTCovDiagnosed = On_ART/Diagnosed,
+    ARTCov = On_ART/Infected
+  ) %>% 
+  group_by(scenario_name, Year) %>% 
+  summarize(
+    Newly.Infected = mean(Newly.Infected), 
+    Died_from_HIV = mean(Died_from_HIV),
+    Infected = mean(Infected),
+    Diagnosed = mean(Diagnosed), 
+    On_ART = mean(On_ART), 
+    KnowStatus = mean(KnowStatus),
+    ARTCovDiagnosed = mean(ARTCovDiagnosed),
+    ARTCov = mean(ARTCov), .groups = 'drop_last')
+
+```
+
+```{r}
+ART.coverage.aggregated.data.AYA %>% 
+  filter(Year >= 2015, Year <= 2035) %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name)) + 
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+```
+
+```{r}
+ART.coverage.aggregated.data.AYA %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = Year, y = On_ART, color = scenario_name)) + 
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+ART.coverage.aggregated.data.AYA %>% filter(Year >= 2024) %>% View
+```
+
+
+```{r}
+ART.coverage.aggregated.data.AYA %>% 
+  ggplot() + 
+  geom_point(mapping = aes(x = Year, y = Diagnosed, color = scenario_name)) + 
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+```
+
+
+## Generate Plots
+
+### Diagnosis rate - first 95
+```{r}
+p <- ART.coverage.aggregated.data.adults %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = KnowStatus,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "Adults_diagnosed.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+
+```
+
+
+```{r}
+p <- ART.coverage.aggregated.data.AYA %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = KnowStatus,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "AYA_diagnosed.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+### ART coverage rate - second 95
+
+```{r}
+p <- ART.coverage.aggregated.data.adults %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = ARTCovDiagnosed,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "Adults_art_cov_diagnosed.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+
+```{r}
+p <- ART.coverage.aggregated.data.AYA %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = ARTCovDiagnosed,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "AYA_art_cov_diagnosed.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+### VLS rates
+
+```{r}
+# create stepwise data
+
+VLS.df = rbind(
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_artdrop_reengage_no")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_artdrop_reengage")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_baseline")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(rep(0.97,11), rep(0.97*(1-.76),10)),
+    scenario_name = c("inspire_disruptions_all")
+  )
+)
+  
+
+p <- VLS.df %>% 
+  ggplot() + 
+  geom_line(
+    mapping = aes(x = Year, y = VLS, color = scenario_name), 
+    linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme + 
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "AYA_VLS.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+```{r}
+# What is the relative fraction of adults vs adolescents on ART? 
+# What fraction of all adults have their VLS adjusted?
+
+adh_disruption_adults = ART.coverage.aggregated.data.AYA %>% 
+  filter(scenario_name == 'inspire_disruptions_all') %>% 
+  select(scenario_name, Year, On_ART_AYA = On_ART) %>% 
+  merge(
+    ART.coverage.aggregated.data.adults %>% 
+      select(scenario_name, Year, On_ART_Adults = On_ART),
+     by = c("scenario_name" ,"Year")
+  ) %>% 
+  mutate(
+    total = On_ART_AYA + On_ART_Adults,
+    On_ART_AYA_frac = On_ART_AYA/total,
+    On_ART_Adults_frac = On_ART_Adults/total
+  ) %>% 
+  mutate(
+    VLS = On_ART_AYA_frac*.97 *(1-.76) + On_ART_Adults_frac*.97
+  ) %>% 
+  filter(Year >= 2015, Year <= 2035) %>% 
+  select(Year, VLS,scenario_name)
+
+
+VLS.df = rbind(
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_artdrop_reengage_no")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_artdrop_reengage")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(0.97),
+    scenario_name = c("inspire_disruptions_baseline")
+  ),
+  data.frame(
+    Year = c(2015:2035),
+    VLS = c(rep(0.97,11), rep(0.97 * .99 + 0.97 * (1- .76) * .01,10)),
+    scenario_name = c("inspire_disruptions_all")
+  )
+)
+  
+p <- VLS.df %>% 
+  ggplot() + 
+  geom_line(
+    mapping = aes(x = Year, y = VLS, color = scenario_name), 
+    linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme +
+      theme(
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank()
+      )
+
+p
+
+file_name = file.path(output_root, "Adults_VLS.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+### Total ART Coverage
+
+on ART/Infected
+
+```{r}
+p <- ART.coverage.aggregated.data.adults %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = ARTCov,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "Adults_ARTCov.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
+```
+
+```{r}
+
+p <- ART.coverage.aggregated.data.AYA %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = ARTCov,
+        color = scenario_name),
+        linewidth = 3, show.legend = FALSE) +
+    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
+                                  "inspire_disruptions_baseline" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+
+p
+
+file_name = file.path(output_root, "AYA_ARTCov.pdf")
+
+ggsave(filename = file_name,
+       plot = p, width = 4, height = 3, units = "in")
 ```
 

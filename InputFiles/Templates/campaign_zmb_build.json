@@ -4771,7 +4771,7 @@
                   "HCTTestingLoop1"
                ],
                "class": "NodeLevelHealthTriggeredIV",
-               "Duration": 12780
+               "Duration": 12805
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
@@ -4824,7 +4824,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2024.93,
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {
@@ -4865,7 +4865,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2024.93,
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {
@@ -4983,7 +4983,7 @@
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2024.93,
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {
@@ -6562,17 +6562,100 @@
                "Trigger_Condition_List": [
                   "OnART1"
                ],
-               "class": "NodeLevelHealthTriggeredIV"
+               "class": "NodeLevelHealthTriggeredIV",
+               "Duration": 3681
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "Random draw to initiate effective ART or non-suppressive therapy, 2015-",
+         "Event_Name": "Random draw to initiate effective ART or non-suppressive therapy, 2015-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
          "Start_Year": 2015,
          "class": "CampaignEventByYear"
       },
+      {
+         "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "EffectiveART",
+                     "NonSuppressiveART"
+                  ],
+                  "Choice_Probabilities": [
+                     0.97,
+                     0.03
+                  ],
+                  "Disqualifying_Properties": [
+                     "ARTIneligible:Yes",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
+                  ],
+                  "class": "HIVRandomChoice"
+               },
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Target_Age_Max": 100,
+               "Target_Age_Min": 25,
+               "Trigger_Condition_List": [
+                  "OnART1"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "Random draw to initiate effective ART or non-suppressive therapy, 2025-, for adults",
+         "COMMENT": "Targets Adults, no disruptions",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Choice_Names": [
+                     "EffectiveART",
+                     "NonSuppressiveART"
+                  ],
+                  "Choice_Probabilities": [
+                     0.97,
+                     0.03
+                  ],
+                  "Choice_Probabilities__KP__ARTAdherence": "<-- MARKER",
+                  "Disqualifying_Properties": [
+                     "ARTIneligible:Yes",
+                     "CascadeState:OnEffectiveART",
+                     "CascadeState:OnNonSuppressiveART",
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
+                  ],
+                  "class": "HIVRandomChoice"
+               },
+               "Target_Demographic": "ExplicitAgeRanges",
+               "Target_Age_Max": 25,
+               "Target_Age_Min": 15,
+               "Trigger_Condition_List": [
+                  "OnART1"
+               ],
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "Random draw to initiate effective ART or non-suppressive therapy, 2025-, for AYA",
+         "COMMENT": "Targets AYA, allows for disruptions starting 2025",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 2025,
+         "class": "CampaignEventByYear"
+      },
+
       {
          "Event_Coordinator_Config": {
             "Demographic_Coverage": 1,
@@ -7109,11 +7192,27 @@
       {
          "Event_Coordinator_Config": {
             "End_Year": 2080,
-            "Intervention_Config": {
+            ".Intervention_Config": {
                "Enable_Is_Symptomatic": 1,
                "New_Property_Value": "",
                "Positive_Diagnosis_Event": "ReNewlySymptomatic",
                "class": "HIVRapidHIVDiagnostic"
+            },
+            "Intervention_Config": {
+               "Intervention_List": [
+                  {
+                     "class": "HIVDelayedIntervention",
+                     "Delay_Period_Distribution": "CONSTANT_DISTRIBUTION",
+                     "Delay_Period_Constant": 31,
+                     "Broadcast_Event" : "ARTReengagement"
+                  },
+                  {
+                     "class": "PropertyValueChanger",
+                     "Target_Property_Key": "CascadeState",
+                     "Target_Property_Value": "TestingOnSymptomatic"
+                  }
+               ],
+               "class": "MultiInterventionDistributor"
             },
             "Targeting_Config": {
                "class": "TargetingLogic",
@@ -7206,8 +7305,8 @@
             "Time_Value_Map": {
                "Times": [
                   2020,
-                  2024.99,
-                  2025,
+                  2025.5,
+                  2025.51,
                   2080
                ],
                "Values": [
