@@ -215,7 +215,13 @@ compute_ts_with_ci <- function(data, age_min, age_max) {
       Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
       On_ART         = sum(On_ART         * pop_scaling_factor),
       Off_ART        = sum(Off_ART        * pop_scaling_factor),
+      Diagnosed      = sum(Diagnosed * pop_scaling_factor),
+      Infected       = sum(Infected * pop_scaling_factor),
       .groups = "drop"
+    ) %>% 
+    mutate(
+      First90 = case_when(Infected > 0 ~ Diagnosed/Infected, Infected <= 0 ~ 0),
+      Second90 = case_when(Diagnosed >0 ~ On_ART/Diagnosed , Diagnosed <= 0 ~ 0)
     )
 
   ts_ci <- yearly %>%
@@ -227,7 +233,7 @@ compute_ts_with_ci <- function(data, age_min, age_max) {
       bts <- bootstraps(df, times = 500)
 
       # For each metric, compute 95% CI of the mean across sims
-      metrics <- c("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART")
+      metrics <- c("Newly.Infected", "Died_from_HIV", "On_ART", "Off_ART", "First90", "Second90")
 
       summary_list <- lapply(metrics, function(metric) {
         m <- paste0("mean.", metric)
@@ -253,8 +259,14 @@ compute_ts_with_ci <- function(data, age_min, age_max) {
         On_ART_ul           = summary_list$On_ART$ul,
         Off_ART_mean        = summary_list$Off_ART$mean,
         Off_ART_ll          = summary_list$Off_ART$ll,
-        Off_ART_ul          = summary_list$Off_ART$ul
-      )
+        Off_ART_ul          = summary_list$Off_ART$ul,
+        First90_mean        = summary_list$First90$mean,
+        First90_ll          = summary_list$First90$ll,
+        First90_ul          = summary_list$First90$ul,
+        Second90_mean        = summary_list$Second90$mean,
+        Second90_ll          = summary_list$Second90$ll,
+        Second90_ul          = summary_list$Second90$ul
+        )
     }) %>%
     ungroup()
 
@@ -267,7 +279,6 @@ compute_ts_with_ci <- function(data, age_min, age_max) {
 ## Set up: find the directories
 
 ```{r}
-
 # Read the scenario CSV
 scenarios_df <- read_csv(scenario_csv_path, show_col_types = FALSE)
 
@@ -452,7 +463,10 @@ baseline.results <- baseline.results %>%
 #    - Save per-scenario comparison tables
 #----------------------------------------------------------
 
-for (i in c(1)){#seq_len(nrow(scenario_map))) {
+scenario_map <- scenario_map %>% 
+  filter(!scenario_name %in% c("inspire_disruptions_sa_attrition_lb", "inspire_disruptions_sa_attrition_ub"))
+
+for (i in c(14,18,19)){#seq_len(nrow(scenario_map))) {
   scn  <- scenario_map$scenario_name[i]
   path <- scenario_map$experiment_path[i]
 
@@ -523,34 +537,13 @@ for (i in c(1)){#seq_len(nrow(scenario_map))) {
 
 ```
 
-
-
-
 # Tables and plots
 
 ## Aggregate data for plots
-
-
-```{r}
-dir_ls(path = scenario_dirs,
-    recurse = TRUE,
-  glob = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/*inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv",
-      type = "file")
-
-fs::dir_ls(
-  path = scenario_dirs,
-  recurse = TRUE,
-  glob = "*inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv",
-  type = "file"
-)
-
-```
-
-
 ```{r}
 # All immediate scenario directories
-output_root_2 = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
-scenario_dirs <- dir_ls(output_root_2, type = "directory", recurse = FALSE)
+#output_root_2 = "/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/Analysis/Inspire_Disruptions_V2/"
+scenario_dirs <- dir_ls(output_root, type = "directory", recurse = FALSE)
 
 # Helper to find and bind CSVs matching a pattern
 read_timeseries_files <- function(pattern) {
@@ -580,8 +573,8 @@ read_timeseries_files <- function(pattern) {
 }
 
 # Combine all youth and adult time series
-youth_ts_all  <- read_timeseries_files(paste0(output_root_2,"inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv"))
-adults_ts_all <- read_timeseries_files(paste0(output_root_2,"inspire_disruptions_*/timeseries_adults15plus_with_ci_*.csv"))
+youth_ts_all  <- read_timeseries_files(paste0(output_root,"inspire_disruptions_*/timeseries_youth15_24_with_ci_*.csv"))
+adults_ts_all <- read_timeseries_files(paste0(output_root,"inspire_disruptions_*/timeseries_adults15plus_with_ci_*.csv"))
 
 # Save combined tables for later use
 if (!is.null(youth_ts_all)) {
@@ -699,6 +692,30 @@ hiv_deaths_adults <- plot_metric_ci(adults_plot_ts,
                                     scenarios = scn_compare,
                                     filename = "INSPIRE_disruptions_HIV_deaths_adults15plus_withCI.pdf")
 
+# 3. First 90
+first90_adults <- plot_metric_ci(adults_plot_ts,
+                                    metric_prefix = "First90",
+                                    ylab = "Know HIV Status",
+                                    scenarios = scn_compare,
+                                    filename = "INSPIRE_disruptions_HIV_First90_adults15plus_withCI.pdf")
+
+# 4. Second 90
+second90_adults <- plot_metric_ci(adults_plot_ts,
+                                    metric_prefix = "Second90",
+                                    ylab = "Diagnosed on ART",
+                                    scenarios = scn_compare,
+                                    filename = "INSPIRE_disruptions_HIV_Second90_adults15plus_withCI.pdf")
+
+(first90_adults + 
+    scale_y_continuous(limits = c(0,1), labels = scales::label_percent(accuracy = 1)) )%>% 
+  ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_First90_adults15plus_withCI.pdf"),
+           width = 4, height = 3, units = "in")
+
+(second90_adults + 
+    scale_y_continuous(limits = c(0,1), labels = scales::label_percent(accuracy = 1))) %>% 
+  ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_Second90_adults15plus_withCI.pdf"),
+           width = 4, height = 3, units = "in")
+
 # # 3. Person-years on ART
 # hiv_onart_adults <- plot_metric_ci(adults_plot_ts,
 #                                    metric_prefix = "On_ART",
@@ -742,6 +759,31 @@ hiv_deaths_youth <- plot_metric_ci(youth_plot_ts,
 #                                    ylab = "Person-Years off ART",
 #                                    scenarios = scn_compare,
 #                                    filename = "INSPIRE_disruptions_HIV_offart_youth15_24_withCI.pdf")
+
+# 3. First 90
+first90_aya <- plot_metric_ci(youth_plot_ts,
+                              metric_prefix = "First90",
+                              ylab = "Know HIV Status",
+                              scenarios = c("inspire_disruptions_all","inspire_disruptions_artdrop_reengage_no","inspire_disruptions_baseline"   ),
+                              filename = "INSPIRE_disruptions_HIV_First90_youth15plus_withCI.pdf")
+
+# 4. Second 90
+second90_aya <- plot_metric_ci(youth_plot_ts,
+                                    metric_prefix = "Second90",
+                                    ylab = "Diagnosed on ART",
+                                    scenarios = scn_compare,
+                                    filename = "INSPIRE_disruptions_HIV_Second90_youth15plus_withCI.pdf")
+
+(first90_aya + 
+    scale_y_continuous(limits = c(0,1), labels = scales::label_percent(accuracy = 1)) )%>% 
+  ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_First90_youth15plus_withCI.pdf"),
+           width = 4, height = 3, units = "in")
+
+(second90_aya + 
+    scale_y_continuous(limits = c(0,1), labels = scales::label_percent(accuracy = 1))) %>% 
+  ggsave(filename = file.path(plot_dir, "INSPIRE_disruptions_HIV_Second90_youth15plus_withCI.pdf"),
+           width = 4, height = 3, units = "in")
+
 ```
 
 
@@ -1468,7 +1510,7 @@ VLS.df = rbind(
   ),
   data.frame(
     Year = c(2015:2035),
-    VLS = c(rep(0.97,11), rep(0.97*(1-.76),10)),
+    VLS = c(rep(0.97,11), rep(0.97*(1-.305),10)),
     scenario_name = c("inspire_disruptions_all")
   )
 )
@@ -1517,7 +1559,7 @@ adh_disruption_adults = ART.coverage.aggregated.data.AYA %>%
     On_ART_Adults_frac = On_ART_Adults/total
   ) %>% 
   mutate(
-    VLS = On_ART_AYA_frac*.97 *(1-.76) + On_ART_Adults_frac*.97
+    VLS = On_ART_AYA_frac*.97 *(1-.305) + On_ART_Adults_frac*.97
   ) %>% 
   filter(Year >= 2015, Year <= 2035) %>% 
   select(Year, VLS,scenario_name)

@@ -6655,7 +6655,6 @@
          "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
-
       {
          "Event_Coordinator_Config": {
             "Demographic_Coverage": 1,
@@ -6964,12 +6963,50 @@
                   "OnART1",
                   "Back2GoodART"
                ],
-               "Duration": 9125,
+               "Target_Demographic":"ExplicitAgeRanges",
+               "Target_Age_Min": 25,
+               "Target_Age_Max": 100,
                "class": "NodeLevelHealthTriggeredIV"
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "OnART: state 2 (delay to dropout), 1990-2015",
+         "Event_Name": "OnART: state 2 (delay to dropout) for adults 25+",
+         "Nodeset_Config": {
+            "class": "NodeSetAll"
+         },
+         "Start_Year": 1990,
+         "class": "CampaignEventByYear"
+      },
+      {
+         "Event_Coordinator_Config": {
+            "Demographic_Coverage": 1,
+            "Intervention_Config": {
+               "Actual_IndividualIntervention_Config": {
+                  "Broadcast_Event": "OnART3",
+                  "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
+                  "Delay_Period_Exponential": 2207,
+                  "Disqualifying_Properties": [
+                     "CascadeState:LostForever",
+                     "CascadeState:LostForever_PEPFAR_cancelled"
+                  ],
+                  "Max_Entries": 1,
+                  "Muxer_Name": "ARTDropoutDelay",
+                  "New_Property_Value": "",
+                  "class": "HIVMuxer"
+               },
+               "New_Property_Value": "",
+               "Trigger_Condition_List": [
+                  "OnART1",
+                  "Back2GoodART"
+               ],
+               "Target_Demographic":"ExplicitAgeRanges",
+               "Target_Age_Min": 15,
+               "Target_Age_Max": 25,
+               "class": "NodeLevelHealthTriggeredIV"
+            },
+            "class": "StandardInterventionDistributionEventCoordinator"
+         },
+         "Event_Name": "OnART: state 2 (delay to dropout) for AYA 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
