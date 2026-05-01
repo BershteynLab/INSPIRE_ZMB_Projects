@@ -11,11 +11,11 @@
 #SBATCH --mem=8GB
 
 #SBATCH --job-name=ZMB
-#SBATCH --chdir=/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206
+#SBATCH --chdir=/gpfs/data/bershteynlab/EMOD/citrod01/INSPIRE_ZMB_Projects
 #SBATCH --mail-type=END
 
 #SBATCH --mail-user=daniel.citron@nyulangone.org
 
-#SBATCH --output=/gpfs/data/bershteynlab/EMOD/citrod01/ZMB_calib_202206/slurm_%j.out
+#SBATCH --output=/gpfs/data/bershteynlab/EMOD/citrod01/INSPIRE_ZMB_Projects/slurm_%j.out
 
 python -m hiv.scripts.run_scenarios -c optim_script.py --samples resampled_parameter_sets.csv --output-dir test --suite-name ZMB_calib_202206 --table scenarios_inspire_disruptions_v2.csv -b NYUCLUSTER

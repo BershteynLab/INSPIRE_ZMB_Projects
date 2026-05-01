@@ -1011,6 +1011,23 @@ testdelay.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
   max_age_inclusive = 99
 )
 
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_attrition___2026_03_31_17_32_08_188153/"
+
+testdelay.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_testdelay",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
 
 experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_baseline___2026_03_31_17_10_07_037873/"
 
@@ -1093,12 +1110,104 @@ scn_dat <- scn_dat %>%
 
 ```
 
+### Testing and debugging
+
+```{r}
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_baseline___2026_04_30_13_39_48_266996/"
+
+baseline.test.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_baseline_test",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-test_inspire_disruptions_artdrop_reengage___2026_04_30_13_40_41_909157/"
+
+reengage.test.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_reengage_test",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+
+experiment.path <- "/gpfs/scratch/citrod01/experiments/INSPIRE/INSPIRE_Disruptions_V2/Baseline-campaign_zmb_build-inspire_disruptions_all___2026_04_30_17_37_35_113999/"
+
+all.test.results <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path   = experiment.path,
+  scenario_name     = "inspire_disruptions_all_test",
+  summarize_columns = c(
+    "Population","Infected", "On_ART",
+    "Died", "Died_from_HIV",
+    "Newly.Infected","Diagnosed",
+    "Program_VMMC"
+  ),
+  stratify_columns  = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+scn_dat <- rbind(all.test.results, baseline.test.results, reengage.test.results)
+
+# Compute scaling for this scenario (separate from baseline)
+scn_scaling <- scn_dat %>%
+  filter(Year == ZMB_CENSUS_YEAR,
+         Age  >= 15, Age < 65) %>%
+  group_by(sim.ix) %>%
+  summarize(total.pop = sum(Population), .groups = "drop") %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP / total.pop)
+
+scn_dat <- scn_dat %>%
+  left_join(scn_scaling, by = "sim.ix")
+
+```
+
+
+```{r}
+ART.coverage.aggregated.data.AYA %>% 
+  filter(Year >= 2015, Year <= 2035) %>%
+  ggplot() +
+    geom_line(
+      mapping = aes(
+        x = Year,
+        y = ARTCov,
+        color = scenario_name),
+        linewidth = 3, show.legend = TRUE) +
+    scale_color_manual(values = c("inspire_disruptions_all_test" = "#C41000", 
+                                  "inspire_disruptions_artdrop_reengage" = "#E69F00",
+                                  "inspire_disruptions_reengage_test" = "#0072B2",
+                                  "inspire_disruptions_baseline_test" = "black")) + 
+    #scale_x_continuous("Year") +
+    scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
+    base_theme  +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank()
+    )
+```
+
+
 ## Aggregate
 
 ```{r}
 ART.coverage.aggregated.data.adults <- scn_dat %>% 
   filter(Age >= 15) %>% 
-  mutate(Year = ceiling(Year)) %>% 
+  #mutate(Year = ceiling(Year)) %>% 
   group_by(scenario_name, sim.ix, Year) %>% 
   summarize(
     Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
@@ -1125,7 +1234,7 @@ ART.coverage.aggregated.data.adults <- scn_dat %>%
 
 ART.coverage.aggregated.data.AYA <- scn_dat %>% 
   filter(Age >= 15, Age < 25) %>% 
-  mutate(Year = ceiling(Year)) %>% 
+  #mutate(Year = ceiling(Year)) %>% 
   group_by(scenario_name, sim.ix, Year) %>% 
     summarize(
     Newly.Infected = sum(Newly.Infected * pop_scaling_factor),
@@ -1157,10 +1266,10 @@ ART.coverage.aggregated.data.AYA %>%
   filter(Year >= 2015, Year <= 2035) %>% 
   ggplot() + 
   geom_point(mapping = aes(x = Year, y = Died_from_HIV, color = scenario_name)) + 
-    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
-                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
-                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
-                                  "inspire_disruptions_baseline" = "black")) + 
+    # scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+    #                               "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+    #                               "inspire_disruptions_artdrop_reengage" = "#0072B2",
+    #                               "inspire_disruptions_baseline" = "black")) + 
     #scale_x_continuous("Year") +
     #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
     base_theme  +
@@ -1174,10 +1283,10 @@ ART.coverage.aggregated.data.AYA %>%
 ART.coverage.aggregated.data.AYA %>% 
   ggplot() + 
   geom_point(mapping = aes(x = Year, y = On_ART, color = scenario_name)) + 
-    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
-                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
-                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
-                                  "inspire_disruptions_baseline" = "black")) + 
+    # scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+    #                               "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+    #                               "inspire_disruptions_artdrop_reengage" = "#0072B2",
+    #                               "inspire_disruptions_baseline" = "black")) + 
     #scale_x_continuous("Year") +
     #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
     base_theme  +
@@ -1194,10 +1303,10 @@ ART.coverage.aggregated.data.AYA %>% filter(Year >= 2024) %>% View
 ART.coverage.aggregated.data.AYA %>% 
   ggplot() + 
   geom_point(mapping = aes(x = Year, y = Diagnosed, color = scenario_name)) + 
-    scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
-                                  "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
-                                  "inspire_disruptions_artdrop_reengage" = "#0072B2",
-                                  "inspire_disruptions_baseline" = "black")) + 
+    # scale_color_manual(values = c("inspire_disruptions_all" = "#C41000", 
+    #                               "inspire_disruptions_artdrop_reengage_no" = "#E69F00",
+    #                               "inspire_disruptions_artdrop_reengage" = "#0072B2",
+    #                               "inspire_disruptions_baseline" = "black")) + 
     #scale_x_continuous("Year") +
     #scale_y_continuous("", limits = c(0, 1), labels = scales::label_percent(accuracy = 1)) + 
     base_theme  +
@@ -1497,7 +1606,6 @@ ggsave(filename = file_name,
 ```
 
 ```{r}
-
 p <- ART.coverage.aggregated.data.AYA %>% 
   filter(Year >= 2015, Year <= 2035) %>%
   ggplot() +
