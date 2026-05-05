@@ -89,3 +89,19 @@ adults_compare  <- aggregate.data.differences(dat_pair, scenario.name = scn,
 
 ```
 
+## Testing new ART metrics 
+
+```{r}
+ts_adults <- compute_ts_with_ci(baseline.results, age_min = 15, age_max = 100)
+ts_youth  <- compute_ts_with_ci(baseline.results, age_min = 15, age_max = 25)
+```
+
+```{r}
+ts_adults %>% 
+  ggplot() + 
+  geom_line(mapping = aes(x = Year, y = First90_mean), color = "blue") + 
+  geom_line(mapping = aes(x = Year, y = Second90_mean), color = "red") + 
+  geom_line(mapping = aes(x = Year, y = First90_mean * Second90_mean), color = "black")
+  
+```
+

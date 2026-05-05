@@ -8,6 +8,10 @@
 
 ## Major Updates
 
+### 2026-05-01
+
+Updated scenario_inspire_disruptions_v3.csv to reflect opinion polling on disruption effect sizes from all PATC3H-IN partner sites.
+
 ### 2026-03-31
 
 * Newest version of INSPIRE disruptions to HIV services for AYA
