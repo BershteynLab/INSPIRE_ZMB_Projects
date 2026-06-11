@@ -6462,6 +6462,7 @@
                   "Broadcast_Event": "OnART3",
                   "Delay_Period_Distribution": "EXPONENTIAL_DISTRIBUTION",
                   "Delay_Period_Exponential": 2207,
+                  "Delay_Period_Exponential__KP_AYA_Dropout_rate": "<-- Marker",
                   "Disqualifying_Properties": [
                      "CascadeState:LostForever"
                   ],
@@ -6810,7 +6811,7 @@
             }
          }
       },
-            {
+      {
          "Event_Name": "Distribute PrEP annually VOICE Score 4 AGYW",
          "COMMENT": "INSPIRE Intervention - distribute perfect PrEP to AGYW with VOICE score 4",
          "Nodeset_Config": {
@@ -6923,6 +6924,7 @@
                         364,
                         365
                      ],
+                     "Times__KP__INSPIRE_PrEP_Distribution": "<-- MARKER",
                      "Values": [
                         0,
                         0,
@@ -7075,6 +7077,7 @@
                         364,
                         365
                      ],
+                     "Times__KP__INSPIRE_PrEP_Distribution": "<-- MARKER",
                      "Values": [
                         0,
                         0,
@@ -7156,17 +7159,33 @@
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",
-            "Target_Age_Max": 24.9999999,
+            "Target_Age_Max": 19.9999999,
             "Target_Age_Min": 15,
             "Target_Demographic": "ExplicitAgeRanges",
+            "Target_Disease_State": "HIV_Negative",
             "Time_Value_Map": { 
-               "Times": [2025,2045],
-               "Values": [1,1]
+               "Times": [2025,2050],
+               "Values": [1,1],
+               "Values__KP_Zaimara_coverage": "<-- Marker"
             },
             "Targeting_Config": {
-               "class": "HasIntervention",
-               "Is_Equal_To": 0,
-               "Intervention_Name": "ZAIMARA"
+               "class" : "TargetingLogic",
+               "Logic": [
+                  [
+                     {
+                        "class": "HasIntervention",
+                        "Is_Equal_To": 0,
+                        "Intervention_Name": "ZAIMARA"
+                     },
+                     {
+                        "class": "HasMoreOrLessThanNumPartners",
+                        "Is_Equal_To": 1,
+                        "Of_Relationship_Type": "MARITAL",
+                        "Num_Partners": 1,
+                        "More_Or_Less": "LESS"
+                     }
+                  ]
+               ]
             },
             "Intervention_Config": {
                "class":"MultiInterventionDistributor",
@@ -7184,6 +7203,7 @@
                      "Transmission_Multiplier__KP_CMD_increase_transmission":"<== marker",
                      "Expiration_Distribution": "CONSTANT_DISTRIBUTION",
                      "Expiration_Constant": 365000,
+                     "Expiration_Constant__KP_ZAIMARA_Duration":"<== marker",
                      "Disqualifying_Properties": []
                   }
                ]
