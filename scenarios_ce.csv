@@ -1,8 +1,8 @@
-Scenario,Campaign,Start_Year__KP_INSPIRE_PrEP_Start,Start_Year__KP_INSPIRE_PrEP_VOICE4_Start,Times__KP__INSPIRE_PrEP_Distribution,Values__KP__INSPIRE_PrEP_Distribution,Start_Year__KP_INSPIRE_ZAIMARA_Start,Values__KP_Zaimara_coverage,Acquisition_Multiplier__KP_CMD_increase_incidence,Expiration_Constant__KP_ZAIMARA_Duration,Start_Year__KP_INSPIRE_ART_Start,Choice_Probabilities__KP_INSPIRE_ART,Delay_Period_Exponential__KP_AYA_Dropout_rate
+Scenario,Campaign,Start_Year__KP_INSPIRE_PrEP_Start,Start_Year__KP_INSPIRE_PrEP_VOICE4_Start,Times__KP__INSPIRE_PrEP_Duration,Values__KP__INSPIRE_PrEP_Distribution,Start_Year__KP_INSPIRE_ZAIMARA_Start,Values__KP_Zaimara_coverage,Acquisition_Multiplier__KP_CMD_increase_incidence,Expiration_Constant__KP_ZAIMARA_Duration,Start_Year__KP_INSPIRE_ART_Start,Choice_Probabilities__KP_INSPIRE_ART,Delay_Period_Exponential__KP_AYA_Dropout_rate
 baseline,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",2207
 prep,campaign_zmb_inspire_AYA_artdrop.json,2200,2025,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",2207
 zaimara,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2025,"[0.4,0.4]",0.7,1095,2200,"[1,0]",2207
-artdrop,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[1,0]",2207
+artdrop,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[0,1]",2207
 
 sa_prep_eff_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2025,"[0,90,91]","[0.55,0.55,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",2207
 sa_prep_eff_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2025,"[0,90,91]","[0.90,0.90,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",2207
@@ -16,7 +16,7 @@ sa_zaimara_duration_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91
 sa_zaimara_duration_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2025,"[0.4,0.4]",0.7,1825,2200,"[1,0]",2207
 sa_zaimara_reach_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2025,"[0.1,0.1]",0.7,1095,2200,"[1,0]",2207
 
-sa_artdrop_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[1,0]",7300
-sa_artdrop_baseline_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",7300
-sa_artdrop_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[1,0]",1269
-sa_artdrop_baseline_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[1,0]",1269
+sa_artdrop_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[0,1]",7300
+sa_artdrop_baseline_lb,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[0,1]",7300
+sa_artdrop_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2025,"[0,1]",1269
+sa_artdrop_baseline_ub,campaign_zmb_inspire_AYA_artdrop.json,2200,2200,"[0,90,91]","[0.75,0.75,0]",2200,"[0,0]",1.0,1095,2200,"[0,1]",1269a

@@ -128,6 +128,91 @@ inspire.test.results <- inspire.test.results %>%
   )
 ```
 
+## Version 2 - June 12 2026
+
+```{r}
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-baseline___2026_06_11_17_36_20_769039/"
+
+inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "baseline",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-prep___2026_06_11_17_36_43_305146/"
+
+inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "prep",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop___2026_06_11_17_36_50_595914/"
+
+inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "art",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender"),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-zaimara___2026_06_11_17_36_46_902079/"
+
+inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
+  experiment_path = experiment.path,
+  scenario_name =  "zaimara",
+  summarize_columns = c("Population","Infected", "On_ART",
+                      "Died", "Died_from_HIV",
+                      "Newly.Infected","Diagnosed",
+                      "ZAIMARA_INSPIRE","PrEP_INSPIRE","OnART1_INSPIRE_defaulter_tracer"
+                      ),
+  stratify_columns = c("Year", "Age", "Gender" ),
+  min_age_inclusive = 0,
+  max_age_inclusive = 99
+)
+
+inspire.test.results <- rbind(
+  inspire.test.baseline,
+  inspire.test.prep,
+  inspire.test.art,
+  inspire.test.zaimara
+  )
+
+sim.results.pop.scaling <- inspire.test.results %>%
+  filter(Year == ZMB_CENSUS_YEAR) %>%
+  filter(Age >= 15, Age < 65) %>% 
+  group_by(sim.ix, scenario_name) %>%
+  summarize(total.pop = sum(Population), .groups = 'drop_last') %>%
+  mutate(pop_scaling_factor = ZMB_CENSUS_POP/total.pop)
+
+inspire.test.results <- inspire.test.results %>%
+  inner_join(
+    sim.results.pop.scaling,
+    by = c("sim.ix", "scenario_name")
+  )
+```
+
+
 # Event counter
 
 ```{r}
