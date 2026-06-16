@@ -131,7 +131,7 @@ inspire.test.results <- inspire.test.results %>%
 ## Version 2 - June 12 2026
 
 ```{r}
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-baseline___2026_06_11_17_36_20_769039/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-baseline___2026_06_12_15_31_34_712742/"
 
 inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -146,7 +146,7 @@ inspire.test.baseline <- EMODAnalyzeR::read.simulation.results.bigpurple(
   max_age_inclusive = 99
 )
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-prep___2026_06_11_17_36_43_305146/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-prep___2026_06_12_15_31_57_865188/"
 
 inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -161,7 +161,7 @@ inspire.test.prep <- EMODAnalyzeR::read.simulation.results.bigpurple(
   max_age_inclusive = 99
 )
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop___2026_06_11_17_36_50_595914/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-artdrop___2026_06_12_15_32_04_246126/"
 
 inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -176,7 +176,7 @@ inspire.test.art <- EMODAnalyzeR::read.simulation.results.bigpurple(
   max_age_inclusive = 99
 )
 
-experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-zaimara___2026_06_11_17_36_46_902079/"
+experiment.path = "/gpfs/scratch/citrod01/experiments/INSPIRE/Costing/Baseline-campaign_zmb_inspire_AYA_artdrop-zaimara___2026_06_12_15_32_01_230739/"
 
 inspire.test.zaimara <- EMODAnalyzeR::read.simulation.results.bigpurple(
   experiment_path = experiment.path,
@@ -214,6 +214,24 @@ inspire.test.results <- inspire.test.results %>%
 
 
 # Event counter
+
+```{r}
+inspire.test.results %>% 
+  group_by(Year, scenario_name, sim.id) %>% 
+  summarize(ZAIMARA_INSPIRE = sum(ZAIMARA_INSPIRE * pop_scaling_factor),
+            PrEP_INSPIRE = sum(PrEP_INSPIRE * pop_scaling_factor),
+            OnART1_INSPIRE_defaulter_tracer = sum(OnART1_INSPIRE_defaulter_tracer * pop_scaling_factor),
+            .groups = 'drop_last') %>% 
+  group_by(Year, scenario_name) %>% 
+  summarize(ZAIMARA_INSPIRE = mean(ZAIMARA_INSPIRE),
+            PrEP_INSPIRE = mean(PrEP_INSPIRE),
+            OnART1_INSPIRE_defaulter_tracer = mean(OnART1_INSPIRE_defaulter_tracer)) %>% 
+  pivot_longer(cols = c(ZAIMARA_INSPIRE, PrEP_INSPIRE, OnART1_INSPIRE_defaulter_tracer),
+           values_to = "Value", 
+           names_to = "Metric") %>% 
+  filter(scenario_name == 'art') %>% View
+```
+
 
 ```{r}
 inspire.test.results %>% 
