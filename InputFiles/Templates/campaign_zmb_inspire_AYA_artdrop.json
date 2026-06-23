@@ -6751,7 +6751,7 @@
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",
-            "Update_Period": 30.4166666666667,
+            "Update_Period": 365,
             "Target_Age_Max": 24.9999999,
             "Target_Age_Min": 15,
             "Target_Disease_State":"HIV_Negative",
@@ -6822,7 +6822,7 @@
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",
-            "Update_Period": 30.4166666666667,
+            "Update_Period": 365,
             "Target_Age_Max": 24.9999999,
             "Target_Age_Min": 15,
             "Target_Gender": "Female",
@@ -6954,7 +6954,7 @@
          "class": "CampaignEventByYear",
          "Event_Coordinator_Config": {
             "class": "ReferenceTrackingEventCoordinatorHIV",
-            "Update_Period": 30.4166666666667,
+            "Update_Period": 365,
             "Target_Age_Max": 25,
             "Target_Age_Min": 15,
             "Target_Gender":"Male",
