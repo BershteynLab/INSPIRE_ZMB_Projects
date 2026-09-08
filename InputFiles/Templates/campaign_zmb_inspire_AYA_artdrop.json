@@ -6439,7 +6439,7 @@
                   "OnART1",
                   "OnART1_INSPIRE_defaulter_tracer"
                ],
-               "Duration": 9125,
+               "Duration": 13000,
                "Target_Demographic": "ExplicitAgeRanges",
                "Target_Age_Max": 25,
                "Target_Age_Min": 15,
@@ -6447,7 +6447,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "OnART: state 2 (delay to dropout), 1990-2015, AYA ages 15-25",
+         "Event_Name": "OnART: state 2 (delay to dropout), 1990-2025, AYA ages 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
@@ -6483,11 +6483,11 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "OnART: state 2 (delay to dropout), 2015-, AYA ages 15-25",
+         "Event_Name": "OnART: state 2 (delay to dropout), 2025 onward, AYA ages 15-25",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },
-         "Start_Year": 2015,
+         "Start_Year": 2025,
          "class": "CampaignEventByYear"
       },
       {
@@ -6511,7 +6511,7 @@
                   "OnART1",
                   "OnART1_INSPIRE_defaulter_tracer"
                ],
-               "Duration": 9125,
+               "Duration": 13000,
                "Target_Demographic": "ExplicitAgeRanges",
                "Target_Age_Max": 99,
                "Target_Age_Min": 25,
@@ -6519,7 +6519,7 @@
             },
             "class": "StandardInterventionDistributionEventCoordinator"
          },
-         "Event_Name": "OnART: state 2 (delay to dropout), 1990-2015, Adults age 25+",
+         "Event_Name": "OnART: state 2 (delay to dropout), 1990-2025, Adults age 25+",
          "Nodeset_Config": {
             "class": "NodeSetAll"
          },

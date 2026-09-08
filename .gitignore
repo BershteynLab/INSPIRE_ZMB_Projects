@@ -9,3 +9,5 @@ DownloadAnalyzerTPI_cache
 Analysis/*.pdf
 Analysis/*.csv
 Analysis/*.Rproj
+Analysis/Inspire_Disruptions_V2/
+Analysis/ZMB_INSPIRE_V2_disruptions.Rmd
